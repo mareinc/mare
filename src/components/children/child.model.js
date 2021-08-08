@@ -156,9 +156,9 @@ Child.add( 'Display Options', {
 	cityText: { type: Types.Text, label: `city/town of child's current location`, dependsOn: { isOutsideMassachusetts: true }, initial: true, collapse: true },
 	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true, collapse: true },
 	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true, collapse: true },
-    identifiesAsLGBTQ: { type: Types.Select, label: 'does child identify as LGBTQ+?', options: 'Yes, No, Unknown', required: true, initial: true, collapse: true },
+    identifiesAsLGBTQ: { type: Types.Select, label: 'does child identify as LGBTQ+?', options: 'Yes, No, Unknown', required: true, default: 'Unknown', initial: true, collapse: true },
     identifiesAsLGBTQDetails: { type: Types.Textarea, label: 'additional identity details', initial: true, collapse: true },
-    shareIdentity: { type: Types.Select, label: 'is child comfortable sharing their identity?', options: 'Yes, No, Unknown', required: true, initial: true, collapse: true },
+    shareIdentity: { type: Types.Select, label: 'is child comfortable sharing their identity?', options: 'Yes, No, Unknown', required: true, default: 'Unknown', initial: true, collapse: true },
     shareIdentityDetails: { type: Types.Textarea, label: 'additional identity sharing details', initial: true, collapse: true }
 
 }, 'Special Needs', {
