@@ -256,7 +256,21 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6"></div>
+                <div class="col-6">
+                    <div class="row form-group">
+                         <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="identifies-as-lgbtq" class="bold">Identifies as LGBTQ+?:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="identifies-as-lgbtq" name="identifiesAsLGBTQ" class="form-control">
+                                <option value="">Any</option>
+                                {{#each lgbtqIdentityOptions}}
+                                <option value="{{ . }}">{{ . }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-12">
                     <div class="row form-group">
                         <div class="col-2 group-label text-right">
@@ -380,6 +394,7 @@
                     <th>Matching Event</th>
                     <th>Weekend Family Connections</th>
                     <th>Specialized Recruitment</th>
+                    <th>Identifies as LGBTQ+</th>
                     <th>Display Image</th>
                 </tr>
                 \{{#each results as |result|}}
@@ -414,6 +429,7 @@
                         <td>\{{ result.matchingEvent }}</td>
                         <td>\{{ result.weekendFamilyConnections }}</td>
                         <td>\{{ result.specializedRecruitment }}</td>
+                        <td>\{{ result.identifiesAsLGBTQ }}</td>
                         <td>\{{ result.displayImage }}</td>
                     </tr>
                 \{{/each}}

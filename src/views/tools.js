@@ -47,6 +47,7 @@ exports = module.exports = ( req, res ) => {
 			locals.states = states;
 			locals.familyStages = utilsService.FAMILY_STAGES;
 			locals.familyServices = utilsService.FAMILY_SERVICES;
+            locals.lgbtqIdentityOptions = utilsService.LGBTQ_IDENTITY_OPTIONS;
 			// create default ranges to seed date range fields
 			locals.defaultDateRanges = {
 				month: {

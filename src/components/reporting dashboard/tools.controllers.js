@@ -1479,6 +1479,11 @@ exports.getChildListingData = ( req, res, next ) => {
 		searchCriteria[ 'specializedRecruitment' ] = true;
 	}
 
+    // identifies as LGBTQ+ criteria
+	if ( !!query.identifiesAsLGBTQ ) {
+		searchCriteria[ 'identifiesAsLGBTQ' ] = query.identifiesAsLGBTQ;
+	}
+
 	Promise.all([
 		// get the children that match the specified date range and criteria
 		keystone.list( 'Child' ).model
@@ -1555,6 +1560,7 @@ exports.getChildListingData = ( req, res, next ) => {
 			matchingEvent: childDoc.matchingEvent ? 'Yes' : 'No',
 			weekendFamilyConnections: childDoc.weekendFamilyConnections ? 'Yes' : 'No',
 			specializedRecruitment: childDoc.specializedRecruitment ? 'Yes' : 'No',
+            identifiesAsLGBTQ: childDoc.identifiesAsLGBTQ || '--',
 			displayImage: childDoc.image && childDoc.image.url ? childDoc.image.url : undefined
 		}));
 

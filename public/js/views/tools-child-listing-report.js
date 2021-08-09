@@ -302,6 +302,7 @@
 			{ title: 'Matching Event', data: 'matchingEvent', visible: false },
 			{ title: 'Weekend Family Connections', data: 'weekendFamilyConnections', visible: false },
 			{ title: 'Specialized Recruitment', data: 'specializedRecruitment', visible: false },
+            { title: 'Identifies as LGBTQ+', data: 'identifiesAsLGBTQ', visible: false },
 			{ 
 				title: 'Display Image',
 				data: 'displayImage',
