@@ -457,7 +457,9 @@ exports.saveFamily = user => {
 				gender							: user.contact1Gender,
 				race							: user.contact1Race,
 				occupation						: user.contact1Occupation,
-				birthDate						: user.contact1DateOfBirth
+				birthDate						: user.contact1DateOfBirth,
+                doesIdentifyAsLGBTQ             : user.contact1LGBTQCommunity,
+                doesIdentifyAsLGBTQComments     : user.contact1LGBTQCommunityComments
 			},
 
 			contact2: {
@@ -475,7 +477,9 @@ exports.saveFamily = user => {
 				gender							: user.contact2Gender,
 				race							: user.contact2Race,
 				occupation						: user.contact2Occupation,
-				birthDate						: user.contact2DateOfBirth
+				birthDate						: user.contact2DateOfBirth,
+                doesIdentifyAsLGBTQ             : user.contact2LGBTQCommunity,
+                doesIdentifyAsLGBTQComments     : user.contact2LGBTQCommunityComments
 			},
 
 			address: {
