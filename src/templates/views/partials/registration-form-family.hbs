@@ -116,6 +116,17 @@
 			</div>
             <div class="row form-group">
                 <div class="col-sm-12">
+					<select id="relationship-status" class="input" name="relationshipStatus" data-parsley-errors-messages-disabled="true" required="true">
+						<option value=""></option>
+						<option value="Single">single</option>
+						<option value="Partnered">partnered</option>
+						<option value="Unknown/Prefers Not To Answer">do not wish to answer</option>
+					</select>
+					<label for="relationship-status" class="label required-field">Are you single or partnered?</label>
+				</div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-12">
 					<select id="contact1-lgbtq-community" class="input" name="contact1LGBTQCommunity" data-parsley-errors-messages-disabled="true">
 						<option value=""></option>
 						<option value="Yes">yes</option>

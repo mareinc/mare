@@ -440,6 +440,7 @@ exports.saveFamily = user => {
 
 			initialContact						: exports.getCurrentDate(),
 			otherLanguages						: user.otherLanguagesInHome,
+            relationshipStatus                  : user.relationshipStatus,
 
 			contact1: {
 

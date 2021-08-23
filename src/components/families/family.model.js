@@ -125,7 +125,8 @@ Family.add( 'Permissions', {
 	registrationNumber: { type: Types.Number, label: 'registration number', format: false, noedit: true, collapse: true },
 	initialContact: { type: Types.Date, label: 'initial contact', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true, collapse: true }, // was required: data migration change ( undo if possible )
 	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', initial: true, collapse: true },
-	language: { type: Types.Relationship, label: 'language', ref: 'Language', initial: true, collapse: true },
+	relationshipStatus: { type: Types.Select, label: 'relationship status', options: 'Single, Partnered, Unknown/Prefers Not To Answer', initial: true, required: true, default: 'Unknown/Prefers Not To Answer' },
+    language: { type: Types.Relationship, label: 'language', ref: 'Language', initial: true, collapse: true },
 	otherLanguages: { type: Types.Relationship, label: 'other languages', ref: 'Language', many: true, initial: true, collapse: true },
 
 	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true, collapse: true },
