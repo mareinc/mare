@@ -145,8 +145,8 @@ Family.add( 'Permissions', {
 		},
 
 		phone: {
-			mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator, collapse: true },
-			work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator, collapse: true }
+			mobile: { type: Types.Text, label: 'mobile phone number', initial: true, collapse: true },
+			work: { type: Types.Text, label: 'work phone number', initial: true, collapse: true }
 		},
 
 		email: { type: Types.Email, label: 'email address', initial: true, collapse: true },
@@ -169,8 +169,8 @@ Family.add( 'Permissions', {
 		},
 
 		phone: {
-			mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator, collapse: true },
-			work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator, collapse: true }
+			mobile: { type: Types.Text, label: 'mobile phone number', initial: true, collapse: true },
+			work: { type: Types.Text, label: 'work phone number', initial: true, collapse: true }
 		},
 
 		email: { type: Types.Email, label: 'email address', initial: true, collapse: true },
@@ -193,11 +193,11 @@ Family.add( 'Permissions', {
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true, collapse: true },
 		displayCity: { type: Types.Text, label: 'city', hidden: true, noedit: true, collapse: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true, collapse: true }, // was required: data migration change ( undo if possible )
-		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator, collapse: true }, // was required: data migration change ( undo if possible )
+		zipCode: { type: Types.Text, label: 'zip code', initial: true, collapse: true }, // was required: data migration change ( undo if possible )
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', noedit: true, collapse: true }
 	},
 
-	homePhone: { type: Types.Text, label: 'home phone number', initial: true, validate: Validators.phoneValidator, collapse: true }
+	homePhone: { type: Types.Text, label: 'home phone number', initial: true, collapse: true }
 
 }, 'Current Children in Family', {
 
@@ -369,7 +369,7 @@ Family.add( 'Permissions', {
 
 	infoPacket: {
 		preference: { type: Types.Select, options: 'Email, Hard Copy, Referred to AUK', label: 'packet', initial: true, collapse: true },
-		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'old packet preference', noedit: true, collapse: true },
+		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'old packet preference', noedit: false, collapse: true },
 		date: { type: Types.Date, label: 'date info packet sent', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true, collapse: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true, collapse: true }
 	}
@@ -462,6 +462,8 @@ Family.schema.post( 'init', function() {
 
 // Pre Save
 Family.schema.pre( 'save', function( next ) {
+
+    return next();
 	'use strict';
 	// trim whitespace characters from any type.Text fields
 	this.trimTextFields();
@@ -506,6 +508,8 @@ Family.schema.pre( 'save', function( next ) {
 });
 
 Family.schema.post( 'save', function() {
+
+    return;
 
 	// we need this id in case the family was created via the website and updatedBy is empty
 	const websiteBotFetched = UserService.getUserByFullName( 'Website Bot', 'admin' );

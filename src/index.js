@@ -147,4 +147,74 @@ exports = module.exports = app => {
 	app.get( '/tools/services/get-family-listing-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getFamilyListingData );
 	app.get( '/tools/services/get-family-stages-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getFamilyStagesData );
     app.get( '/tools/services/get-caseload-data'			    , accountMiddleware.requireUser( 'admin' ), toolsService.getChildCaseloadData );
+
+    app.get( '/update/families', async function( req, res, next ) {
+
+        const LIMIT = 10000;
+        const CURSOR = 0;
+
+        // get the current batch of families
+        console.log('getting families');
+
+        const families = await keystone.list( 'Family' ).model
+            .find({
+                relationshipStatus: { $eq: null }
+            })
+            // .count()
+            .populate( 'familyConstellation' )
+            .limit( LIMIT )
+            .exec();
+
+        //return console.log(families);
+
+        console.log('retrieved families');
+
+        console.log(families.map( family => `${family.displayNameAndRegistration}`));
+
+        // const familyConstellations = await keystone.list( 'Family Constellation' ).model
+        //     .find()
+        //     .exec();
+
+        // console.log(familyConstellations.map( constellation => constellation.familyConstellation));
+    
+
+        // update the relationship status on each of the families
+        families.forEach( family => {
+
+            let relationshipStatus = 'Unknown/Prefers Not To Answer';
+
+            if ( family.familyConstellation && family.familyConstellation.familyConstellation.includes( 'single' ) ) {
+                relationshipStatus = 'Single';
+            } else if ( family.familyConstellation && family.familyConstellation.familyConstellation.includes( 'couple' ) ) {
+                relationshipStatus = 'Partnered';
+            }
+
+            family.relationshipStatus = relationshipStatus;
+        });
+
+        //const errorsArray = [];
+
+        await families.reduce(async (memo, family) => {
+            await memo;
+            try {
+                await family.save();
+                //console.log( `${family.displayNameAndRegistration} succesfully saved` );
+            } catch ( error ) {
+                console.log( `${family.displayNameAndRegistration} failed to save` );
+                console.error( error );
+            }
+            
+        }, undefined);
+
+        console.log('all families saved');
+
+        // // save each of the updated families
+        // await Promise.all( families.map( family => family.save() ) ).catch( error => {
+        //     console.log( 'saving families failed' );
+        //     console.error( error );
+        // });
+
+        res.send('ok');
+		
+    });
 };
