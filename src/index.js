@@ -150,7 +150,7 @@ exports = module.exports = app => {
 
     app.get( '/update/families', async function( req, res, next ) {
 
-        const LIMIT = 10000;
+        const LIMIT = 5000;
         const CURSOR = 0;
 
         // get the current batch of families
@@ -158,9 +158,9 @@ exports = module.exports = app => {
 
         const families = await keystone.list( 'Family' ).model
             .find({
-                relationshipStatus: { $eq: null }
+                'contact1.doesIdentifyAsLGBTQ': { $eq: null }
             })
-            // .count()
+            //.count()
             .populate( 'familyConstellation' )
             .limit( LIMIT )
             .exec();
@@ -182,14 +182,40 @@ exports = module.exports = app => {
         families.forEach( family => {
 
             let relationshipStatus = 'Unknown/Prefers Not To Answer';
+			let doesIdentifyAsLGBTQ = 'Prefers Not To Answer';
+			let numberOfContacts = !!family.contact2.name.first ? 2 : 1;
 
             if ( family.familyConstellation && family.familyConstellation.familyConstellation.includes( 'single' ) ) {
-                relationshipStatus = 'Single';
+                
+				relationshipStatus = 'Single';
+
+				if ( family.familyConstellation.familyConstellation.includes( 'gay' ) ) {
+					doesIdentifyAsLGBTQ = 'Yes';
+				} else if ( family.familyConstellation.familyConstellation.includes( 'straight' ) ) {
+					doesIdentifyAsLGBTQ = 'No';
+				}
+
             } else if ( family.familyConstellation && family.familyConstellation.familyConstellation.includes( 'couple' ) ) {
-                relationshipStatus = 'Partnered';
+                
+				relationshipStatus = 'Partnered';
+
+				if (
+					family.familyConstellation.familyConstellation == 'female/female couple' || 
+					family.familyConstellation.familyConstellation == 'male/male couple' 
+				) {
+					doesIdentifyAsLGBTQ = 'Yes';
+				} else {
+					doesIdentifyAsLGBTQ = 'No';
+				}
             }
 
             family.relationshipStatus = relationshipStatus;
+
+			family.contact1.doesIdentifyAsLGBTQ = doesIdentifyAsLGBTQ;
+			if ( numberOfContacts === 2 ) {
+				family.contact2.doesIdentifyAsLGBTQ = doesIdentifyAsLGBTQ;
+			} 
+			
         });
 
         //const errorsArray = [];
