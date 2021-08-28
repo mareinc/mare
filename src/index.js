@@ -182,7 +182,7 @@ exports = module.exports = app => {
         families.forEach( family => {
 
             let relationshipStatus = 'Unknown/Prefers Not To Answer';
-			let doesIdentifyAsLGBTQ = 'Prefers Not To Answer';
+			let doesIdentifyAsLGBTQ = 'Unknown/Prefers Not To Answer';
 			let numberOfContacts = !!family.contact2.name.first ? 2 : 1;
 
             if ( family.familyConstellation && family.familyConstellation.familyConstellation.includes( 'single' ) ) {
