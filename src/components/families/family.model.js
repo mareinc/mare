@@ -155,7 +155,7 @@ Family.add( 'Permissions', {
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true, collapse: true }, // was required: data migration change ( undo if possible )
 		occupation: { type: Types.Text, label: 'occupation', initial: true, collapse: true },
 		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', todayButton: false, utc: true, initial: true, collapse: true }, // was required: data migration change ( undo if possible )
-        doesIdentifyAsLGBTQ: { type: Types.Select, label: 'identifies as part of the LGBTQ+ community', options: 'Yes, No, Prefers Not To Answer' },
+        doesIdentifyAsLGBTQ: { type: Types.Select, label: 'identifies as part of the LGBTQ+ community', options: 'Yes, No, Unknown/Prefers Not To Answer', collapse: true },
         doesIdentifyAsLGBTQComments: { type: Types.Textarea, label: 'LGBTQ+ identity comments', collapse: true }
 	}
 
@@ -179,7 +179,7 @@ Family.add( 'Permissions', {
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true, collapse: true },
 		occupation: { type: Types.Text, label: 'occupation', initial: true, collapse: true },
 		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', todayButton: false, default: '', utc: true, initial: true, collapse: true },
-        doesIdentifyAsLGBTQ: { type: Types.Select, label: 'identifies as part of the LGBTQ+ community', options: 'Yes, No, Prefers Not To Answer' },
+        doesIdentifyAsLGBTQ: { type: Types.Select, label: 'identifies as part of the LGBTQ+ community', options: 'Yes, No, Unknown/Prefers Not To Answer', collapse: true },
         doesIdentifyAsLGBTQComments: { type: Types.Textarea, label: 'LGBTQ+ identity comments', collapse: true }
 	}
 
