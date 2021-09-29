@@ -56,6 +56,8 @@ exports.getChildMatchingData = ( req, res, next ) => {
 					// append other consideration and disability options
 					result.otherConsiderations = utilsService.extractOtherConsiderationsData( otherConsiderations, [] );
 					result.disabilities = utilsService.extractDisabilitiesData( disabilities, [] );
+                    result.familyConstellationExclusions = utilsService.extractMatchingExclusionsData( matchingExclusions.filter( exclusion => exclusion.exclusionType === 'Family Constellation Exclusions' ) );
+                	result.otherExclusions = utilsService.extractMatchingExclusionsData( matchingExclusions.filter( exclusion => exclusion.exclusionType === 'Other Exclusions' ) );
 					return res.send( result );
 				}
 
