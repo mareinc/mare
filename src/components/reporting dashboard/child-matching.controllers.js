@@ -190,6 +190,14 @@ exports.getCriteria = query => {
 		}
 	}
 
+    // family constellation criteria
+    if ( Array.isArray( query.familyConstellationExclusions ) && query.familyConstellationExclusions.length > 0 ) {
+        let filtered = query.familyConstellationExclusions.filter( objectId => ObjectId.isValid( objectId ) );
+		if ( filtered.length > 0 ) {
+			criteria[ 'matchingPreferences.exclusions' ] = { $in: filtered };
+		}
+    }
+
 	// append $or criteria
 	if ( orCriteria.length === 1 ) {
 		criteria[ '$or' ] = orCriteria[ 0 ];

@@ -51,6 +51,11 @@
 		initializeDisabiltiesSelect: function() {
 			this.$el.find( '.disabilities-select' ).select2();
 		},
+
+        initializeMatchingExclusionsSelect: function() {
+			this.$el.find( '.family-constellation-exclusions-select' ).select2();
+            this.$el.find( '.other-exclusions-select' ).select2();
+		},
 		
 		/* fills in the form based on parameters */
 		initializeTheForm: function( params ) {
@@ -159,6 +164,7 @@
 			view.initializeSocialWorkerSelects();
 			view.initializeOtherConsiderationsSelect();
 			view.initializeDisabiltiesSelect();
+            view.initializeMatchingExclusionsSelect();
 			
 			// fetch the data from server and render it
 			this.getDataPromise( childId, params ).done( function( data ) {
@@ -178,6 +184,7 @@
 				view.initializeSocialWorkerSelects();
 				view.initializeOtherConsiderationsSelect();
 				view.initializeDisabiltiesSelect();
+                view.initializeMatchingExclusionsSelect();
 			});
 		},
 		
