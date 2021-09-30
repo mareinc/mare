@@ -31,6 +31,8 @@ User.schema.post( 'init', function() {
 User.schema.post( 'save', function() {
 	'use strict';
 
+    return;
+
 	// if the save was initiated from the admin UI and this is the first save, subscribe the user to the mailing list
 	// createdBy will be set to some id if it was created from the admin UI, otherwise it will be undefined
 	// createdAt and updatedAt will be the same value only on the first save

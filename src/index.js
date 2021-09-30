@@ -158,10 +158,10 @@ exports = module.exports = app => {
 
         const families = await keystone.list( 'Family' ).model
             .find({
-                'contact1.doesIdentifyAsLGBTQ': { $eq: null }
+                'matchingPreferences.exclusions': { $eq: null }
             })
-            //.count()
-            .populate( 'familyConstellation' )
+            // .count()
+            .populate( 'contact1.gender contact2.gender' )
             .limit( LIMIT )
             .exec();
 
@@ -169,56 +169,50 @@ exports = module.exports = app => {
 
         console.log('retrieved families');
 
-        console.log(families.map( family => `${family.displayNameAndRegistration}`));
+        //console.log(families.map( family => `${family.displayNameAndRegistration}`));
 
-        // const familyConstellations = await keystone.list( 'Family Constellation' ).model
-        //     .find()
-        //     .exec();
-
-        // console.log(familyConstellations.map( constellation => constellation.familyConstellation));
-    
+        const MATCHING_EXCLUSION_SINGLE_PARENT = '6153a593e985365abd09a6b7';
+        const MATCHING_EXCLUSION_FEMALE_PARENT = '6153a5a1e985365abd09a6b8';
+        const MATCHING_EXCLUSION_MALE_PARENT = '6153a5b0e985365abd09a6b9';
+        const MATCHING_EXCLUSION_ANY_CHILDREN = '6153a5ece985365abd09a6ba';
+        const MATCHING_EXCLUSION_PETS = '6153a60ee985365abd09a6bd';
 
         // update the relationship status on each of the families
         families.forEach( family => {
 
-            let relationshipStatus = 'Unknown/Prefers Not To Answer';
-			let doesIdentifyAsLGBTQ = 'Unknown/Prefers Not To Answer';
-			let numberOfContacts = !!family.contact2.name.first ? 2 : 1;
+            const MATCHING_EXCLUSIONS = [];
+            console.log(family.displayNameAndRegistration);
 
-            if ( family.familyConstellation && family.familyConstellation.familyConstellation.includes( 'single' ) ) {
-                
-				relationshipStatus = 'Single';
+			let singleParent = !family.contact2.name.first;
+            console.log(`single parent: ${singleParent}`);
+            if ( singleParent )
+                MATCHING_EXCLUSIONS.push( MATCHING_EXCLUSION_SINGLE_PARENT );
 
-				if ( family.familyConstellation.familyConstellation.includes( 'gay' ) ) {
-					doesIdentifyAsLGBTQ = 'Yes';
-				} else if ( family.familyConstellation.familyConstellation.includes( 'straight' ) ) {
-					doesIdentifyAsLGBTQ = 'No';
-				}
+            let maleParent = !!(family.contact1.gender && family.contact1.gender.gender === 'male') || 
+                !!(family.contact2.gender && family.contact2.gender.gender === 'male');
+            console.log(`male parent: ${maleParent}`);
+            if ( maleParent )
+                MATCHING_EXCLUSIONS.push( MATCHING_EXCLUSION_MALE_PARENT );
 
-            } else if ( family.familyConstellation && family.familyConstellation.familyConstellation.includes( 'couple' ) ) {
-                
-				relationshipStatus = 'Partnered';
+            let femaleParent = !!(family.contact1.gender && family.contact1.gender.gender === 'female') || 
+                !!(family.contact2.gender && family.contact2.gender.gender === 'female');
+            console.log(`female parent: ${femaleParent}`);
+            if ( femaleParent )
+                MATCHING_EXCLUSIONS.push( MATCHING_EXCLUSION_FEMALE_PARENT );
 
-				if (
-					family.familyConstellation.familyConstellation == 'female/female couple' || 
-					family.familyConstellation.familyConstellation == 'male/male couple' 
-				) {
-					doesIdentifyAsLGBTQ = 'Yes';
-				} else {
-					doesIdentifyAsLGBTQ = 'No';
-				}
-            }
+            let hasPets = !!family.matchingPreferences.havePetsInHome;
+            console.log(`has pets: ${hasPets}`);
+            if ( hasPets )
+                MATCHING_EXCLUSIONS.push( MATCHING_EXCLUSION_PETS );
 
-            family.relationshipStatus = relationshipStatus;
+            let hasChildren = family.numberOfChildren > 0;
+            console.log(`has children: ${hasChildren}`);
+            if ( hasChildren )
+                MATCHING_EXCLUSIONS.push( MATCHING_EXCLUSION_ANY_CHILDREN );
 
-			family.contact1.doesIdentifyAsLGBTQ = doesIdentifyAsLGBTQ;
-			if ( numberOfContacts === 2 ) {
-				family.contact2.doesIdentifyAsLGBTQ = doesIdentifyAsLGBTQ;
-			} 
-			
+            console.log( MATCHING_EXCLUSIONS );
+            family.matchingPreferences.exclusions = MATCHING_EXCLUSIONS;
         });
-
-        //const errorsArray = [];
 
         await families.reduce(async (memo, family) => {
             await memo;
@@ -233,14 +227,6 @@ exports = module.exports = app => {
         }, undefined);
 
         console.log('all families saved');
-
-        // // save each of the updated families
-        // await Promise.all( families.map( family => family.save() ) ).catch( error => {
-        //     console.log( 'saving families failed' );
-        //     console.error( error );
-        // });
-
         res.send('ok');
-		
     });
 };
