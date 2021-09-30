@@ -402,7 +402,7 @@ Family.add( 'Permissions', {
 
 		disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true, collapse: true },
 		otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', many: true, initial: true, collapse: true },
-        exclusions: { type: Types.Relationship, label: 'matching exclusions', ref: 'Matching Exclusion', many: true, noedit: false }
+        exclusions: { type: Types.Relationship, label: 'matching exclusions', ref: 'Matching Exclusion', many: true, noedit: true }
 	}
 
 }, 'Heard About MARE From', {

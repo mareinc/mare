@@ -190,12 +190,21 @@ exports.getCriteria = query => {
 		}
 	}
 
-    // family constellation criteria
+    // exclusion criteria
+    let familyConstellationExclusions = [];
+    let otherExclusions = [];
+    // family constellation exclusion criteria
     if ( Array.isArray( query.familyConstellationExclusions ) && query.familyConstellationExclusions.length > 0 ) {
-        let filtered = query.familyConstellationExclusions.filter( objectId => ObjectId.isValid( objectId ) );
-		if ( filtered.length > 0 ) {
-			criteria[ 'matchingPreferences.exclusions' ] = { $in: filtered };
-		}
+        familyConstellationExclusions = query.familyConstellationExclusions.filter( objectId => ObjectId.isValid( objectId ) );
+    }
+
+    // other exclusion criteria
+    if ( Array.isArray( query.otherExclusions ) && query.otherExclusions.length > 0 ) {
+        otherExclusions = query.otherExclusions.filter( objectId => ObjectId.isValid( objectId ) );
+    }
+
+    if ( familyConstellationExclusions.length > 0 || otherExclusions.length > 0 ) {
+        criteria[ 'matchingPreferences.exclusions' ] = { $nin: familyConstellationExclusions.concat( otherExclusions ) };
     }
 
 	// append $or criteria
