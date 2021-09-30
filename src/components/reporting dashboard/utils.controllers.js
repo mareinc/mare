@@ -200,6 +200,20 @@ exports.extractDisabilitiesData = ( disabilityDocs, selectedDisability = [] ) =>
 	});
 };
 
+/* 
+	create an array of plain JS objects to serve as <select> options and determine which options should be selected
+	options represent Matching Exclusion documents
+*/
+exports.extractMatchingExclusionsData = ( matchingExclusionDocs, selectedExclusions = [] ) => {
+	return matchingExclusionDocs.map( exclusion => {
+		return {
+			id: exclusion._id,
+			name: exclusion.matchingExclusion,
+			selected: selectedExclusions.includes( exclusion._id.toString() ) 
+		}
+	});
+};
+
 
 
 exports.getFamilyStagesData = familyDoc => {

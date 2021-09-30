@@ -34,13 +34,14 @@ exports.getChildMatchingData = ( req, res, next ) => {
 		fetchAgencies = Array.isArray( req.query.socialWorkersAgency ) ? agenciesService.getAgenciesByIds( req.query.socialWorkersAgency ) : [],
 		fetchOtherConsiderations = keystone.list( 'Other Consideration' ).model.find().lean().exec(),
 		fetchDisabilities = keystone.list( 'Disability' ).model.find().lean().exec();
+        fetchMatchingExclusions = keystone.list( 'Matching Exclusion' ).model.find().lean().exec();
 
-	Promise.all( [ fetchChild, fetchSocialWorkers, fetchAgencies, fetchOtherConsiderations, fetchDisabilities, resultsPromise ] )
+	Promise.all( [ fetchChild, fetchSocialWorkers, fetchAgencies, fetchOtherConsiderations, fetchDisabilities, fetchMatchingExclusions, resultsPromise ] )
 		.then( values => {
 			let result = {};
 			
 			// assign local variables to the values returned by the promises
-			const [ child, socialWorkers, agencies, otherConsiderations, disabilities, results ] = values;
+			const [ child, socialWorkers, agencies, otherConsiderations, disabilities, matchingExclusions, results ] = values;
 			
 			// output requested child record details
 			result.child = childMatchingService.extractChildData( child );
@@ -55,6 +56,8 @@ exports.getChildMatchingData = ( req, res, next ) => {
 					// append other consideration and disability options
 					result.otherConsiderations = utilsService.extractOtherConsiderationsData( otherConsiderations, [] );
 					result.disabilities = utilsService.extractDisabilitiesData( disabilities, [] );
+                    result.familyConstellationExclusions = utilsService.extractMatchingExclusionsData( matchingExclusions.filter( exclusion => exclusion.exclusionType === 'Family Constellation Exclusions' ) );
+                	result.otherExclusions = utilsService.extractMatchingExclusionsData( matchingExclusions.filter( exclusion => exclusion.exclusionType === 'Other Exclusions' ) );
 					return res.send( result );
 				}
 
@@ -116,6 +119,8 @@ exports.getChildMatchingData = ( req, res, next ) => {
 				result.socialWorkersAgencies = utilsService.extractAgenicesData( agencies );
 				result.otherConsiderations = utilsService.extractOtherConsiderationsData( otherConsiderations );
 				result.disabilities = utilsService.extractDisabilitiesData( disabilities );
+                result.familyConstellationExclusions = utilsService.extractMatchingExclusionsData( matchingExclusions.filter( exclusion => exclusion.exclusionType === 'Family Constellation Exclusions' ) );
+                result.otherExclusions = utilsService.extractMatchingExclusionsData( matchingExclusions.filter( exclusion => exclusion.exclusionType === 'Other Exclusions' ) );
 				
 				// map array to plain objects including additional data
 				result.results = childMatchingService.mapFamiliesToPlainObjects( results );
