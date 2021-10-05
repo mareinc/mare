@@ -489,8 +489,10 @@ Family.schema.pre( 'save', function( next ) {
 	const galleryViewingPermissionsSet = this.setGalleryViewingPermissions();
 	// set the registration number for the family
 	const registrationNumberSet = this.setRegistrationNumber();
+    // update matching exclusions
+    const matchingExclusionsUpdated = this.setMatchingExclusions();
 
-	Promise.all( [ displayCityUpdated, regionUpdated, socialWorkerAgencyFieldsSet, galleryViewingPermissionsSet, registrationNumberSet ] )
+	Promise.all( [ displayCityUpdated, regionUpdated, socialWorkerAgencyFieldsSet, galleryViewingPermissionsSet, registrationNumberSet, matchingExclusionsUpdated ] )
 		// if there was an error with any of the promises
 		.catch( err => {
 			// log it for debugging purposes
@@ -581,6 +583,54 @@ Family.schema.methods.setVerifiedStatus = function() {
 	if ( this._original && this.isActive && !this._original.isActive ) {
 		this.permissions.isVerified = true;
 	}
+};
+
+Family.schema.methods.setMatchingExclusions = function() {
+
+    return new Promise( ( resolve ) => {
+
+        this.populate( 'contact1.gender contact2.gender', err => {
+
+            // if there was an error populating the gender fields
+            if ( err ) {
+                // log the error for debugging purposes
+                console.error( `matching exclusions could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } )`, err );
+                // resolve the promise so that it doesn't disrupt other pre-save hooks
+                return resolve();
+            }
+
+            // update matching exclusions based on family record data
+            const MATCHING_EXCLUSIONS = [];
+
+            const singleParent = !this.contact2.name.first;
+            if ( singleParent ) {
+                MATCHING_EXCLUSIONS.push( process.env.MATCHING_EXCLUSION_SINGLE_PARENT );
+            }
+
+            const maleParent = !!(this.contact1.gender && this.contact1.gender.gender === 'male') || !!(this.contact2.gender && this.contact2.gender.gender === 'male');
+            if ( maleParent ) {
+                MATCHING_EXCLUSIONS.push( process.env.MATCHING_EXCLUSION_MALE_PARENT );
+            }
+
+            const femaleParent = !!(this.contact1.gender && this.contact1.gender.gender === 'female') || !!(this.contact2.gender && this.contact2.gender.gender === 'female');
+            if ( femaleParent ) {
+                MATCHING_EXCLUSIONS.push( process.env.MATCHING_EXCLUSION_FEMALE_PARENT );
+            }
+
+            const hasPets = !!this.matchingPreferences.havePetsInHome;
+            if ( hasPets ) {
+                MATCHING_EXCLUSIONS.push( process.env.MATCHING_EXCLUSION_PETS );
+            }
+
+            const hasChildren = this.numberOfChildren > 0;
+            if ( hasChildren ) {
+                MATCHING_EXCLUSIONS.push( process.env.MATCHING_EXCLUSION_ANY_CHILDREN );
+            }
+
+            this.matchingPreferences.exclusions = MATCHING_EXCLUSIONS;
+            resolve();
+        });
+    });
 };
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
