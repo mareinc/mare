@@ -21,6 +21,7 @@ const keystone						= require( 'keystone' ),
 	  toolsService					= require( './components/reporting dashboard/tools.controllers' ),
 	  mailingListMiddleware			= require( './components/mailchimp lists/mailchimp-list-middleware' ),
 	  enforce						= require( 'express-sslify' ),
+      moment                        = require( 'moment' ),
 	  importRoutes					= keystone.importer( __dirname );
 
 // common middleware
@@ -127,7 +128,7 @@ exports = module.exports = app => {
 	app.post( '/services/update-mailing-lists'			, mailingListMiddleware.updateMailingListPreferences );
 	app.post( '/services/mailing-list-unsubscribe'		, mailingListMiddleware.unsubscribeUserFromMailingList );
 	app.post( '/services/save-profile-search'			, profileSearchService.saveProfileSearch );
-	
+
 	// reporting tools
 	app.get( '/tools'											, accountMiddleware.requireUser( 'admin' ), routes.views.tools );
 	app.get( '/tools/services/get-agencies-data'				, accountMiddleware.requireUser( 'admin' ), toolsService.getAgenciesData );
@@ -158,10 +159,11 @@ exports = module.exports = app => {
 
         const families = await keystone.list( 'Family' ).model
             .find({
-                'matchingPreferences.exclusions': { $eq: null }
+                'numberOfChildren': { $gt: 0 },
+                'youngestChildBirthDate': { $eq: null }
             })
-            // .count()
-            .populate( 'contact1.gender contact2.gender' )
+            //.count()
+            //.populate( 'contact1.gender contact2.gender' )
             .limit( LIMIT )
             .exec();
 
@@ -169,7 +171,7 @@ exports = module.exports = app => {
 
         console.log('retrieved families');
 
-        //console.log(families.map( family => `${family.displayNameAndRegistration}`));
+        console.log(families.map( family => `${family.displayNameAndRegistration}`));
 
         const MATCHING_EXCLUSION_SINGLE_PARENT = '6153a593e985365abd09a6b7';
         const MATCHING_EXCLUSION_FEMALE_PARENT = '6153a5a1e985365abd09a6b8';
@@ -180,38 +182,30 @@ exports = module.exports = app => {
         // update the relationship status on each of the families
         families.forEach( family => {
 
-            const MATCHING_EXCLUSIONS = [];
-            console.log(family.displayNameAndRegistration);
 
-			let singleParent = !family.contact2.name.first;
-            console.log(`single parent: ${singleParent}`);
-            if ( singleParent )
-                MATCHING_EXCLUSIONS.push( MATCHING_EXCLUSION_SINGLE_PARENT );
+            const MAX_CHILDREN_COUNT = 8;
+            const ages = [];
 
-            let maleParent = !!(family.contact1.gender && family.contact1.gender.gender === 'male') || 
-                !!(family.contact2.gender && family.contact2.gender.gender === 'male');
-            console.log(`male parent: ${maleParent}`);
-            if ( maleParent )
-                MATCHING_EXCLUSIONS.push( MATCHING_EXCLUSION_MALE_PARENT );
+            // get the birth dates of all children
+            for ( let i = 1; i <= MAX_CHILDREN_COUNT; i++ ) {
 
-            let femaleParent = !!(family.contact1.gender && family.contact1.gender.gender === 'female') || 
-                !!(family.contact2.gender && family.contact2.gender.gender === 'female');
-            console.log(`female parent: ${femaleParent}`);
-            if ( femaleParent )
-                MATCHING_EXCLUSIONS.push( MATCHING_EXCLUSION_FEMALE_PARENT );
+                const birthday = family.get( `child${i}.birthDate` );
+                if ( birthday ) {
+                    ages.push({
+                        birthday,
+                        sortDate: moment( birthday ).unix()
+                    });
+                }
+            }
 
-            let hasPets = !!family.matchingPreferences.havePetsInHome;
-            console.log(`has pets: ${hasPets}`);
-            if ( hasPets )
-                MATCHING_EXCLUSIONS.push( MATCHING_EXCLUSION_PETS );
+            // sort birth dates from oldest to youngest
+            ages.sort( ( a, b ) => a.sortDate - b.sortDate );
 
-            let hasChildren = family.numberOfChildren > 0;
-            console.log(`has children: ${hasChildren}`);
-            if ( hasChildren )
-                MATCHING_EXCLUSIONS.push( MATCHING_EXCLUSION_ANY_CHILDREN );
-
-            console.log( MATCHING_EXCLUSIONS );
-            family.matchingPreferences.exclusions = MATCHING_EXCLUSIONS;
+            // set oldest/youngest birth dates
+            if ( ages.length > 0 ) {
+                family.oldestChildBirthDate = ages[ 0 ].birthday;
+                family.youngestChildBirthDate = ages[ ages.length - 1 ].birthday;
+            }
         });
 
         await families.reduce(async (memo, family) => {
@@ -223,7 +217,7 @@ exports = module.exports = app => {
                 console.log( `${family.displayNameAndRegistration} failed to save` );
                 console.error( error );
             }
-            
+
         }, undefined);
 
         console.log('all families saved');
