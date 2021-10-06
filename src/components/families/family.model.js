@@ -2,6 +2,7 @@ require( '../change histories/family-history.model' );
 
 const keystone					= require( 'keystone' ),
 	  async 					= require( 'async' ),
+      moment                    = require( 'moment' ),
 	  Types						= keystone.Field.Types,
 	  User						= require( '../users/user.model' ),
 	  ChangeHistoryMiddleware	= require( '../../components/change histories/change-history.controllers' ),
@@ -201,7 +202,9 @@ Family.add( 'Permissions', {
 
 }, 'Current Children in Family', {
 
-	numberOfChildren: { type: Types.Select, label: 'number of children', options: '0, 1, 2, 3, 4, 5, 6, 7, 8+', initial: true, collapse: true }
+	numberOfChildren: { type: Types.Select, label: 'number of children', options: '0, 1, 2, 3, 4, 5, 6, 7, 8+', initial: true, collapse: true },
+    youngestChildBirthDate: { type: Types.Date, label: 'birth date of youngest child', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, default: '', utc: true, initial: true, collapse: true, noedit: true },
+    oldestChildBirthDate: { type: Types.Date, label: 'birth date of oldest child', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, default: '', utc: true, initial: true, collapse: true, noedit: true }
 
 }, { heading: 'Child 1', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] } }, {
 	child1: {
@@ -402,7 +405,7 @@ Family.add( 'Permissions', {
 
 		disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true, collapse: true },
 		otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', many: true, initial: true, collapse: true },
-        exclusions: { type: Types.Relationship, label: 'matching exclusions', ref: 'Matching Exclusion', many: true, noedit: false }
+        exclusions: { type: Types.Relationship, label: 'matching exclusions', ref: 'Matching Exclusion', many: true, noedit: true }
 	}
 
 }, 'Heard About MARE From', {
@@ -480,6 +483,8 @@ Family.schema.pre( 'save', function( next ) {
 	this.setUserType();
 	// ensure the user's verification status is current
 	this.setVerifiedStatus();
+    // set min/max children birth dates
+    this.setChildrenBirthDates();
 
 	// there are two fields containing the city, depending on whether the family is in MA or not.  Save the value to a common field for display
 	const displayCityUpdated = this.setDisplayCity();
@@ -491,8 +496,10 @@ Family.schema.pre( 'save', function( next ) {
 	const galleryViewingPermissionsSet = this.setGalleryViewingPermissions();
 	// set the registration number for the family
 	const registrationNumberSet = this.setRegistrationNumber();
+    // update matching exclusions
+    const matchingExclusionsUpdated = this.setMatchingExclusions();
 
-	Promise.all( [ displayCityUpdated, regionUpdated, socialWorkerAgencyFieldsSet, galleryViewingPermissionsSet, registrationNumberSet ] )
+	Promise.all( [ displayCityUpdated, regionUpdated, socialWorkerAgencyFieldsSet, galleryViewingPermissionsSet, registrationNumberSet, matchingExclusionsUpdated ] )
 		// if there was an error with any of the promises
 		.catch( err => {
 			// log it for debugging purposes
@@ -585,6 +592,82 @@ Family.schema.methods.setVerifiedStatus = function() {
 	if ( this._original && this.isActive && !this._original.isActive ) {
 		this.permissions.isVerified = true;
 	}
+};
+
+Family.schema.methods.setMatchingExclusions = function() {
+
+    return new Promise( ( resolve ) => {
+
+        this.populate( 'contact1.gender contact2.gender', err => {
+
+            // if there was an error populating the gender fields
+            if ( err ) {
+                // log the error for debugging purposes
+                console.error( `matching exclusions could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } )`, err );
+                // resolve the promise so that it doesn't disrupt other pre-save hooks
+                return resolve();
+            }
+
+            // update matching exclusions based on family record data
+            const MATCHING_EXCLUSIONS = [];
+
+            const singleParent = !this.contact2.name.first;
+            if ( singleParent ) {
+                MATCHING_EXCLUSIONS.push( process.env.MATCHING_EXCLUSION_SINGLE_PARENT );
+            }
+
+            const maleParent = !!(this.contact1.gender && this.contact1.gender.gender === 'male') || !!(this.contact2.gender && this.contact2.gender.gender === 'male');
+            if ( maleParent ) {
+                MATCHING_EXCLUSIONS.push( process.env.MATCHING_EXCLUSION_MALE_PARENT );
+            }
+
+            const femaleParent = !!(this.contact1.gender && this.contact1.gender.gender === 'female') || !!(this.contact2.gender && this.contact2.gender.gender === 'female');
+            if ( femaleParent ) {
+                MATCHING_EXCLUSIONS.push( process.env.MATCHING_EXCLUSION_FEMALE_PARENT );
+            }
+
+            const hasPets = !!this.matchingPreferences.havePetsInHome;
+            if ( hasPets ) {
+                MATCHING_EXCLUSIONS.push( process.env.MATCHING_EXCLUSION_PETS );
+            }
+
+            const hasChildren = this.numberOfChildren > 0;
+            if ( hasChildren ) {
+                MATCHING_EXCLUSIONS.push( process.env.MATCHING_EXCLUSION_ANY_CHILDREN );
+            }
+
+            this.matchingPreferences.exclusions = MATCHING_EXCLUSIONS;
+            resolve();
+        });
+    });
+};
+
+Family.schema.methods.setChildrenBirthDates = function() {
+
+    if ( this.numberOfChildren > 0 ) {
+
+        const MAX_CHILDREN_COUNT = 8;
+        const ages = [];
+
+        // get the birth dates of all children
+        for ( let i = 1; i <= MAX_CHILDREN_COUNT; i++ ) {
+
+            const birthday = this.get( `child${i}.birthDate` );
+            if ( birthday ) {
+                ages.push({
+                    birthday,
+                    sortDate: moment( birthday ).unix()
+                });
+            }
+        }
+
+        // sort birth dates from oldest to youngest
+        ages.sort( ( a, b ) => a.sortDate - b.sortDate );
+
+        // set oldest/youngest birth dates
+        this.oldestChildBirthDate = ages[ 0 ].birthday;
+        this.youngestChildBirthDate = ages[ ages.length - 1 ].birthday;
+    }
 };
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
