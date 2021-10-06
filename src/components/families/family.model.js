@@ -2,6 +2,7 @@ require( '../change histories/family-history.model' );
 
 const keystone					= require( 'keystone' ),
 	  async 					= require( 'async' ),
+      moment                    = require( 'moment' ),
 	  Types						= keystone.Field.Types,
 	  User						= require( '../users/user.model' ),
 	  ChangeHistoryMiddleware	= require( '../../components/change histories/change-history.controllers' ),
@@ -201,7 +202,9 @@ Family.add( 'Permissions', {
 
 }, 'Current Children in Family', {
 
-	numberOfChildren: { type: Types.Select, label: 'number of children', options: '0, 1, 2, 3, 4, 5, 6, 7, 8+', initial: true, collapse: true }
+	numberOfChildren: { type: Types.Select, label: 'number of children', options: '0, 1, 2, 3, 4, 5, 6, 7, 8+', initial: true, collapse: true },
+    youngestChildBirthDate: { type: Types.Date, label: 'birth date of youngest child', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, default: '', utc: true, initial: true, collapse: true, noedit: true },
+    oldestChildBirthDate: { type: Types.Date, label: 'birth date of oldest child', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, default: '', utc: true, initial: true, collapse: true, noedit: true }
 
 }, { heading: 'Child 1', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] } }, {
 	child1: {
@@ -478,6 +481,8 @@ Family.schema.pre( 'save', function( next ) {
 	this.setUserType();
 	// ensure the user's verification status is current
 	this.setVerifiedStatus();
+    // set min/max children birth dates
+    this.setChildrenBirthDates();
 
 	// there are two fields containing the city, depending on whether the family is in MA or not.  Save the value to a common field for display
 	const displayCityUpdated = this.setDisplayCity();
@@ -631,6 +636,34 @@ Family.schema.methods.setMatchingExclusions = function() {
             resolve();
         });
     });
+};
+
+Family.schema.methods.setChildrenBirthDates = function() {
+
+    if ( this.numberOfChildren > 0 ) {
+
+        const MAX_CHILDREN_COUNT = 8;
+        const ages = [];
+
+        // get the birth dates of all children
+        for ( let i = 1; i <= MAX_CHILDREN_COUNT; i++ ) {
+
+            const birthday = this.get( `child${i}.birthDate` );
+            if ( birthday ) {
+                ages.push({
+                    birthday,
+                    sortDate: moment( birthday ).unix()
+                });
+            }
+        }
+
+        // sort birth dates from oldest to youngest
+        ages.sort( ( a, b ) => a.sortDate - b.sortDate );
+
+        // set oldest/youngest birth dates
+        this.oldestChildBirthDate = ages[ 0 ].birthday;
+        this.youngestChildBirthDate = ages[ ages.length - 1 ].birthday;
+    }
 };
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
