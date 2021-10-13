@@ -1,6 +1,7 @@
 const keystone 			= require( 'keystone' ),
 	  ObjectId 			= require( 'mongodb' ).ObjectId,
 	  _					= require( 'underscore' ),
+      moment            = require( 'moment' ),
 	  utilsService		= require( './utils.controllers' ),
 	  globalUtils 		= require( '../../utils/utility.controllers' );
 	  
@@ -299,7 +300,9 @@ exports.extractChildData = child => {
 			name: sibling.name.full,
 			registrationNumber: sibling.registrationNumber,
 			id: sibling._id
-		}))
+		})),
+        age: moment.utc().diff( moment.utc( child.birthDate ), 'years' ),
+        birthDate: moment.utc( child.birthDate ).format( 'YYYY-MM-DD' )
 	}
 };
 
