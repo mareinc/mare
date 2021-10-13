@@ -105,6 +105,10 @@ exports.getChildMatchingData = ( req, res, next ) => {
 						// append all other consideration and disability options and mark which options to select based on the child record
 						result.otherConsiderations = utilsService.extractOtherConsiderationsData( otherConsiderations, child.otherConsiderations.map( otherConsideration => otherConsideration.toString() ) );
 						result.disabilities = utilsService.extractDisabilitiesData( disabilities, child.disabilities.map( disability => disability.toString() ) );
+
+                        // append matching exclusions
+                        result.familyConstellationExclusions = utilsService.extractMatchingExclusionsData( matchingExclusions.filter( exclusion => exclusion.exclusionType === 'Family Constellation Exclusions' ) );
+                	    result.otherExclusions = utilsService.extractMatchingExclusionsData( matchingExclusions.filter( exclusion => exclusion.exclusionType === 'Other Exclusions' ) );
 						
 						res.send( result );
 					})
