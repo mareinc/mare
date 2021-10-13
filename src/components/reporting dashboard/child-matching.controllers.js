@@ -194,6 +194,7 @@ exports.getCriteria = query => {
     // exclusion criteria
     let familyConstellationExclusions = [];
     let otherExclusions = [];
+
     // family constellation exclusion criteria
     if ( Array.isArray( query.familyConstellationExclusions ) && query.familyConstellationExclusions.length > 0 ) {
         familyConstellationExclusions = query.familyConstellationExclusions.filter( objectId => ObjectId.isValid( objectId ) );
@@ -206,6 +207,17 @@ exports.getCriteria = query => {
 
     if ( familyConstellationExclusions.length > 0 || otherExclusions.length > 0 ) {
         criteria[ 'matchingPreferences.exclusions' ] = { $nin: familyConstellationExclusions.concat( otherExclusions ) };
+    }
+
+    // age exclusions
+    const NO_OLDER_CHILDREN_ID = process.env.MATCHING_EXCLUSION_OLDER_CHILDREN;
+    const NO_YOUNGER_CHILDREN_ID = process.env.MATCHING_EXCLUSION_YOUNGER_CHILDREN;
+    
+    if ( otherExclusions.includes( NO_YOUNGER_CHILDREN_ID ) ) {
+        orCriteria.push([
+            { 'oldestChildBirthDate': { $eq: null } },
+            { 'oldestChildBirthDate': { $lt: moment.utc( query.childBirthDate ) } }
+        ]);
     }
 
 	// append $or criteria
