@@ -24,7 +24,21 @@
 						<div class="group-label float-left float-sm-right"><h5>Child Age:</h5></div>
 					</div>
 					<div class="col-lg-6">
-						<div class="read-only-value float-left"><h5>\{{ child.age }}</h5></div>
+                        \{{#if isAnonymous}}
+						<div class="read-only-value float-left">
+                            <select id="anonymousChildAge" name="anonymousChildAge" class="form-control">
+                                <option value="">Any</option>
+                                {{#each ages as |age|}}
+                                    {{#ifeq age 0}}
+                                    {{else}}
+                                    <option value="{{ age }}">{{ age }}</option>
+                                    {{/ifeq}}
+                                {{/each}}
+                            </select>
+                        </div>
+                        \{{else}}
+                        <div class="read-only-value float-left"><h5>\{{ child.age }}</h5></div>
+                        \{{/if}}
 					</div>
 				</div>
 

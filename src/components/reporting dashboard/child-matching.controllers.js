@@ -212,18 +212,21 @@ exports.getCriteria = query => {
     // age exclusions
     const NO_OLDER_CHILDREN_ID = process.env.MATCHING_EXCLUSION_OLDER_CHILDREN;
     const NO_YOUNGER_CHILDREN_ID = process.env.MATCHING_EXCLUSION_YOUNGER_CHILDREN;
+    const childBirthDate = query.childId !== 'anonymous' ? moment.utc( query.childBirthDate )
+        : query.anonymousChildAge ? moment.utc().subtract( query.anonymousChildAge, 'years' )
+            : undefined;
     
-    if ( otherExclusions.includes( NO_YOUNGER_CHILDREN_ID ) ) {
+    if ( childBirthDate && otherExclusions.includes( NO_YOUNGER_CHILDREN_ID ) ) {
         orCriteria.push([
             { 'youngestChildBirthDate': { $eq: null } },
-            { 'youngestChildBirthDate': { $lt: moment.utc( query.childBirthDate ) } }
+            { 'youngestChildBirthDate': { $lt: childBirthDate } }
         ]);
     }
 
-	if ( otherExclusions.includes( NO_OLDER_CHILDREN_ID ) ) {
+	if ( childBirthDate && otherExclusions.includes( NO_OLDER_CHILDREN_ID ) ) {
         orCriteria.push([
             { 'oldestChildBirthDate': { $eq: null } },
-            { 'oldestChildBirthDate': { $gt: moment.utc( query.childBirthDate ) } }
+            { 'oldestChildBirthDate': { $gt: childBirthDate } }
         ]);
     }
 
