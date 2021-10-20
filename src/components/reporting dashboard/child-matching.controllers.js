@@ -215,8 +215,15 @@ exports.getCriteria = query => {
     
     if ( otherExclusions.includes( NO_YOUNGER_CHILDREN_ID ) ) {
         orCriteria.push([
+            { 'youngestChildBirthDate': { $eq: null } },
+            { 'youngestChildBirthDate': { $lt: moment.utc( query.childBirthDate ) } }
+        ]);
+    }
+
+	if ( otherExclusions.includes( NO_OLDER_CHILDREN_ID ) ) {
+        orCriteria.push([
             { 'oldestChildBirthDate': { $eq: null } },
-            { 'oldestChildBirthDate': { $lt: moment.utc( query.childBirthDate ) } }
+            { 'oldestChildBirthDate': { $gt: moment.utc( query.childBirthDate ) } }
         ]);
     }
 
