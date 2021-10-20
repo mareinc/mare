@@ -190,7 +190,8 @@ Child.add( 'Display Options', {
 	recommendedFamilyConstellation: { type: Types.Relationship, label: 'recommended family constellations', ref: 'Family Constellation', many: true, required: true, initial: true, collapse: true },
 	// TODO: NEEDS TO BE PLURAL BEFORE SAVE, FIX ACROSS THE CODEBASE
 	otherFamilyConstellationConsideration: { type: Types.Relationship, label: 'other family constellation consideration', ref: 'Other Family Constellation Consideration', many: true, initial: true, collapse: true },
-	otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', many: true, initial: true, collapse: true }
+	otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', many: true, initial: true, collapse: true },
+    exclusions: { type: Types.Relationship, label: 'placement exclusions', ref: 'Matching Exclusion', many: true, noedit: false }
 
 }, 'Agency Information', {
 
