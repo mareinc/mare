@@ -107,8 +107,14 @@ exports.getChildMatchingData = ( req, res, next ) => {
 						result.disabilities = utilsService.extractDisabilitiesData( disabilities, child.disabilities.map( disability => disability.toString() ) );
 
                         // append matching exclusions
-                        result.familyConstellationExclusions = utilsService.extractMatchingExclusionsData( matchingExclusions.filter( exclusion => exclusion.exclusionType === 'Family Constellation Exclusions' ) );
-                	    result.otherExclusions = utilsService.extractMatchingExclusionsData( matchingExclusions.filter( exclusion => exclusion.exclusionType === 'Other Exclusions' ) );
+                        result.familyConstellationExclusions = utilsService.extractMatchingExclusionsData(
+                            matchingExclusions.filter( exclusion => exclusion.exclusionType === 'Family Constellation Exclusions' ), 
+                            child.exclusions.map( exclusion => exclusion.toString() )
+                        );
+                        result.otherExclusions = utilsService.extractMatchingExclusionsData(
+                            matchingExclusions.filter( exclusion => exclusion.exclusionType === 'Other Exclusions' ),
+                            child.exclusions.map( exclusion => exclusion.toString() )
+                        );
 						
 						res.send( result );
 					})
