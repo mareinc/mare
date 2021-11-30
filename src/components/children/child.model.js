@@ -187,9 +187,9 @@ Child.add( 'Display Options', {
 }, 'Placement Considerations', {
 
 	// TODO: NEEDS TO BE PLURAL BEFORE SAVE, FIX ACROSS THE CODEBASE
-	recommendedFamilyConstellation: { type: Types.Relationship, label: 'recommended family constellations', ref: 'Family Constellation', many: true, required: true, initial: true, collapse: true },
+	recommendedFamilyConstellation: { type: Types.Relationship, label: 'recommended family constellations', ref: 'Family Constellation', many: true, initial: false, collapse: true, noedit: true, note: 'ARCHIVED - This field is no longer in use.' },
 	// TODO: NEEDS TO BE PLURAL BEFORE SAVE, FIX ACROSS THE CODEBASE
-	otherFamilyConstellationConsideration: { type: Types.Relationship, label: 'other family constellation consideration', ref: 'Other Family Constellation Consideration', many: true, initial: true, collapse: true },
+	otherFamilyConstellationConsideration: { type: Types.Relationship, label: 'other family constellation consideration', ref: 'Other Family Constellation Consideration', many: true, initial: false, collapse: true, noedit: true, note: 'ARCHIVED - This field is no longer in use.' },
 	otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', many: true, initial: true, collapse: true },
     exclusions: { type: Types.Relationship, label: 'placement exclusions', ref: 'Matching Exclusion', many: true, noedit: false }
 
