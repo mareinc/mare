@@ -48,8 +48,7 @@ exports.getChildrenByRecruitmentWorker = async function( req, res, next ) {
 						recruitmentWorkerAgency: child.get( 'recruitmentWorkerAgency.name' ),
 						recruitmentWorkerPhone,
 						recruitmentWorkerEmail: child.get( 'recruitmentWorker.email' ),
-						'recommendedFamilyConstellations[]': child.get( 'recommendedFamilyConstellation' ),
-						'otherFamilyConstellationConsiderations[]': child.get( 'otherFamilyConstellationConsideration' )
+						'matchingExclusions[]': child.get( 'exclusions' )
 					};
 				}),
 				editDetails: activeChildren.map( child => {
