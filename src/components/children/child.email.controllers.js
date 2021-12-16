@@ -18,8 +18,7 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			additionalChildData = [],
 			languagesArray = [],
 			raceArray = [],
-			recommendedFamilyConstellationArray = [],
-			otherFamilyConstellationConsiderationArray = [],
+			matchingExclusionsArray = [],
 			disabilitiesArray = [];
 
 		// loop through each language model which was populated when the user model was fetched
@@ -33,14 +32,9 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			raceArray.push( entry.race );
 		}
 		// loop through each recommended family constellation model which was populated when the user model was fetched
-		for( let entry of child.recommendedFamilyConstellation ) {
+		for( let entry of child.exclusions ) {
 			// extract the text values associated with the model into the array
-			recommendedFamilyConstellationArray.push( entry.familyConstellation );
-		}
-		// loop through each other gamily constellation consideration model which was populated when the user model was fetched
-		for( let entry of child.otherFamilyConstellationConsideration ) {
-			// extract the text values associated with the model into the array
-			otherFamilyConstellationConsiderationArray.push( entry.otherFamilyConstellationConsideration );
+			matchingExclusionsArray.push( entry.matchingExclusion );
 		}
 		// loop through each disability model which was populated when the user model was fetched
 		for( let entry of child.disabilities ) {
@@ -282,17 +276,10 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			});
 		}
 
-		if( recommendedFamilyConstellationArray.length !== 0 ) {
+		if( matchingExclusionsArray.length !== 0 ) {
 			childData.push( {
-				key: 'recommended family constellations',
-				value: recommendedFamilyConstellationArray.join( ', ' )
-			});
-		}
-
-		if( otherFamilyConstellationConsiderationArray.length !== 0 ) {
-			childData.push( {
-				key: 'other family constellation considerations',
-				value: otherFamilyConstellationConsiderationArray.join( ', ' )
+				key: 'matching exclusions',
+				value: matchingExclusionsArray.join( ', ' )
 			});
 		}
 
@@ -915,8 +902,7 @@ exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChil
 		let childData = [],
 			languagesArray = rawChildData.languages || [],
 			raceArray = rawChildData.race || [],
-			recommendedFamilyConstellationArray = rawChildData.recommendedFamilyConstellations || [],
-			otherFamilyConstellationConsiderationArray = rawChildData.otherFamilyConstellationConsiderations || [],
+			matchingExclusions = rawChildData.matchingExclusions || [],
 			disabilitiesArray = rawChildData.disabilities || [];
 
 		// send only the fields that have been updated by the social worker
@@ -1187,17 +1173,10 @@ exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChil
 			});
 		}
 
-		if( recommendedFamilyConstellationArray.length !== 0 ) {
+		if ( matchingExclusions.length !== 0 ) {
 			childData.push( {
-				key: 'recommended family constellations',
-				value: recommendedFamilyConstellationArray.join( ', ' )
-			});
-		}
-
-		if( otherFamilyConstellationConsiderationArray.length !== 0 ) {
-			childData.push( {
-				key: 'other family constellation considerations',
-				value: otherFamilyConstellationConsiderationArray.join( ', ' )
+				key: 'matching exclusions',
+				value: matchingExclusions.join( ', ' )
 			});
 		}
 
