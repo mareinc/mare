@@ -840,8 +840,7 @@ exports.registerChild = ( req, res, next ) => {
 
 			// set the fields to populate on the fetched child model
 			const fieldsToPopulate = [ 'languages', 'gender', 'pronouns', 'race', 'residence', 'city', 'legalStatus', 'status',
-									   'recommendedFamilyConstellation', 'otherFamilyConstellationConsideration',
-									   'disabilities' ];
+									   'exclusions', 'disabilities' ];
 			// set default information for a staff email contact in case the real contact info can't be fetched
 			let staffEmailContactInfo = {
 				name: { full: 'MARE' },
