@@ -307,16 +307,16 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-24">
-                    <label class="label marg-bottom-xs-5">Recommended Family Constellation (check all that apply)</label>
+                    <label class="label marg-bottom-xs-5">Placement Exclusions (check all that apply)</label>
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-sm-16">
-                    <div id="recommended-family-constellation-error-container-edit" class="row error-container">
-                    {{#each familyConstellations}}
+                    <div id="placement-exclusions-error-container" class="row error-container">
+                    {{#each matchingExclusions as |exclusion|}}
                         <div class="col-sm-12 form-group">
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="recommendedFamilyConstellations[]" value="{{_id}}" {{#if default}}checked{{/if}}>{{familyConstellation}}
+                                <input type="checkbox" name="matchingExclusions[]" value="{{exclusion._id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#placement-exclusions-error-container">{{exclusion.matchingExclusion}}
                             </label>
                         </div>
                     {{/each}}
@@ -327,22 +327,6 @@
                 <div class="col-sm-14 form-group">
                     <textarea class="input" id="child-invalid-family-constellation-reason-edit" name="childInvalidFamilyConstellationReason" rows="5"></textarea>
                     <label for="child-invalid-family-constellation-reason-edit" class="label">If same-sex couples or single parents will not be considered, please give clinically appropriate reason</label>
-                </div>
-            </div>
-            <div class="row form-group">
-                <div class="col-sm-24">
-                    <label class="label marg-bottom-xs-5">Other Family Constellation Considerations (check all that apply)</label>
-                </div>
-            </div>
-            <div class="row form-group">
-                <div class="col-sm-16">
-                {{#each otherFamilyConstellationConsiderations}}
-                    <div class="col-sm-12 form-group">
-                        <label class="checkbox-inline">
-                            <input type="checkbox" name="otherFamilyConstellationConsiderations[]" value="{{_id}}">{{otherFamilyConstellationConsideration}}
-                        </label>
-                    </div>
-                {{/each}}
                 </div>
             </div>
             <div class="row form-group">
