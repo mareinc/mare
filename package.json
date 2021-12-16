@@ -49,7 +49,7 @@
 		"optipng-bin": "^6.0.0",
 		"pdf-puppeteer": "^1.1.10",
 		"stripe": "^8.89.0",
-		"underscore": "^1.10.2"
+		"underscore": "^1.12.1"
 	},
 	"engines": {
 		"node": "12.16.3",
