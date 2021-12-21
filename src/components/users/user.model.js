@@ -31,6 +31,15 @@ User.schema.post( 'init', function() {
 User.schema.post( 'save', function() {
 	'use strict';
 
+
+    // list of state abbreviations that should recieve the 'NE/NY' tag in Mailchimp
+    const NE_NY_STATE_ABBREVIATIONS = [ 'ME', 'NH', 'VT', 'CT', 'RI', 'NY', 'MA' ];
+    // region tags 
+    const REGION_TAGS = {
+        OUT_OF_STATE: 'Out of State',
+        NE_NY: 'NE/NY'
+    };
+
 	// if the save was initiated from the admin UI and this is the first save, subscribe the user to the mailing list
 	// createdBy will be set to some id if it was created from the admin UI, otherwise it will be undefined
 	// createdAt and updatedAt will be the same value only on the first save
@@ -40,7 +49,7 @@ User.schema.post( 'save', function() {
 		this.populate( 'address.state' )
 			.execPopulate()
 			.then( () => {
-				// subscribe to the global mailing list
+                // subscribe to the global mailing list
 				return mailchimpService.subscribeMemberToList({
 					email: this.email,
 					mailingListId: process.env.MAILCHIMP_AUDIENCE_ID,
@@ -55,7 +64,13 @@ User.schema.post( 'save', function() {
 						// user type tag
 						this.userType,
 						// state abbreviation
-						this.address.state && this.address.state.abbreviation
+						this.address.state && this.address.state.abbreviation,
+                        // region tag
+                        this.address.state
+                            ? NE_NY_STATE_ABBREVIATIONS.includes( this.address.state.abbreviation )
+                                ? this.userType === 'family' ? REGION_TAGS.NE_NY : undefined // only set NE/NY tag if the user type is family
+                                : REGION_TAGS.OUT_OF_STATE
+                            : undefined
 					// filter out any undefined or empty tags
 					].filter( tag => !!tag )
 				});
@@ -107,15 +122,43 @@ User.schema.post( 'save', function() {
 					// get the abbreviations from the populated state docs
 					const oldState = stateDocs.find( stateDoc => stateDoc._id.toString() == oldStateOfResidence );
 					const newState = stateDocs.find( stateDoc => stateDoc._id.toString() == newStateOfResidence );
+
+                    // get the updated region tags
+                    let oldRegion = oldState
+                        ? NE_NY_STATE_ABBREVIATIONS.includes( oldState.abbreviation )
+                            ? this.userType === 'family' ? REGION_TAGS.NE_NY : undefined
+                            : REGION_TAGS.OUT_OF_STATE
+                        : undefined;
+                        
+                    let newRegion = newState
+                        ? NE_NY_STATE_ABBREVIATIONS.includes( newState.abbreviation )
+                            ? this.userType === 'family' ? REGION_TAGS.NE_NY : undefined
+                            : REGION_TAGS.OUT_OF_STATE
+                        : undefined;
+
+                    // if the region hasn't changed, do not update tags
+                    if ( oldRegion === newRegion ) {
+                        oldRegion = undefined;
+                        newRegion = undefined;
+                    }
+
 					// configure the tag updates
 					const tagUpdates = [{
 						// remove the old state tag
 						name: oldState && oldState.abbreviation,
-						status: 'inactive'
+						status: 'inactive',
 					}, {
-						// add the new state tag
+                        // remove the old region tag
+                        name: oldRegion,
+                        status: 'inactive'
+                    }, {
+                        // add the new state tag
 						name: newState && newState.abbreviation,
 						status: 'active'
+                    }, {
+                        // add the new region tag
+                        name: newRegion,
+                        status: 'active'
 					// remove any empty tags (e.g. if old or new state are undefined)
 					}].filter( tagUpdate => tagUpdate.name );
 
