@@ -33,7 +33,7 @@ User.schema.post( 'save', function() {
 
 
     // list of state abbreviations that should recieve the 'NE/NY' tag in Mailchimp
-    const NE_NY_STATE_ABBREVIATIONS = [ 'ME', 'NH', 'VT', 'CT', 'RI', 'NY', 'MA' ];
+    const NE_NY_STATE_ABBREVIATIONS = [ 'ME', 'NH', 'VT', 'CT', 'RI', 'NY' ];
     // region tags 
     const REGION_TAGS = {
         OUT_OF_STATE: 'Out of State',
@@ -65,12 +65,18 @@ User.schema.post( 'save', function() {
 						this.userType,
 						// state abbreviation
 						this.address.state && this.address.state.abbreviation,
-                        // region tag
+                        // NE/NY region tag
                         this.address.state
                             ? NE_NY_STATE_ABBREVIATIONS.includes( this.address.state.abbreviation )
                                 ? this.userType === 'family' ? REGION_TAGS.NE_NY : undefined // only set NE/NY tag if the user type is family
-                                : REGION_TAGS.OUT_OF_STATE
-                            : undefined
+                                : undefined
+                            : undefined,
+						// out of state tag
+						this.address.state
+							? this.address.state.abbreviation !== 'MA'
+								? REGION_TAGS.OUT_OF_STATE
+								: undefined
+							: undefined
 					// filter out any undefined or empty tags
 					].filter( tag => !!tag )
 				});
@@ -127,19 +133,38 @@ User.schema.post( 'save', function() {
                     let oldRegion = oldState
                         ? NE_NY_STATE_ABBREVIATIONS.includes( oldState.abbreviation )
                             ? this.userType === 'family' ? REGION_TAGS.NE_NY : undefined
-                            : REGION_TAGS.OUT_OF_STATE
+                            : undefined
                         : undefined;
                         
                     let newRegion = newState
                         ? NE_NY_STATE_ABBREVIATIONS.includes( newState.abbreviation )
                             ? this.userType === 'family' ? REGION_TAGS.NE_NY : undefined
-                            : REGION_TAGS.OUT_OF_STATE
+                            : undefined
                         : undefined;
 
                     // if the region hasn't changed, do not update tags
                     if ( oldRegion === newRegion ) {
                         oldRegion = undefined;
                         newRegion = undefined;
+                    }
+
+					// update Out of State tags
+					let oldOutOfState = oldState 
+						? oldState.abbreviation !== 'MA'
+							? REGION_TAGS.OUT_OF_STATE
+							: undefined
+						: undefined;
+
+					let newOutOfState = newState 
+						? newState.abbreviation !== 'MA'
+							? REGION_TAGS.OUT_OF_STATE
+							: undefined
+						: undefined;
+
+					// if the out of state tag hasn't changed, do not update tags
+                    if ( oldRegion === newRegion ) {
+                        oldOutOfState = undefined;
+                        newOutOfState = undefined;
                     }
 
 					// configure the tag updates
@@ -152,12 +177,20 @@ User.schema.post( 'save', function() {
                         name: oldRegion,
                         status: 'inactive'
                     }, {
+						// remove old out of state tag
+						name: oldOutOfState,
+                        status: 'inactive'
+					}, {
                         // add the new state tag
 						name: newState && newState.abbreviation,
 						status: 'active'
                     }, {
                         // add the new region tag
                         name: newRegion,
+                        status: 'active'
+					}, {
+						// add the new out of state tag
+						name: newOutOfState,
                         status: 'active'
 					// remove any empty tags (e.g. if old or new state are undefined)
 					}].filter( tagUpdate => tagUpdate.name );

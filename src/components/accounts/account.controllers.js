@@ -658,7 +658,7 @@ exports.addToMailingLists = user => {
 
 	const MAILING_LIST_ID = process.env.MAILCHIMP_AUDIENCE_ID;
     // list of state abbreviations that should recieve the 'NE/NY' tag in Mailchimp
-    const NE_NY_STATE_ABBREVIATIONS = [ 'ME', 'NH', 'VT', 'CT', 'RI', 'NY', 'MA' ];
+    const NE_NY_STATE_ABBREVIATIONS = [ 'ME', 'NH', 'VT', 'CT', 'RI', 'NY' ];
     // region tags 
     const REGION_TAGS = {
         OUT_OF_STATE: 'Out of State',
@@ -687,12 +687,18 @@ exports.addToMailingLists = user => {
 					user.userType,
 					// state abbreviation
 					user.address.state && user.address.state.abbreviation,
-                    // region tag
-                    user.address.state
-                    ? NE_NY_STATE_ABBREVIATIONS.includes( user.address.state.abbreviation )
-                        ? user.userType === 'family' ? REGION_TAGS.NE_NY : undefined // only set NE/NY tag if the user type is family
-                        : REGION_TAGS.OUT_OF_STATE
-                    : undefined
+                    // NE/NY region tag
+					user.address.state
+						? NE_NY_STATE_ABBREVIATIONS.includes( user.address.state.abbreviation )
+							? user.userType === 'family' ? REGION_TAGS.NE_NY : undefined // only set NE/NY tag if the user type is family
+							: undefined
+						: undefined,
+					// out of state tag
+					user.address.state
+						? user.address.state.abbreviation !== 'MA'
+							? REGION_TAGS.OUT_OF_STATE
+							: undefined
+						: undefined
 				// filter out any undefined or empty tags
 				].filter( tag => !!tag )
 			})
