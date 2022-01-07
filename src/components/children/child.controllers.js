@@ -809,7 +809,7 @@ exports.fetchChildStatusId = status => {
 	});
 };
 
-/* called when a social worker attempts to register a family */
+/* called when a social worker attempts to register a child */
 exports.registerChild = ( req, res, next ) => {
 	// store a reference to locals
 	const locals = res.locals;
@@ -840,8 +840,7 @@ exports.registerChild = ( req, res, next ) => {
 
 			// set the fields to populate on the fetched child model
 			const fieldsToPopulate = [ 'languages', 'gender', 'pronouns', 'race', 'residence', 'city', 'legalStatus', 'status',
-									   'recommendedFamilyConstellation', 'otherFamilyConstellationConsideration',
-									   'disabilities' ];
+									   'exclusions', 'disabilities' ];
 			// set default information for a staff email contact in case the real contact info can't be fetched
 			let staffEmailContactInfo = {
 				name: { full: 'MARE' },
@@ -956,8 +955,7 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 			otherRecruitmentConsiderations	: child.otherRecruitmentConsiderations,
 
 			disabilities					: child.disabilities,
-			recommendedFamilyConstellation	: child.recommendedFamilyConstellations,
-			otherFamilyConstellationConsideration: child.otherFamilyConstellationConsiderations
+			exclusions						: child.matchingExclusions
 		});
 
 		newChild.save( ( err, model ) => {

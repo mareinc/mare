@@ -142,7 +142,7 @@ keystone.set( 'nav', {
 						    'email-targets', 'event-types', 'family-constellations', 'family-statuses', 'genders', 'inquiry-methods',
 						    'inquiry-types', 'languages', 'legal-statuses', 'match-determinations', 'media-eligibilities',
 							'media-types', 'other-considerations', 'other-family-constellation-considerations', 'pronouns', 'races', 'regions',
-							'residences', 'social-worker-positions', 'sources', 'states', 'way-to-hear-about-mares' ],
+							'residences', 'social-worker-positions', 'sources', 'states', 'way-to-hear-about-mares', 'matching-exclusions' ],
 	'site activity data': [ 'account-verification-codes', 'profile-searches' ]
 });
 

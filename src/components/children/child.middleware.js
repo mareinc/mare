@@ -48,8 +48,7 @@ exports.getChildrenByRecruitmentWorker = async function( req, res, next ) {
 						recruitmentWorkerAgency: child.get( 'recruitmentWorkerAgency.name' ),
 						recruitmentWorkerPhone,
 						recruitmentWorkerEmail: child.get( 'recruitmentWorker.email' ),
-						'recommendedFamilyConstellations[]': child.get( 'recommendedFamilyConstellation' ),
-						'otherFamilyConstellationConsiderations[]': child.get( 'otherFamilyConstellationConsideration' )
+						'matchingExclusions[]': child.get( 'exclusions' )
 					};
 				}),
 				editDetails: activeChildren.map( child => {
@@ -79,8 +78,7 @@ exports.getChildrenByRecruitmentWorker = async function( req, res, next ) {
 						recruitmentWorkerAgency: child.get( 'recruitmentWorkerAgency.name' ),
 						recruitmentWorkerPhone,
 						recruitmentWorkerEmail: child.get( 'recruitmentWorker.email' ),
-						'recommendedFamilyConstellations[]': child.get( 'recommendedFamilyConstellation' ),
-						'otherFamilyConstellationConsiderations[]': child.get( 'otherFamilyConstellationConsideration' ),
+						'matchingExclusions[]': child.get( 'exclusions' ),
 						aspirations: child.get( 'aspirations' ),
 						careFacility: child.get( 'careFacilityName' ),
 						// childInvalidFamilyConstellationReason: don't have this info, it's the reason a child can't be placed with same-sex couples
