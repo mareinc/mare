@@ -20,6 +20,7 @@ const keystone						= require( 'keystone' ),
 	  accountVerificationService	= require( './components/account verification codes/account-verification-code.middleware' ),
 	  toolsService					= require( './components/reporting dashboard/tools.controllers' ),
 	  mailingListMiddleware			= require( './components/mailchimp lists/mailchimp-list-middleware' ),
+	  mailchimpService 				= require( './components/mailchimp lists/mailchimp-list.controllers' ),
 	  enforce						= require( 'express-sslify' ),
       moment                        = require( 'moment' ),
 	  importRoutes					= keystone.importer( __dirname );
@@ -151,19 +152,30 @@ exports = module.exports = app => {
 
     app.get( '/update/families', async function( req, res, next ) {
 
-        const LIMIT = 5000;
+        const LIMIT = 500;
         const CURSOR = 0;
+
+		 // list of state abbreviations that should recieve the 'NE/NY' tag in Mailchimp
+		 const NE_NY_STATE_ABBREVIATIONS = [ 'ME', 'NH', 'VT', 'CT', 'RI', 'NY' ];
+		 // region tags 
+		 const REGION_TAGS = {
+			 OUT_OF_STATE: 'Out of State',
+			 NE_NY: 'NE/NY'
+		 };
 
         // get the current batch of families
         console.log('getting families');
 
         const families = await keystone.list( 'Family' ).model
             .find({
-                'numberOfChildren': { $gt: 0 },
-                'youngestChildBirthDate': { $eq: null }
-            })
-            //.count()
-            //.populate( 'contact1.gender contact2.gender' )
+				$and: [
+					{ email: { $ne: '' } },
+					{ email: { $ne: undefined } },
+					{ email: { $ne: null } }
+				]
+			})
+            // .count()
+            .populate( 'address.state' )
             .limit( LIMIT )
             .exec();
 
@@ -172,46 +184,31 @@ exports = module.exports = app => {
         console.log('retrieved families');
 
         console.log(families.map( family => `${family.displayNameAndRegistration}`));
-
-        const MATCHING_EXCLUSION_SINGLE_PARENT = '6153a593e985365abd09a6b7';
-        const MATCHING_EXCLUSION_FEMALE_PARENT = '6153a5a1e985365abd09a6b8';
-        const MATCHING_EXCLUSION_MALE_PARENT = '6153a5b0e985365abd09a6b9';
-        const MATCHING_EXCLUSION_ANY_CHILDREN = '6153a5ece985365abd09a6ba';
-        const MATCHING_EXCLUSION_PETS = '6153a60ee985365abd09a6bd';
-
-        // update the relationship status on each of the families
-        families.forEach( family => {
-
-
-            const MAX_CHILDREN_COUNT = 8;
-            const ages = [];
-
-            // get the birth dates of all children
-            for ( let i = 1; i <= MAX_CHILDREN_COUNT; i++ ) {
-
-                const birthday = family.get( `child${i}.birthDate` );
-                if ( birthday ) {
-                    ages.push({
-                        birthday,
-                        sortDate: moment( birthday ).unix()
-                    });
-                }
-            }
-
-            // sort birth dates from oldest to youngest
-            ages.sort( ( a, b ) => a.sortDate - b.sortDate );
-
-            // set oldest/youngest birth dates
-            if ( ages.length > 0 ) {
-                family.oldestChildBirthDate = ages[ 0 ].birthday;
-                family.youngestChildBirthDate = ages[ ages.length - 1 ].birthday;
-            }
-        });
+		console.log(families.map( family => `${family.address.state}`));
 
         await families.reduce(async (memo, family) => {
             await memo;
             try {
-                await family.save();
+
+				const tagUpdates = [];
+				
+				// check if Out of State tag should be applied
+				if ( family.address.state.abbreviation !== 'MA') {
+					tagUpdates.push({
+						name: REGION_TAGS.OUT_OF_STATE,
+						status: 'active'
+					});
+				}
+
+				// check if NE/NY tag should be applied
+				if ( NE_NY_STATE_ABBREVIATIONS.includes( family.address.state.abbreviation ) ) {
+					tagUpdates.push({
+						name: REGION_TAGS.NE_NY,
+						status: 'active'
+					});
+				}
+				
+                await mailchimpService.updateMemberTags( family.email, tagUpdates, process.env.MAILCHIMP_AUDIENCE_ID );
                 //console.log( `${family.displayNameAndRegistration} succesfully saved` );
             } catch ( error ) {
                 console.log( `${family.displayNameAndRegistration} failed to save` );
