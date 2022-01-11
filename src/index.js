@@ -177,14 +177,15 @@ exports = module.exports = app => {
             // .count()
             .populate( 'address.state' )
             .limit( LIMIT )
+			.skip( CURSOR )
             .exec();
 
         //return console.log(families);
 
         console.log('retrieved families');
 
-        console.log(families.map( family => `${family.displayNameAndRegistration}`));
-		console.log(families.map( family => `${family.address.state}`));
+        // console.log(families.map( family => `${family.displayNameAndRegistration}`));
+		// console.log(families.map( family => `${family.address.state}`));
 
         await families.reduce(async (memo, family) => {
             await memo;
@@ -208,11 +209,22 @@ exports = module.exports = app => {
 					});
 				}
 				
-                await mailchimpService.updateMemberTags( family.email, tagUpdates, process.env.MAILCHIMP_AUDIENCE_ID );
+				if ( tagUpdates.length > 0 ) {
+					console.log( `updating tags for ${family.email}` );
+					console.log(tagUpdates);
+					await mailchimpService.updateMemberTags( family.email, tagUpdates, process.env.MAILCHIMP_AUDIENCE_ID );
+				}
+                
                 //console.log( `${family.displayNameAndRegistration} succesfully saved` );
             } catch ( error ) {
-                console.log( `${family.displayNameAndRegistration} failed to save` );
-                console.error( error );
+                console.log( `${family.email} failed to update` );
+                
+				if (error.status === 404) {
+					console.log('family doesn\'t exist in mailchimp');
+				} else {
+					console.error( error );
+				}
+				
             }
 
         }, undefined);
