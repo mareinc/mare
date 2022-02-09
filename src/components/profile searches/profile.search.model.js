@@ -43,7 +43,6 @@ ProfileSearch.add( 'Search Details', {
     
 }, 'Family Profile Criteria', {
 
-    familyConstellation:    { type: Types.Text },
     numChildrenInHome:      { type: Types.Number },
     youngestChildAge:       { type: Types.Number },
     oldestChildAge:         { type: Types.Number },
