@@ -596,38 +596,47 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 		// create a searchable array for dealing with other family constellation considerations
 		var otherFamilyConstellationConsiderations = _.pluck( child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration' );
 
-		return {
-			age										: utilities.getAge( child.birthDate ),
-			ageConverted							: utilities.convertDate( child.birthDate ),
-			image									: child.displayImage,
-			disabilities							: _.pluck( child.disabilities, 'disability' ),
-			emotionalNeeds							: needsMap[child.emotionalNeeds],
-			gender									: child.gender.gender,
-			hasContactWithBiologicalParents			: child.hasContactWithBirthFamily,
-			hasContactWithBiologicalSiblings		: child.hasContactWithSiblings,
-			hasVideo								: child.hasVideo,
-			intellectualNeeds						: needsMap[ child.intellectualNeeds ],
-			isBookmarked							: child.isBookmarked,
-			language								: _.pluck( child.languages, 'language' ),
-			legalStatus								: child.legalStatus.legalStatus,
-			name									: child.name.first,
-			noPets									: otherFamilyConstellationConsiderations.indexOf( 'no pets' ) !== -1,
-			numberOfSiblings						: child.siblings.length,
-			otherConsiderations						: _.pluck( child.otherConsiderations, 'otherConsideration' ),
-			physicalNeeds							: needsMap[child.physicalNeeds],
-			race									: _.pluck( child.race, 'race' ),
-			region									: child.adoptionWorkerAgencyRegion && child.adoptionWorkerAgencyRegion.region,
-			recommendedFamilyConstellation			: _.pluck( child.recommendedFamilyConstellation, 'familyConstellation' ),
-			registrationDateConverted				: utilities.convertDate( child.registrationDate ),
-			registrationNumber						: child.registrationNumber,
-			requiresNoSiblings						: otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1,
-			olderChildrenAcceptable					: otherFamilyConstellationConsiderations.indexOf( 'older children acceptable' ) !== -1,
-			requiresSiblings						: otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1,
-			youngerChildrenAcceptable				: otherFamilyConstellationConsiderations.indexOf( 'younger children acceptable' ) !== -1,
-			siblingToBePlacedWithCount				: child.siblingsToBePlacedWith.length, /* TODO: do we need to return this? */
-			updatedAt								: child.updatedAt,
-			wednesdaysChild							: child.wednesdaysChild
-		};
+		// assign child data in a try/catch block to ensure gallery still loads even if there is a child with malformed data that cannot be parsed
+		let childData = {};
+		
+		try {
+			childData = {
+				age										: utilities.getAge( child.birthDate ),
+				ageConverted							: utilities.convertDate( child.birthDate ),
+				image									: child.displayImage,
+				disabilities							: _.pluck( child.disabilities, 'disability' ),
+				emotionalNeeds							: needsMap[child.emotionalNeeds],
+				gender									: child.gender.gender,
+				hasContactWithBiologicalParents			: child.hasContactWithBirthFamily,
+				hasContactWithBiologicalSiblings		: child.hasContactWithSiblings,
+				hasVideo								: child.hasVideo,
+				intellectualNeeds						: needsMap[ child.intellectualNeeds ],
+				isBookmarked							: child.isBookmarked,
+				language								: _.pluck( child.languages, 'language' ),
+				legalStatus								: child.legalStatus.legalStatus,
+				name									: child.name.first,
+				noPets									: otherFamilyConstellationConsiderations.indexOf( 'no pets' ) !== -1,
+				numberOfSiblings						: child.siblings.length,
+				otherConsiderations						: _.pluck( child.otherConsiderations, 'otherConsideration' ),
+				physicalNeeds							: needsMap[child.physicalNeeds],
+				race									: _.pluck( child.race, 'race' ),
+				region									: child.adoptionWorkerAgencyRegion && child.adoptionWorkerAgencyRegion.region,
+				recommendedFamilyConstellation			: _.pluck( child.recommendedFamilyConstellation, 'familyConstellation' ),
+				registrationDateConverted				: utilities.convertDate( child.registrationDate ),
+				registrationNumber						: child.registrationNumber,
+				requiresNoSiblings						: otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1,
+				olderChildrenAcceptable					: otherFamilyConstellationConsiderations.indexOf( 'older children acceptable' ) !== -1,
+				requiresSiblings						: otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1,
+				youngerChildrenAcceptable				: otherFamilyConstellationConsiderations.indexOf( 'younger children acceptable' ) !== -1,
+				siblingToBePlacedWithCount				: child.siblingsToBePlacedWith.length, /* TODO: do we need to return this? */
+				updatedAt								: child.updatedAt,
+				wednesdaysChild							: child.wednesdaysChild
+			};
+		} catch( error ) {
+			console.error( error );
+		}
+		
+		return childData;
 	});
 }
 
