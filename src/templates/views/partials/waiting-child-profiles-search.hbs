@@ -341,6 +341,35 @@
 
 			<div class="row form-group">
 				<div class="col-sm-12">
+					<label for="parent-relationship-status" class="label marg-bottom-xs-5">Adoptive family relationship status:</label>
+				</div>
+				<div class="col-sm-12">
+					<select id="parent-relationship-status" class="input form__number-select" name="parentRelationshipStatus">
+						<option value=""></option>
+						{{#each relationshipStatuses as |status|}}
+						<option value="{{status}}">{{status}}</option>
+						{{/each}}
+					</select>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-24">
+					<label class="label marg-bottom-xs-5">Adoptive parent(s) gender(s):</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-16">
+				{{#each genders as |gender|}}
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" class="select-parent-genders" name="parentGenders" value="{{ gender.gender }}">{{ gender.gender }}
+						</label>
+					</div>
+				{{/each}}
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
 					<label for="number-of-children-in-home" class="label marg-bottom-xs-5">Number of children in home:</label>
 				</div>
 				<div class="col-sm-12">
