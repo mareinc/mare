@@ -49,6 +49,7 @@ exports = module.exports = ( req, res ) => {
 			locals.randomSuccessStory	= randomSuccessStory;
 			locals.randomEvent			= randomEvent;
 			locals.savedSearch			= JSON.stringify( savedSearch );
+			locals.relationshipStatuses	= [ 'Single', 'Partnered', 'Unknown/Prefers Not To Answer' ];
 
 			// render the view using the waiting-child-profiles.hbs template
 			view.render( 'waiting-child-profiles' );

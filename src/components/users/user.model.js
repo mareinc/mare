@@ -162,7 +162,7 @@ User.schema.post( 'save', function() {
 						: undefined;
 
 					// if the out of state tag hasn't changed, do not update tags
-                    if ( oldRegion === newRegion ) {
+                    if ( oldOutOfState === newOutOfState ) {
                         oldOutOfState = undefined;
                         newOutOfState = undefined;
                     }

@@ -1,8 +1,9 @@
+const axios = require('axios');	
 const listService = require( '../../components/lists/list.controllers' );
 const staffEmailContactMiddleware = require( '../../components/staff email contacts/staff-email-contact.controllers' );
 const haveAQuestionEmailService = require( '../../components/questions/have-a-question.email.controllers' );
 
-exports.submitQuestion = function submitQuestion( req, res, next ) {
+exports.submitQuestion = async function submitQuestion( req, res, next ) {
 	// store the question information in a local variable
 	const question = req.body;
 	// reload the form to display the flash message
@@ -13,6 +14,53 @@ exports.submitQuestion = function submitQuestion( req, res, next ) {
 		email: 'web@mareinc.org'
 	};
 
+	// perform recaptcha validation
+	let recaptchaData = undefined;
+	try {
+
+		// validate the recaptcha token 
+		const recaptchaResult = await axios({
+			method: 'post',
+			url: 'https://www.google.com/recaptcha/api/siteverify',
+			params: {
+				secret: process.env.RECAPTCHA_SECRET,
+				response: question[ 'g-recaptcha-response' ]
+			}
+		});
+		// set recaptcha data
+		recaptchaData = recaptchaResult.data;
+
+	} catch( error ) {
+
+		// mock recaptchaData object with a failed state
+		recaptchaData = { success: false };
+
+		// log any errors
+		console.log( 'Could not validate recaptcha:' );
+		console.error( error );	
+	}
+
+	// handle recaptcha validation failure
+	if ( !recaptchaData.success ) {
+		
+		console.error( 'recaptcha validation failed' );
+
+		// log any additional error codes
+		const errorCodes = recaptchaData[ 'error-codes' ];
+		if ( errorCodes ) {
+			console.log( 'error codes:' );
+			console.error( errorCodes );
+		}
+
+		// send a generic error message
+		req.flash( 'error', {
+			title: `There was an error submitting your question`,
+			detail: `If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>` } );
+
+		// prevent further execution and display error message to user 
+		return res.redirect( 303, redirectPath );
+	}
+		
 	// fetch the email target model matching 'have a question'
 	const fetchEmailTarget = listService.getEmailTargetByName( 'have a question' );
 

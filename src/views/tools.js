@@ -1,6 +1,6 @@
 const keystone		= require( 'keystone' ),
 	  moment		= require( 'moment' ),
-	  listService	= require( '../components/lists/list.controllers' );
+	  listService	= require( '../components/lists/list.controllers' ),
 	  utilsService	= require( '../components/reporting dashboard/utils.controllers' );
 
 exports = module.exports = ( req, res ) => {
@@ -18,12 +18,13 @@ exports = module.exports = ( req, res ) => {
 		fetchInquiryMethods 		= listService.getAllInquiryMethods(),
 		fetchRegions 				= listService.getAllRegions(),
 		fetchResidences 			= listService.getAllResidences(),
-		fetchStates					= listService.getAllStates();
+		fetchStates					= listService.getAllStates(),
+		fetchMatchingExclusions		= listService.getAllMatchingExclusions();
 
-	Promise.all( [ fetchChildStatuses, fetchFamilyStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations, fetchInquiryMethods, fetchRegions, fetchResidences, fetchStates ] )
+	Promise.all( [ fetchChildStatuses, fetchFamilyStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations, fetchInquiryMethods, fetchRegions, fetchResidences, fetchStates, fetchMatchingExclusions ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ childStatuses, familyStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods, regions, residences, states ] = values;
+			const [ childStatuses, familyStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods, regions, residences, states, matchingExclusions ] = values;
 			
 			// assign properties to locals for access during templating
 			locals.childStatuses = childStatuses;
@@ -48,6 +49,7 @@ exports = module.exports = ( req, res ) => {
 			locals.familyStages = utilsService.FAMILY_STAGES;
 			locals.familyServices = utilsService.FAMILY_SERVICES;
             locals.lgbtqIdentityOptions = utilsService.LGBTQ_IDENTITY_OPTIONS;
+			locals.matchingExclusions = matchingExclusions.filter( matchingExclusion => ![ process.env.MATCHING_EXCLUSION_OLDER_CHILDREN, process.env.MATCHING_EXCLUSION_YOUNGER_CHILDREN ].includes( matchingExclusion._id.toString() ) ); // don't include Younger/Older children options
 			// create default ranges to seed date range fields
 			locals.defaultDateRanges = {
 				month: {

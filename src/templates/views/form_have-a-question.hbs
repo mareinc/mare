@@ -54,7 +54,8 @@
 					</div>
 				</div>
 
-				<button class="button button--teal" type="submit">Submit</button>
+				<div class="g-recaptcha pb-2" data-sitekey="6LeyS1MeAAAAABJT2VxaRWS1XTn20Ik5CgxtqhhA" data-callback="enableSubmit"></div>
+				<button id="submitQuestion" class="button button--teal button--disabled" type="submit" disabled="true">Submit</button>
 				
 			</section>
 
@@ -62,4 +63,13 @@
 
 	</section>
 
+	<!-- load recaptcha script -->
+	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+	<script type="text/javascript">
+		function enableSubmit() {
+			var $submitButton = $( '#submitQuestion' );
+			$submitButton.removeClass( 'button--disabled' );
+			$submitButton.attr( 'disabled', false );
+		}
+	</script>
 </div>

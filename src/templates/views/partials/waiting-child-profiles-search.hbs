@@ -340,16 +340,29 @@
 			<div class="form-section-header">Family Profile</div>
 
 			<div class="row form-group">
+				<div class="col-sm-12">
+					<label for="parent-relationship-status" class="label marg-bottom-xs-5">Adoptive family relationship status:</label>
+				</div>
+				<div class="col-sm-12">
+					<select id="parent-relationship-status" class="input form__number-select" name="parentRelationshipStatus">
+						<option value=""></option>
+						{{#each relationshipStatuses as |status|}}
+						<option value="{{status}}">{{status}}</option>
+						{{/each}}
+					</select>
+				</div>
+			</div>
+			<div class="row form-group">
 				<div class="col-sm-24">
-					<label class="label marg-bottom-xs-5">Adoptive family type:</label>
+					<label class="label marg-bottom-xs-5">Adoptive parent(s) gender(s):</label>
 				</div>
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-16">
-				{{#each familyConstellations}}
+				{{#each genders as |gender|}}
 					<div class="col-sm-12 form-group">
-						<label class="radio-inline">
-							<input type="radio" class="select-family-constellation" name="familyConstellation" value="{{ familyConstellation }}">{{ familyConstellation }}
+						<label class="checkbox-inline">
+							<input type="checkbox" class="select-parent-genders" name="parentGenders" value="{{ gender.gender }}">{{ gender.gender }}
 						</label>
 					</div>
 				{{/each}}
@@ -360,7 +373,7 @@
 					<label for="number-of-children-in-home" class="label marg-bottom-xs-5">Number of children in home:</label>
 				</div>
 				<div class="col-sm-12">
-					<select id="number-of-children-in-home" class="select-number-of-children-in-home" class="input form__number-select">
+					<select id="number-of-children-in-home" class="input form__number-select select-number-of-children-in-home">
 						<option value=""></option>
 						<option value="0">0</option>
 						<option value="1">1</option>

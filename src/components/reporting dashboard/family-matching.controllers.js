@@ -158,6 +158,14 @@ exports.getCriteria = query => {
 			criteria[ 'recruitmentWorker' ] = { $in: filtered };
 		}
 	}
+
+	// matching exclusion criteria (multiple)
+	if ( Array.isArray( query.matchingExclusions ) && query.matchingExclusions.length > 0 ) {
+		let filtered = query.matchingExclusions.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		if ( filtered.length > 0 ) {
+			criteria[ 'exclusions' ] = { $nin: filtered };
+		}
+	}
 	
 	return criteria;
 }
@@ -193,7 +201,8 @@ exports.getChildrenByCriteria = criteria => {
 					adoptionWorkerAgency: 1,
 					recruitmentWorkerAgency: 1,
 					adoptionWorker: 1,
-					recruitmentWorker: 1
+					recruitmentWorker: 1,
+					exclusions: 1
 				})
 				.populate( 'adoptionWorkerAgency', { name: 1 } )
 				.populate( 'recruitmentWorkerAgency', { name: 1 } )
@@ -412,6 +421,11 @@ function getReasonsWhyTheChildDoesNotMatchTheCriteria( child, criteria ) {
 	// recruitment worker (multiple)
 	if ( criteria.recruitmentWorker && ! ( child.recruitmentWorker && criteria.recruitmentWorker.$in.includes( child.recruitmentWorker.toString() ) ) ) {
 		reasons.push( "Recruitment Worker conflict" );
+	}
+
+	// matching exclusion conflicts
+	if ( criteria.exclusions && ( child.exclusions && _.intersection( criteria.exclusions.$nin, child.exclusions.map( exclusion => exclusion.toString() ) ).length > 0 ) ) {
+		reasons.push( 'Matching exclusion conflict' );
 	}
 	
 	return reasons;

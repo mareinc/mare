@@ -47,7 +47,6 @@ exports.saveProfileSearch = function saveProfileSearch( req, res, next ) {
             profileSearchDoc.maxEmotionalNeeds = searchCriteria.maximumEmotionalNeeds ? Number( searchCriteria.maximumEmotionalNeeds ) : 3;
             profileSearchDoc.maxIntellectualNeeds = searchCriteria.maximumIntellectualNeeds ? Number( searchCriteria.maximumIntellectualNeeds ) : 3;
             profileSearchDoc.developmentalNeeds = searchCriteria.disabilities;
-            profileSearchDoc.familyConstellation = searchCriteria.familyConstellation;
             profileSearchDoc.numChildrenInHome = searchCriteria.numberOfChildrenInHome === 'NaN' ? null : searchCriteria.numberOfChildrenInHome;
             profileSearchDoc.youngestChildAge = searchCriteria.youngestChildAgeInHome === 'NaN' ? null : searchCriteria.youngestChildAgeInHome;
             profileSearchDoc.oldestChildAge = searchCriteria.oldestChildAgeInHome === 'NaN' ? null : searchCriteria.oldestChildAgeInHome;

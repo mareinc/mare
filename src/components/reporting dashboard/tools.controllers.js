@@ -290,6 +290,8 @@ exports.getFamilyMatchingData = ( req, res, next ) => {
 						// emotional needs
 						params.emotionalNeedsFrom = 'none';
 						params.emotionalNeedsTo = preferences.maxNeeds.emotional ? preferences.maxNeeds.emotional : 'severe';
+						// matching exclusions
+						params.matchingExclusions = Array.isArray( preferences.exclusions ) && preferences.exclusions.length > 0  ? preferences.exclusions.map( ( exclusion ) => exclusion.toString() ) : [];
 
 						result.params = params;
 						

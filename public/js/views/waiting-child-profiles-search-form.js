@@ -53,8 +53,6 @@
 			$( '#updated-within > option:eq(0)' ).prop( 'selected', true );
 			// check all social worker region checkboxes
 			$( '.select-region' ).prop( 'checked', true );
-			// remove any selected radio buttons for family constellation
-			$( '.select-family-constellation' ).prop( 'checked', false );
 			// remove selection for number of children in home
 			$( '#number-of-children-in-home > option:eq(0)' ).prop( 'selected', true );
 			// remove selection for age of youngest child in home
@@ -94,7 +92,6 @@
 				maximumEmotionalNeeds			: $( '.select-maximum-emotional-needs:checked' ).val(),
 				maximumIntellectualNeeds		: $( '.select-maximum-intellectual-needs:checked' ).val(),
 				disabilities					: $( '.select-disabilities:checked' ),
-				familyConstellation				: $( '.select-family-constellation:checked' ).val(),
 				numberOfChildrenInHome			: $( '.select-number-of-children-in-home' ).val(),
 				gendersOfChildrenInHome			: $( '.select-genders-of-children-in-home:checked' ),
 				youngestChildAgeInHome			: $( '#youngest-child-age-in-home' ).val(),
@@ -248,11 +245,6 @@
 				if( formFields.disabilities &&
 					child.get( 'disabilities' ).length > 0 &&
 				   _.intersection( formFields.disabilities, child.get( 'disabilities' ) ).length === 0 ) { return; }
-
-				// break out of the loop if the recommended family constellation for the child does not contain the one selected by the user
-				if( formFields.familyConstellation &&
-					child.get( 'recommendedFamilyConstellation' ).length > 0 &&
-					child.get( 'recommendedFamilyConstellation' ).indexOf( formFields.familyConstellation ) === -1 ) { return; }
 				
 				// determine if selections were made about the family, if not, don't use it to restrict search results
 				var numberOfChildrenInHomeSelected	= typeof formFields.numberOfChildrenInHome === 'number' && !isNaN( formFields.numberOfChildrenInHome ),
@@ -383,10 +375,6 @@
 					siblingGroup.get( 'disabilities' ).length > 0 &&
 					_.difference( siblingGroup.get( 'disabilities' ), formFields.disabilities ).length > 0 ) { return; }
 
-				// break out of the loop if the recommended family constellation for the sibling group does not contain the one selected by the user				
-				if( formFields.familyConstellation &&
-					siblingGroup.get( 'recommendedFamilyConstellations' ).length > 0 &&
-					siblingGroup.get( 'recommendedFamilyConstellations' ).indexOf( formFields.familyConstellation ) === -1 ) { return; }
 				// determine if selections were made about the family, if not, don't use it to restrict search results
 				var numberOfChildrenInHomeSelected	= typeof formFields.numberOfChildrenInHome === 'number' && !isNaN( formFields.numberOfChildrenInHome ),
 					oldestChildAgeInHomeSelected	= typeof formFields.oldestChildAgeInHome === 'number' && !isNaN( formFields.oldestChildAgeInHome ),
@@ -499,8 +487,6 @@
 			$.each( savedSearchCriteria.developmentalNeeds, function( index, need ) {
 				$( '.select-disabilities[value="' + need + '"]' ).prop( 'checked', true );
 			});
-			// apply selected radio button for family constellation criterion
-			$( '.select-family-constellation[value="' + savedSearchCriteria.familyConstellation + '"]' ).prop( 'checked', true );
 			// apply number of children in home criterion
 			$( '#number-of-children-in-home > option:eq(' + ( savedSearchCriteria.numChildrenInHome ? savedSearchCriteria.numChildrenInHome + 1 : 0 ) + ')' ).prop( 'selected', true );
 			// apply age of youngest child in home criterion

@@ -939,3 +939,30 @@ exports.getAllPronouns = () => {
 			});
 	});
 };
+
+exports.getAllMatchingExclusions = () => {
+
+	return new Promise( ( resolve, reject ) => {
+		// query the database for all matching exclusion models
+		keystone.list( 'Matching Exclusion' ).model
+			.find()
+			.exec()
+			.then( matchingExclusions => {
+				// if no matching exclusions could not be found
+				if( matchingExclusions.length === 0 ) {
+					// log an error for debugging purposes
+					console.error( `no matching exclusions could be found` );
+					// reject the promise
+					return reject();
+				}
+				// if matching exclusions were successfully returned, resolve with the array
+				resolve( matchingExclusions );
+			// if an error was encountered fetching from the database
+			}, err => {
+				// log the error for debugging purposes
+				console.error( `error fetching the list of all matching exclusions`, err );
+				// reject the promise
+				reject();
+			});
+	});
+};
