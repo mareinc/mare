@@ -57,7 +57,7 @@ exports.initLocals = function( req, res, next ) {
 			{ title: 'Experienced families', href: '/page/experienced-families' },
 			{ title: 'Weekend Family Connections', href: '/page/weekend-family-connections' },
 			{ title: 'The Neighborhood', href: '/page/the-neighborhood' },
-			{ title: 'Shop', href: 'store.mareinc.org' }
+			{ title: 'Shop', href: 'https://store.mareinc.org' }
 		]},
 		{ title: 'About Us', lastMenu: true, subMenu: [
 			{ title: 'Who We Are', href: '/page/who-we-are' },
