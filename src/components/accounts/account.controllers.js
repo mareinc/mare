@@ -589,7 +589,7 @@ exports.saveFamily = user => {
 exports.validateEmail = email => {
 
 	// a string to validate that an email is valid
-	var emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+	var emailPattern = /^[a-z0-9._%+'-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
 	// return a check against the passed in email
 	return emailPattern.test( email );
 };
