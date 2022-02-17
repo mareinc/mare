@@ -2,7 +2,7 @@
 	<section class="family-account-setup-section">
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="email" id="email" class="input" name="email" data-field-name="email" value="{{user.email}}">
+				<input type="email" id="email" class="input" name="email" data-field-name="email" value="{{user.email}}" pattern="^[a-z0-9._%+'-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
 				<label for="email" class="label">Email Address</label>
 			</div>
 		</div>
@@ -22,7 +22,7 @@
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="email" id="contact1-email" class="input" name="contact1Email" data-field-name="contact1.email" value="{{user.contact1.email}}">
+				<input type="email" id="contact1-email" class="input" name="contact1Email" data-field-name="contact1.email" value="{{user.contact1.email}}" pattern="^[a-z0-9._%+'-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
 				<label for="contact1-email" class="label">Email Address</label>
 			</div>
 			<div class="col-sm-12">
@@ -93,7 +93,7 @@
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="email" id="contact2-email" class="input" name="contact2Email" data-field-name="contact2.email" value="{{user.contact2.email}}">
+				<input type="email" id="contact2-email" class="input" name="contact2Email" data-field-name="contact2.email" value="{{user.contact2.email}}" pattern="^[a-z0-9._%+'-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
 				<label for="contact2-email" class="label">Email Address</label>
 			</div>
 			<div class="col-sm-12">
