@@ -272,6 +272,7 @@
 						oldestChildAgeInHomeSelected	= typeof formFields.oldestChildAgeInHome === 'number' && !isNaN( formFields.oldestChildAgeInHome ),
 						youngestChildAgeInHomeSelected	= typeof formFields.youngestChildAgeInHome === 'number' && !isNaN( formFields.youngestChildAgeInHome );
 
+					var isChildAgeSelected = oldestChildAgeInHomeSelected || youngestChildAgeInHomeSelected;
 					var youngestChildAge = youngestChildAgeInHomeSelected 
 												? formFields.youngestChildAgeInHome
 												: oldestChildAgeInHomeSelected
@@ -311,13 +312,13 @@
 					// if the child cannot be placed in a family with older children
 					if ( matchingExclusions.includes( 'Older children' ) ) {
 						// check if the family should be excluded based on their profile
-						if ( oldestChildAgeInHomeSelected && child.get( 'age' ) < oldestChildAge  ) { return; }
+						if ( isChildAgeSelected && child.get( 'age' ) < oldestChildAge  ) { return; }
 					}
 
 					// if the child cannot be placed in a family with younger children
 					if ( matchingExclusions.includes( 'Younger children' ) ) {
 						// check if the family should be excluded based on their profile
-						if ( oldestChildAgeInHomeSelected && child.get( 'age' ) > youngestChildAge  ) { return; }
+						if ( isChildAgeSelected && child.get( 'age' ) > youngestChildAge  ) { return; }
 					}
 
 					// if the child cannot be placed in a family with pets
@@ -331,7 +332,6 @@
 				mare.collections.galleryChildren.add( child );
 			});
 		},
-		/* eslint-enable max-statements */
 
 		updateSiblingGroups: function updateSiblingGroups() {
 
@@ -340,6 +340,7 @@
 			// clear out all contents of the current gallery collection
 			mare.collections.gallerySiblingGroups.reset();
 
+			
 			mare.collections.allSiblingGroups.each( function( siblingGroup ) {
 				// break out of the current loop if the sibling group's gender wasn't selected ( return is needed for this in _.each )
 				if( formFields.genders && _.difference( siblingGroup.get( 'genders' ), formFields.genders ).length > 0 ) { return; }
@@ -415,6 +416,19 @@
 					var numberOfChildrenInHomeSelected	= typeof formFields.numberOfChildrenInHome === 'number' && !isNaN( formFields.numberOfChildrenInHome ),
 						oldestChildAgeInHomeSelected	= typeof formFields.oldestChildAgeInHome === 'number' && !isNaN( formFields.oldestChildAgeInHome ),
 						youngestChildAgeInHomeSelected	= typeof formFields.youngestChildAgeInHome === 'number' && !isNaN( formFields.youngestChildAgeInHome );
+
+					var isChildAgeSelected = oldestChildAgeInHomeSelected || youngestChildAgeInHomeSelected;
+					var youngestChildAge = youngestChildAgeInHomeSelected 
+												? formFields.youngestChildAgeInHome
+												: oldestChildAgeInHomeSelected
+													? formFields.oldestChildAgeInHome
+													: undefined;
+
+					var oldestChildAge = oldestChildAgeInHomeSelected
+												? formFields.oldestChildAgeInHome
+												: youngestChildAgeInHomeSelected
+													? formFields.youngestChildAgeInHome
+													: undefined;
 					
 					// if the sibling group cannot be placed in a single-parent household
 					if ( matchingExclusions.includes( 'Single-parent household' ) ) {
@@ -440,6 +454,18 @@
 						if ( numberOfChildrenInHomeSelected && formFields.numberOfChildrenInHome > 0 ) { return; }
 					}
 
+					// if the sibling group cannot be placed in a family with older children
+					if ( matchingExclusions.includes( 'Older children' ) ) {
+						// check if the family should be excluded based on their profile
+						if ( isChildAgeSelected && _.max( siblingGroup.get( 'ages' ) ) < oldestChildAge  ) { return; }
+					}
+
+					// if the sibling group cannot be placed in a family with younger children
+					if ( matchingExclusions.includes( 'Younger children' ) ) {
+						// check if the family should be excluded based on their profile
+						if ( isChildAgeSelected && _.min( siblingGroup.get( 'ages' ) ) > youngestChildAge  ) { return; }
+					}
+
 					// if the sibling group cannot be placed in a family with pets
 					if ( matchingExclusions.includes( 'Pets' ) ) {
 						// check if the family should be excluded based on their profile
@@ -451,6 +477,7 @@
 				mare.collections.gallerySiblingGroups.add( siblingGroup );
 			});
 		},
+		/* eslint-enable max-statements */
 
 		saveSearchCriteria: function saveSearchCriteria( formFields ) {
 
