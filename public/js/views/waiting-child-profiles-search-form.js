@@ -406,57 +406,47 @@
 					siblingGroup.get( 'disabilities' ).length > 0 &&
 					_.difference( siblingGroup.get( 'disabilities' ), formFields.disabilities ).length > 0 ) { return; }
 
-				// determine if selections were made about the family, if not, don't use it to restrict search results
-				var numberOfChildrenInHomeSelected	= typeof formFields.numberOfChildrenInHome === 'number' && !isNaN( formFields.numberOfChildrenInHome ),
-					oldestChildAgeInHomeSelected	= typeof formFields.oldestChildAgeInHome === 'number' && !isNaN( formFields.oldestChildAgeInHome ),
-					youngestChildAgeInHomeSelected	= typeof formFields.youngestChildAgeInHome === 'number' && !isNaN( formFields.youngestChildAgeInHome );
-				// store references to other family constellatoin considerations listed for any of the siblings
-				var requiresSiblings			= siblingGroup.get( 'requiresSiblings' ).indexOf( true ) !== -1,
-					requiresNoSiblings			= siblingGroup.get( 'requiresNoSiblings' ).indexOf( true ) !== -1,
-					olderChildrenAcceptable		= siblingGroup.get( 'olderChildrenAcceptable' ).indexOf( true ) !== -1,
-					youngerChildrenAcceptable	= siblingGroup.get( 'youngerChildrenAcceptable' ).indexOf( true ) !== -1,
-					// keep track of whether there are no other family constellation considerations listed for any of the siblings
-					hasOtherFamilyConstellationConsiderations = requiresSiblings
-															 || requiresNoSiblings
-															 || youngerChildrenAcceptable
-															 || olderChildrenAcceptable;
-				// assume that the family doesn't match with the sibling group
-				var otherFamilyConstellationConsiderationsMatch = false;
-				/* NOTE: this logic is meant to be inclusive, so any matches on any of the siblings needs will add them to the search results */
-				// if no siblings have listed other family constellation considerations, they should be included in the search results
-				if( !hasOtherFamilyConstellationConsiderations ) {
-					otherFamilyConstellationConsiderationsMatch = true;
-				// otherwise, if other family constellation considerations are listed for one or more sibling
-				} else {
-					// if any siblings require siblings and the family has children, they should be included in the search results
-					if( requiresSiblings ) {
-						if( !numberOfChildrenInHomeSelected || formFields.numberOfChildrenInHome !== 0 ) {
-							otherFamilyConstellationConsiderationsMatch = true;
-						}
+				// get a list of matching exclusions that would prevent the child from matching with the family performing the search
+				var matchingExclusions = siblingGroup.get( 'matchingExclusions' );
+				
+				// if there are matching exclusions to consider, ensure the family should not be excluded
+				if ( matchingExclusions && matchingExclusions.length > 0 ) {
+
+					var numberOfChildrenInHomeSelected	= typeof formFields.numberOfChildrenInHome === 'number' && !isNaN( formFields.numberOfChildrenInHome ),
+						oldestChildAgeInHomeSelected	= typeof formFields.oldestChildAgeInHome === 'number' && !isNaN( formFields.oldestChildAgeInHome ),
+						youngestChildAgeInHomeSelected	= typeof formFields.youngestChildAgeInHome === 'number' && !isNaN( formFields.youngestChildAgeInHome );
+					
+					// if the sibling group cannot be placed in a single-parent household
+					if ( matchingExclusions.includes( 'Single-parent household' ) ) {
+						// check if the family should be excluded based on their profile
+						if ( !!formFields.familyRelationshipStatus && formFields.familyRelationshipStatus === 'Single' ) { return; }
 					}
-					// if any siblings require no siblings and the family has no children, they should be included in the search results
-					if( requiresNoSiblings ) {
-						if( !numberOfChildrenInHomeSelected || formFields.numberOfChildrenInHome === 0 ) {
-							otherFamilyConstellationConsiderationsMatch = true;
-						}
+
+					// if the sibling group cannot be placed in a family with female parent(s)
+					if ( matchingExclusions.includes( 'Female parent(s)' ) ) {
+						// check if the family should be excluded based on their profile
+						if ( !!formFields.gendersOfParents && formFields.gendersOfParents.includes( 'female' ) ) { return; }
 					}
-					// if any siblings accept older children and the family has older children, they should be included in the search results
-					if( olderChildrenAcceptable ) {
-						if( !oldestChildAgeInHomeSelected || formFields.oldestChildAgeInHome >= _.max( siblingGroup.get( 'age' ) ) ) {
-							otherFamilyConstellationConsiderationsMatch = true;
-						}
+
+					// if the sibling group cannot be placed in a family with male parent(s)
+					if ( matchingExclusions.includes( 'Male parent(s)' ) ) {
+						// check if the family should be excluded based on their profile
+						if ( !!formFields.gendersOfParents && formFields.gendersOfParents.includes( 'male' ) ) { return; }
 					}
-					// if any siblings accept younger children and the family has younger children, they should be included in the search results
-					if( youngerChildrenAcceptable ) {
-						if( !youngestChildAgeInHomeSelected || formFields.youngestChildAgeInHome <= _.min( siblingGroup.get( 'age' ) ) ) {
-							otherFamilyConstellationConsiderationsMatch = true;
-						}
+
+					// if the sibling group cannot be placed in a family with any other children
+					if ( matchingExclusions.includes( 'Any children' ) ) {
+						// check if the family should be excluded based on their profile
+						if ( numberOfChildrenInHomeSelected && formFields.numberOfChildrenInHome > 0 ) { return; }
+					}
+
+					// if the sibling group cannot be placed in a family with pets
+					if ( matchingExclusions.includes( 'Pets' ) ) {
+						// check if the family should be excluded based on their profile
+						if ( formFields.petsInHome ) { return; }
 					}
 				}
-				// if any siblings require no pets and the family has pets, they should be excluded from the search results
-				if( formFields.petsInHome && siblingGroup.get( 'noPets' ).indexOf( true ) !== -1 ) { return; }
-				// break out of the loop if none of the other considerations selected match the sibling group ( return is needed for this in _.each )
-				if( !otherFamilyConstellationConsiderationsMatch ) { return; }
+
 				// if the sibling group passes all checks, add them to the collection to display on the gallery
 				mare.collections.gallerySiblingGroups.add( siblingGroup );
 			});

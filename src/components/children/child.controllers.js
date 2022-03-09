@@ -705,6 +705,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			olderChildrenAcceptable					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'older children acceptable' ) !== -1 ) ),
 			youngerChildrenAcceptable				: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'younger children acceptable' ) !== -1 ) ),
 			siblingToBePlacedWithCount				: children[ 0 ].siblingsToBePlacedWith.length,
+			matchingExclusions						: _.uniq( _.flatten( children.map( child => _.pluck(child.exclusions, 'matchingExclusion' ) ) ) ),
 			updatedAt								: _.uniq( children.map( child => child.updatedAt ) ),
 			wednesdaysChild							: children.map( child => child.wednesdaysChild ).indexOf( true ) !== -1
 		};
