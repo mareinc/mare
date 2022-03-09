@@ -51,6 +51,8 @@ exports.saveProfileSearch = function saveProfileSearch( req, res, next ) {
             profileSearchDoc.youngestChildAge = searchCriteria.youngestChildAgeInHome === 'NaN' ? null : searchCriteria.youngestChildAgeInHome;
             profileSearchDoc.oldestChildAge = searchCriteria.oldestChildAgeInHome === 'NaN' ? null : searchCriteria.oldestChildAgeInHome;
             profileSearchDoc.hasPetsInHome = searchCriteria.petsInHome === 'true' ? true : false;
+            profileSearchDoc.relationshipStatus = searchCriteria.familyRelationshipStatus;
+            profileSearchDoc.parentsGenders = searchCriteria.gendersOfParents;
 
             return profileSearchDoc.save();
         })

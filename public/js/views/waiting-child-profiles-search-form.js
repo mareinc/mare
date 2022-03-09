@@ -69,6 +69,10 @@
 			$( '.select-maximum-intellectual-needs[ value = "3" ]' ).prop( 'checked', true );
 			// allow all developmental needs
 			$( '.select-disabilities' ).prop( 'checked', true );
+			// uncheck all parent(s) gender(s)
+			$( '.select-parent-genders' ).prop( 'checked', false );
+			// unset family relationship status
+			$( '#parent-relationship-status > option:eq(0)' ).prop( 'selected', true );
 		},
 
 		getFormFields: function getFormFields() {
@@ -522,6 +526,12 @@
 			$( '#oldest-child-age-in-home > option:eq(' + ( savedSearchCriteria.oldestChildAge ? savedSearchCriteria.oldestChildAge + 1 : 0 ) + ')' ).prop( 'selected', true );
 			// apply pets in home criterion
 			$( '.select-pets-in-home' ).prop( 'checked', savedSearchCriteria.hasPetsInHome );
+			// apply relationship status criteria
+			$( '#parent-relationship-status > option[value="' + ( savedSearchCriteria.relationshipStatus ) + '"]' ).prop( 'selected', true );
+			// apply parent(s) gender(s) criteria
+			$.each( savedSearchCriteria.parentsGenders, function( index, gender ) {
+				$( '.select-parent-genders[value="' + gender + '"]' ).prop( 'checked', true );
+			});
 		},
 
 		setDefaultValues: function setDefaultFormValues() {

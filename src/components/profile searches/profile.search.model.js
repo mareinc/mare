@@ -43,6 +43,8 @@ ProfileSearch.add( 'Search Details', {
     
 }, 'Family Profile Criteria', {
 
+    relationshipStatus:     { type: Types.Text },
+    parentsGenders:         { type: Types.TextArray },
     numChildrenInHome:      { type: Types.Number },
     youngestChildAge:       { type: Types.Number },
     oldestChildAge:         { type: Types.Number },
