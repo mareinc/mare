@@ -44,6 +44,7 @@ exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
 		.populate( 'otherConsiderations' )
 		.populate( 'recommendedFamilyConstellation' )
 		.populate( 'otherFamilyConstellationConsideration' )
+		.populate( 'exclusions' )
 		.populate( 'status' )
 		.populate( 'legalStatus' )
 		.populate( 'adoptionWorkerAgencyRegion' )
@@ -194,6 +195,7 @@ exports.getChildrenForFamilyAccount = ( req, res, done, fieldsToSelect ) => {
 		.populate( 'otherConsiderations' )
 		.populate( 'recommendedFamilyConstellation' )
 		.populate( 'otherFamilyConstellationConsideration' )
+		.populate( 'exclusions' )
 		.populate( 'status' )
 		.populate( 'legalStatus' )
 		.exec( ( err, children ) => {
@@ -304,6 +306,7 @@ exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 		.populate( 'otherConsiderations' )
 		.populate( 'recommendedFamilyConstellation' )
 		.populate( 'otherFamilyConstellationConsideration' )
+		.populate( 'exclusions' )
 		.populate( 'status' )
 		.populate( 'legalStatus' )
 		.populate( 'adoptionWorkerAgencyRegion' )
@@ -477,7 +480,7 @@ exports.getGalleryData = ( req, res, next ) => {
 							image siblingGroupImage siteVisibility emotionalNeeds hasContactWithBirthFamily
 							hasContactWithSiblings video intellectualNeeds isBookmarked name siblings physicalNeeds
 							registrationNumber siblingsToBePlacedWith updatedAt wednesdaysChild mustBePlacedWithSiblings
-							siblingGroupVideo`;
+							siblingGroupVideo exclusions`;
 
 	async.series([
 		done => { listService.getChildStatusIdByName( req, res, done, 'active' ) },
@@ -629,6 +632,7 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 				requiresSiblings						: otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1,
 				youngerChildrenAcceptable				: otherFamilyConstellationConsiderations.indexOf( 'younger children acceptable' ) !== -1,
 				siblingToBePlacedWithCount				: child.siblingsToBePlacedWith.length, /* TODO: do we need to return this? */
+				matchingExclusions						: _.pluck( child.exclusions, 'matchingExclusion' ),
 				updatedAt								: child.updatedAt,
 				wednesdaysChild							: child.wednesdaysChild
 			};
