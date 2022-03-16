@@ -5,7 +5,8 @@ var keystone = require('keystone'),
 var OtherFamilyConstellationConsideration = new keystone.List('Other Family Constellation Consideration', {
 	autokey: { path: 'key', from: 'otherFamilyConstellationConsideration', unique: true },
 	map: { name: 'otherFamilyConstellationConsideration' },
-	sortable: true
+	sortable: true,
+	hidden: true
 });
 
 // Create fields
