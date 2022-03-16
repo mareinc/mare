@@ -36,7 +36,7 @@
 			// set minimum acceptable age of children to 0
 			$( '#youngest-age > option:eq(0)' ).prop( 'selected', true );
 			// set maximum acceptable age of children to 17
-			$( '#oldest-age > option:eq(17)' ).prop( 'selected', true );
+			$( '#oldest-age > option:eq(22)' ).prop( 'selected', true );
 			// check all the race checkboxes
 			$( '.select-race' ).prop( 'checked', true );
 			// check all the primary language checkboxes
@@ -502,7 +502,7 @@
 			// apply minimum acceptable age of children criterion
 			$( '#youngest-age > option:eq(' + ( savedSearchCriteria.minAge || 0 ) + ')' ).prop( 'selected', true );
 			// apply maximum acceptable age of children criterion
-			$( '#oldest-age > option:eq(' + ( savedSearchCriteria.maxAge || 17 ) + ')' ).prop( 'selected', true );
+			$( '#oldest-age > option:eq(' + ( savedSearchCriteria.maxAge || 22 ) + ')' ).prop( 'selected', true );
 			// apply the saved race criteria
 			$.each( savedSearchCriteria.races, function( index, race ) {
 				$( '.select-race[value="' + race + '"]' ).prop( 'checked', true );
