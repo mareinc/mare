@@ -104,6 +104,9 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 							email: 'web@mareinc.org'
 						},
 						subject: `new event registration`,
+						headers: {
+							'Reply-To': userDetails.email || 'communications@mareinc.org'
+						}
 					// callback
 					}, ( err, message ) => {
 						// log any errors
