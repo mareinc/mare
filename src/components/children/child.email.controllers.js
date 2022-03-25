@@ -19,7 +19,8 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			languagesArray = [],
 			raceArray = [],
 			matchingExclusionsArray = [],
-			disabilitiesArray = [];
+			disabilitiesArray = [],
+			pronounsArray = [];
 
 		// loop through each language model which was populated when the user model was fetched
 		for( let entry of child.languages ) {
@@ -40,6 +41,11 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 		for( let entry of child.disabilities ) {
 			// extract the text values associated with the model into the array
 			disabilitiesArray.push( entry.disability );
+		}
+		// loop through each pronoun model which was populated when the user model was fetched
+		for( let entry of child.pronouns ) {
+			// extract the text values associated with the model into the array
+			pronounsArray.push( entry.pronoun );
 		}
 
 		// store only the fields that have been populated by the user
@@ -107,10 +113,10 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			});
 		}
 
-        if( child.pronouns ) {
+        if( pronounsArray.length !== 0 ) {
 			childData.push( {
 				key: 'pronouns used',
-				value: child.pronouns.pronoun
+				value: pronounsArray.join( ', ' )
 			});
 		}
 
@@ -482,7 +488,8 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 			languagesArray = [],
 			raceArray = [],
 			matchingExclusionsArray = [],
-			disabilitiesArray = [];
+			disabilitiesArray = [],
+			pronounsArray = [];
 
 		// loop through each language model which was populated when the user model was fetched
 		for( let entry of child.languages ) {
@@ -504,6 +511,12 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 			// extract the text values associated with the model into the array
 			disabilitiesArray.push( entry.disability );
 		}
+		// loop through each pronoun model which was populated when the user model was fetched
+		for( let entry of child.pronouns ) {
+			// extract the text values associated with the model into the array
+			pronounsArray.push( entry.pronoun );
+		}
+
 		// store only the fields that have been populated by the user
 		if( child.registrationDate ) {
 			// extract the text values associated with the model into the array
@@ -566,6 +579,13 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 			childData.push( {
 				key: 'gender',
 				value: child.gender.gender
+			});
+		}
+
+		if( pronounsArray.length !== 0 ) {
+			childData.push( {
+				key: 'pronouns used',
+				value: pronounsArray.join( ', ' )
 			});
 		}
 
@@ -890,7 +910,8 @@ exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChil
 			languagesArray = rawChildData.languages || [],
 			raceArray = rawChildData.race || [],
 			matchingExclusions = rawChildData.matchingExclusions || [],
-			disabilitiesArray = rawChildData.disabilities || [];
+			disabilitiesArray = rawChildData.disabilities || []
+			pronounsArray = rawChildData.pronouns || [];
 
 		// send only the fields that have been updated by the social worker
 		if( rawChildData.firstName ) {
@@ -949,10 +970,10 @@ exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChil
 			});
 		}
 
-        if( rawChildData.pronouns ) {
+		if( pronounsArray.length !== 0 ) {
 			childData.push( {
 				key: 'pronouns used',
-				value: rawChildData.pronouns
+				value: pronounsArray.join( ', ' )
 			});
 		}
 
