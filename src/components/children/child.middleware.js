@@ -90,7 +90,7 @@ exports.getChildrenByRecruitmentWorker = async function( req, res, next ) {
 						familyContactDescription: child.get( 'birthFamilyTypeOfContact' ),
 						familyLife: child.get( 'familyLife' ),
 						gender: child.get( 'gender' ),
-                        pronouns: child.get( 'pronouns' ),
+                        'pronouns[]': child.get( 'pronouns' ),
                         doesIdentifyAsLGBTQ: child.get( 'identifiesAsLGBTQ' ),
                         lgbtqIdentityComments: child.get( 'identifiesAsLGBTQDetails' ),
                         shareIdentityInProfile: child.get( 'shareIdentity' ),

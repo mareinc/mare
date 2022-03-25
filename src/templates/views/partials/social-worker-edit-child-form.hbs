@@ -95,15 +95,22 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-sm-24 form-group">
+                    <label class="label required-field">Pronouns Used</label>
+                </div>
+            </div>
             <div class="row form-group">
                 <div class="col-sm-12">
-                    <select id="pronouns-edit" class="input form-field-callout" name="pronouns">
-                        <option value=""></option>
-                        {{#each pronouns}}
-                        <option value="{{_id}}">{{pronoun}}</option>
-                        {{/each}}
-                    </select>
-                    <label for="pronouns-edit" class="label required-field">Pronouns Used</label>
+                    <div id="pronouns-error-container-edit" class="row error-container form-field-callout">
+                    {{#each pronouns}}
+                        <div class="col-sm-12 form-group">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="pronouns[]" value="{{ _id }}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#pronouns-error-container-edit" data-parsley-mincheck="1" data-parsley-required="">{{ pronoun }}
+                            </label>
+                        </div>
+                    {{/each}}
+                    </div>
                 </div>
             </div>
             <div class="row form-group">
