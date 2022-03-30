@@ -1,35 +1,50 @@
 <script id="account-inquiries" type="text/x-handlebars-template">
 
-    <h1 class="account-current-section__title">Inquiries</h1>
+    <h1 class="account-current-section__title mb-0 pb-3">Inquiries</h1>
+
+    <p class="pb-4 text-center">These are the inquiries associated with your account. Personal notes you add are not shared and are viewable only by you.</p>
 
     {{#if hasInquiries}}
         <div class="account-inquiries-list">
         {{#each inquiries as |inquiry|}}
-            <div class="inquiry">
-                <div>Date Submitted: {{inquiry.dateTaken}}</div>
-                <div>Inquiry Type: {{inquiry.type}}</div>
-                {{#if inquiry.onBehalfOf}}
-                <div>On Behalf Of: {{inquiry.onBehalfOf}}</div>
-                {{/if}}
-                {{#if inquiry.children.hasChildren}}
-                <div>
-                    {{#if inquiry.children.isSiblingGroup}}Children:{{else}}Child:{{/if}}
-                    {{#if inquiry.children.areChildrenActive}}
-                    <a href="{{inquiry.children.galleryLink}}" target="_blank">{{inquiry.children.label}}</a>
-                    {{else}}
-                    {{inquiry.children.label}}
+            <div class="inquiry row">
+                <div class="col-sm-24 col-lg-12">
+                    <div class="inquiry-field">
+                        <span class="inquiry-field__label">Date Submitted:</span> {{inquiry.dateTaken}}
+                    </div>
+                    <div class="inquiry-field">
+                        <span class="inquiry-field__label">Inquiry Type:</span> {{inquiry.type}}
+                    </div>
+                    {{#if inquiry.onBehalfOf}}
+                        <div class="inquiry-field">
+                            <span class="inquiry-field__label">On Behalf Of:</span> {{inquiry.onBehalfOf}}
+                        </div>
                     {{/if}}
+                    {{#if inquiry.children.hasChildren}}
+                    <div class="inquiry-field">
+                        <span class="inquiry-field__label">{{#if inquiry.children.isSiblingGroup}}Children:{{else}}Child:{{/if}}</span>
+                        {{#if inquiry.children.areChildrenActive}}
+                        <a href="{{inquiry.children.galleryLink}}" target="_blank">{{inquiry.children.label}}</a>
+                        {{else}}
+                        {{inquiry.children.label}}
+                        {{/if}}
+                    </div>
+                    {{/if}}
+                    <div class="inquiry-field">
+                        <div class="inquiry-field__label pb-1">Inquiry Comments</div>
+                        {{inquiry.comments}}
+                    </div>
                 </div>
-                {{/if}}
-                <div class="inquiry__comment">
-                    <div class="pb-1">Inquiry Comments</div>
-                    {{inquiry.comments}}
+                <div class="col-sm-24 col-lg-12">
+                    <div class="inquiry-field pt-md-1">
+                        <div class="inquiry-field__label">Personal Note:</div>
+                        <textarea class="inquiry__note" rows="5" placeholder="Enter notes here..." data-initial-note="{{inquiry.notes}}" data-index={{@index}}>{{inquiry.notes}}</textarea>
+                    </div>
                 </div>
-                <div class="inquiry__note">
-                    <textarea class="inquiry__note-text" rows="5" placeholder="Enter notes here..." data-initial-note="{{inquiry.notes}}" data-index={{@index}}>{{inquiry.notes}}</textarea>
+                <div class="col-sm-24">
+                    <button id="save-btn-{{@index}}" class="button button--teal button--disabled inquiry__save mt-2 mb-0" disabled="true"
+                        data-note="{{inquiry.notes}}" data-id="{{inquiry.id}}">Save</button>
                 </div>
-                <button id="save-btn-{{@index}}" class="button button--teal button--disabled inquiry__save" disabled="true"
-                    data-note="{{inquiry.notes}}" data-id="{{inquiry.id}}">Save</button>
             </div>
         {{/each}}
         </div>

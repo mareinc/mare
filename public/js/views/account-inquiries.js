@@ -6,7 +6,7 @@
         el: '.account-inquiries-container',
 
         events: {
-		    'input .inquiry__note-text': 'onNotesUpdated',
+		    'input .inquiry__note': 'onNotesUpdated',
             'click .inquiry__save': 'onSaveButtonClicked'
 		},
 
@@ -23,7 +23,7 @@
 			// render the template to the page
 			this.$el.html( html );
             // remove erroneous tab characters that are inserted into note textareas
-            $( '.inquiry__note-text' ).each( function( index, el ) {
+            $( '.inquiry__note' ).each( function( index, el ) {
                 var $notesTextArea = $( el );
                 var filteredText = $notesTextArea.val().replace( /\t+/g, '' );
                 $notesTextArea.val( filteredText );
