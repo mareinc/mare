@@ -124,5 +124,11 @@
                 font-weight: bold;
             }
         }
+
+        .inquiry-comments {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            hyphens: auto;
+        }
     }
 }
