@@ -21,7 +21,8 @@ exports.submitInquiry = function submitInquiry( req, res, next ) {
 			// create a flash message to notify the user of the success
 			req.flash( 'success', {
 				title: `Your inquiry has been received.`,
-				detail: `A MARE staff person will be in touch with additional information within 2-3 business days.` } );
+				detail: `A MARE staff person will be in touch with additional information within 2-3 business days.
+				You can see a history of inquiries submitted on the <a href="/account#inquiries">My Inquiries</a> page.` } );
 		})
 		// if an error occurred
 		.catch( err => {
