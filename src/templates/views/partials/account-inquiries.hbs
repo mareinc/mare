@@ -8,13 +8,15 @@
         <div class="account-inquiries-list">
         {{#each inquiries as |inquiry|}}
             <div class="inquiry row">
-                <div class="col-sm-24 col-lg-12">
+                <div class="col-sm-24">
+                    <h2 class="card__title">{{inquiry.type}}</h2>
+                </div>
+                <div class="col-sm-24 col-lg-12 col-lg-offset-12">
                     <div class="inquiry-field">
                         <span class="inquiry-field__label">Date Submitted:</span> {{inquiry.dateTaken}}
                     </div>
-                    <div class="inquiry-field">
-                        <span class="inquiry-field__label">Inquiry Type:</span> {{inquiry.type}}
-                    </div>
+                </div>
+                <div class="col-sm-24 col-lg-12">
                     {{#if inquiry.onBehalfOf}}
                         <div class="inquiry-field">
                             <span class="inquiry-field__label">On Behalf Of:</span> {{inquiry.onBehalfOf}}
@@ -36,7 +38,7 @@
                     </div>
                 </div>
                 <div class="col-sm-24 col-lg-12">
-                    <div class="inquiry-field pt-md-1">
+                    <div class="inquiry-field pt-sm-1 pt-lg-0">
                         <div class="inquiry-field__label">Personal Note:</div>
                         <textarea class="inquiry__note" rows="5" placeholder="Enter notes here..." data-initial-note="{{inquiry.notes}}" data-index={{@index}}>{{inquiry.notes}}</textarea>
                     </div>

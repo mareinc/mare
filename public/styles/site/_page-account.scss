@@ -130,5 +130,10 @@
             word-wrap: break-word;
             hyphens: auto;
         }
+
+        .card__title {
+            margin-top: 0;
+            text-transform: capitalize;
+        }
     }
 }
