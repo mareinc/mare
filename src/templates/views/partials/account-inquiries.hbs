@@ -11,17 +11,10 @@
                 <div class="col-sm-24">
                     <h2 class="card__title">{{inquiry.type}}</h2>
                 </div>
-                <div class="col-sm-24 col-lg-12 col-lg-offset-12">
+                <div class="col-sm-24 col-lg-12">
                     <div class="inquiry-field">
                         <span class="inquiry-field__label">Date Submitted:</span> {{inquiry.dateTaken}}
                     </div>
-                </div>
-                <div class="col-sm-24 col-lg-12">
-                    {{#if inquiry.onBehalfOf}}
-                        <div class="inquiry-field">
-                            <span class="inquiry-field__label">On Behalf Of:</span> {{inquiry.onBehalfOf}}
-                        </div>
-                    {{/if}}
                     {{#if inquiry.children.hasChildren}}
                     <div class="inquiry-field">
                         <span class="inquiry-field__label">{{#if inquiry.children.isSiblingGroup}}Children:{{else}}Child:{{/if}}</span>
@@ -32,19 +25,24 @@
                         {{/if}}
                     </div>
                     {{/if}}
+                    {{#if inquiry.onBehalfOf}}
                     <div class="inquiry-field">
-                        <div class="inquiry-field__label pb-1">Inquiry Comments</div>
+                        <span class="inquiry-field__label">On Behalf Of:</span> {{inquiry.onBehalfOf}}
+                    </div>
+                    {{/if}}
+                    <div class="inquiry-field">
+                        <div class="inquiry-field__label">Inquiry Comments</div>
                         <div class="inquiry-comments">{{inquiry.comments}}</div> 
                     </div>
                 </div>
                 <div class="col-sm-24 col-lg-12">
-                    <div class="inquiry-field pt-sm-1 pt-lg-0">
+                    <div class="inquiry-field pt-1">
                         <div class="inquiry-field__label">Personal Note:</div>
                         <textarea class="inquiry__note" rows="5" placeholder="Enter notes here..." data-initial-note="{{inquiry.notes}}" data-index={{@index}}>{{inquiry.notes}}</textarea>
                     </div>
                 </div>
                 <div class="col-sm-24">
-                    <button id="save-btn-{{@index}}" class="button button--teal button--disabled inquiry__save mt-2 mb-0" disabled="true"
+                    <button id="save-btn-{{@index}}" class="button button--teal button--disabled inquiry__save" disabled="true"
                         data-note="{{inquiry.notes}}" data-id="{{inquiry.id}}">Save</button>
                 </div>
             </div>
