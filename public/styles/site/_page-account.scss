@@ -4,6 +4,12 @@
 	@media all and (min-width: 660px) {
         flex-direction: row;
 	}
+
+    // override default content__body style to ensure content does not overlow its container
+    // this was an issue when displaying user-generated content on the Inquiries page
+    .content__body {
+        overflow: hidden;
+    }
 }
 
 .mobile-account-nav {
@@ -126,6 +132,7 @@
         }
 
         .inquiry-comments {
+            overflow: hidden;
             overflow-wrap: break-word;
             word-wrap: break-word;
             hyphens: auto;

@@ -8,13 +8,13 @@
 		margin-left: 1.5em;
 		padding: 0 1em 1em 1em;
 		width: 450px;
-
 	}
 
 	&--slim {
 		@media all and (min-width: 660px) {
 			margin: 0;
 			width: 240px;
+			min-width: 240px; // if min-width is not set, width is not always respected
 		}
 	}
 }
