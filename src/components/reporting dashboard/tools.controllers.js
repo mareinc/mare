@@ -2253,10 +2253,13 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.exec()
 		.then( inquiryDocs => {
 
-			const familyActivity = inquiryDocs.map( inquiryDoc => ({
+			const filteredInquiryDocs = inquiryDocs.filter( inquiryDoc => inquiryDoc.family && inquiryDoc.family._id );
+
+			const familyActivity = filteredInquiryDocs.map( inquiryDoc => ({
 				id: inquiryDoc.family._id.toString(),
 				registrationNumber: inquiryDoc.family.registrationNumber,
 				email: inquiryDoc.family.email,
+				registrationDate: utilsService.verifyAndFormatDate(inquiryDoc.family.createdAt),
 				latestInquiryDate: utilsService.verifyAndFormatDate(inquiryDoc.takenOn)
 			}));
 
