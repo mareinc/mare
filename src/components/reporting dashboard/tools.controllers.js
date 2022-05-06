@@ -2218,3 +2218,51 @@ exports.getChildCaseloadData = ( req, res, next ) => {
         return totalCases;
     }
 };
+
+exports.getFamilyActivityData = ( req, res, next ) => {
+
+	// set a maximum number of results that can be returned to prevent crashes/freezing
+	const MAX_RESULTS = 5000;
+	
+	// get the query from the request object
+	const query = req.query;
+
+    // get the date range of the caseload search
+	let fromDate = new Date( query.fromDate );
+	let toDate = new Date( query.toDate );
+
+	// ensure both fromDate and toDate are valid dates
+	if ( isNaN( fromDate.getTime() ) || isNaN( toDate.getTime() ) ) {
+		return flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading family activity data' );
+	}
+
+	// create the baseline search criteria with a date range
+	let searchCriteria = {
+		takenOn: { $gte: fromDate, $lte: toDate },
+		inquirer: 'family'
+	};
+
+	// get the families that have submitted an inquiry within specified date range
+	keystone.list( 'Inquiry' ).model
+		.find( searchCriteria )
+		.limit( MAX_RESULTS )
+		.populate([
+			'family'
+		].join( ' ' ))
+		.lean()
+		.exec()
+		.then( inquiryDocs => {
+
+			res.send({
+				noResultsFound: !inquiryDocs || inquiryDocs.length === 0,
+				results: inquiryDocs,
+				limitReached: inquiryDocs.length === MAX_RESULTS
+			});
+		})
+		.catch( err => {
+
+			// log an error for debugging purposes
+			console.error( `error loading family activity report for the dashboard - ${ err }` );
+			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading family activity data' );
+		});
+};
