@@ -2253,10 +2253,17 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.exec()
 		.then( inquiryDocs => {
 
+			const familyActivity = inquiryDocs.map( inquiryDoc => ({
+				id: inquiryDoc.family._id.toString(),
+				registrationNumber: inquiryDoc.family.registrationNumber,
+				email: inquiryDoc.family.email,
+				latestInquiryDate: utilsService.verifyAndFormatDate(inquiryDoc.takenOn)
+			}));
+
 			res.send({
-				noResultsFound: !inquiryDocs || inquiryDocs.length === 0,
-				results: inquiryDocs,
-				limitReached: inquiryDocs.length === MAX_RESULTS
+				noResultsFound: !familyActivity || familyActivity.length === 0,
+				results: familyActivity,
+				limitReached: familyActivity.length === MAX_RESULTS
 			});
 		})
 		.catch( err => {
