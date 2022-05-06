@@ -1,0 +1,57 @@
+<script id="tools-family-activity-report-template" type="text/x-handlebars-template">
+
+    <h2 class="panel__h2">Family Acitivity Report</h2>
+    <div class="family-activity-report">
+        
+        <form class="matching-form">
+            <input type="hidden" id="defaultFromDate" value="{{ defaultDateRanges.month.fromDate }}" />
+            <input type="hidden" id="defaultToDate" value="{{ defaultDateRanges.month.toDate }}" />
+            <div class="row">
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label class="bold">Family Activity Date Range:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <input type="text" class="date-range-picker" name="family-activity-date-range" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6"></div>
+            </div>
+        </form>
+
+        <button class="btn btn-primary family-activity-search-button">Search</button>
+	    <button class="btn btn-default family-activity-search-reset-button">Reset</button>
+
+        \{{#if waitingForResults }}
+            <br /><br />
+            Loading the data ...
+        \{{/if}}
+        
+        \{{#if noResultsFound }}
+            <br /><br />
+            No results found
+        \{{/if}}
+
+        \{{#if results }}
+            <h3>Results: </h3>
+            <div class="matching-results-table__button-bar">
+                <button class="button button--teal caseload-export-xlsx-button">XLSX Export</button>
+                <div class="matching-results-table__record-count">
+                    <div class="record-count__label">Total Active Families:</div>
+                    \{{ results.length }}
+                    \{{#if limitReached}}
+                    <div class="recoord-count__limit">*Your search returned the maximum allowed number of results, some results could not be displayed.</div>
+                    \{{/if}}
+                </div>
+            </div>
+
+            {{!-- Results table for site display --}}            
+            <table id="active-families-results" class="stripe" width="100%"></table>
+
+            {{!-- Results table for Excel export (hidden) --}}
+            <table width="100%" class="results-table hidden" data-filename="\{{metadata.excelExportFilename}}"></table>
+        \{{/if}}
+    </div>
+</script>
