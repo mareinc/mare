@@ -154,7 +154,12 @@
 				}
 			},
 			{ title: 'Email', data: 'email',  defaultContent: '--' },
-            { title: 'Latest Inquiry', data: 'latestInquiryDate', defaultContent: '--' }
+            { title: 'Registration Date', data: 'registrationDate', defaultContent: '--' },
+            { title: 'Latest Inquiry', data: 'latestInquiryDate', defaultContent: '--' },
+            { title: 'Latest Event Registration', data: 'latestEventDate', defaultContent: '--' },
+            { title: 'Latest Match', data: 'latestMatchDate', defaultContent: '--' },
+            { title: 'Latest Placement', data: 'latestPlacementDate', defaultContent: '--' },
+            { title: 'Latest Note', data: 'latestNoteDate', defaultContent: '--' }
 		]
 	});
 }());
