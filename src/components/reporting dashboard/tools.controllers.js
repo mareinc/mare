@@ -2259,8 +2259,9 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 				id: inquiryDoc.family._id.toString(),
 				registrationNumber: inquiryDoc.family.registrationNumber,
 				email: inquiryDoc.family.email,
-				registrationDate: utilsService.verifyAndFormatDate(inquiryDoc.family.createdAt),
-				latestInquiryDate: utilsService.verifyAndFormatDate(inquiryDoc.takenOn)
+				registrationDate: utilsService.verifyAndFormatDate( inquiryDoc.family.createdAt ),
+				latestInquiryDate: utilsService.verifyAndFormatDate( inquiryDoc.takenOn ),
+				latestInquiryDateISO: moment( inquiryDoc.takenOn ).toISOString()
 			}));
 
 			res.send({

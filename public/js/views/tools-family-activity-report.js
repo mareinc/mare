@@ -165,7 +165,13 @@
 			},
 			{ title: 'Email', data: 'email',  defaultContent: '--' },
             { title: 'Registration Date', data: 'registrationDate', defaultContent: '--' },
-            { title: 'Latest Inquiry', data: 'latestInquiryDate', defaultContent: '--' },
+            { 
+				title: 'Latest Inquiry', 
+				data: function( row, type ) {
+					// return date in ISO format to enable column sorting
+					return type === 'sort' ? row.latestInquiryDateISO : row.latestInquiryDate;
+				}
+			},
             { title: 'Latest Event Registration', data: 'latestEventDate', defaultContent: '--' },
             { title: 'Latest Match', data: 'latestMatchDate', defaultContent: '--' },
             { title: 'Latest Placement', data: 'latestPlacementDate', defaultContent: '--' },
