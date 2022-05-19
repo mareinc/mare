@@ -2236,36 +2236,102 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		return flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading family activity data' );
 	}
 
-	// create the baseline search criteria with a date range
-	let searchCriteria = {
+	// create the inquiry activity search criteria
+	const inquiryActivitySearchCriteria = {
 		takenOn: { $gte: fromDate, $lte: toDate },
-		inquirer: 'family'
+		inquirer: 'family',
+		family: { $exists: true, $ne: null }
 	};
 
 	// get the families that have submitted an inquiry within specified date range
-	keystone.list( 'Inquiry' ).model
-		.find( searchCriteria )
+	const inquiryActivityQuery = keystone.list( 'Inquiry' ).model
+		.find( inquiryActivitySearchCriteria )
 		.limit( MAX_RESULTS )
 		.populate([
 			'family'
 		].join( ' ' ))
 		.lean()
-		.exec()
-		.then( inquiryDocs => {
+		.exec();
 
+	Promise.all( [ inquiryActivityQuery ] )
+		.then( results => {
+
+			// destructure the activity data
+			const [ inquiryDocs ] = results;
+
+			// create an object to capture all families with activity data of any type
+			const activeFamilies = {};
+
+			// ensure all inquiry docs have a valid family relationship
 			const filteredInquiryDocs = inquiryDocs.filter( inquiryDoc => inquiryDoc.family && inquiryDoc.family._id );
 
-			const familyActivity = filteredInquiryDocs.map( inquiryDoc => ({
-				id: inquiryDoc.family._id.toString(),
-				registrationNumber: inquiryDoc.family.registrationNumber,
-				email: inquiryDoc.family.email,
-				registrationDate: utilsService.verifyAndFormatDate( inquiryDoc.family.createdAt ),
-				latestInquiry: {
-					dateDisplay: utilsService.verifyAndFormatDate( inquiryDoc.takenOn ),
-					dateISO:  moment( inquiryDoc.takenOn ).toISOString(),
-					id: inquiryDoc._id.toString()
+			// add families to active families object
+			filteredInquiryDocs.forEach( inquiryDoc => {
+
+				// check for existing family data in active families object
+				const familyId = inquiryDoc.family._id.toString();
+				const existingFamilyEntry = activeFamilies[ familyId ];
+				
+				// if the family already exists...
+				if ( existingFamilyEntry ) {
+
+					// check for existing inquiry data
+					let existingInquiry = existingFamilyEntry.latestInquiryData;
+					let updateInquiryData = true;
+
+					// if inquiry data already exists for this family...
+					if ( existingInquiry ) {
+
+						// get the dates of the existing and new inquiries
+						const existingInquiryDate = existingInquiry.dateISO;
+						const newInquiryDate = moment( inquiryDoc.takenOn ).toISOString();
+
+						// if the existing inquiry is more recent than the new inquiry...
+						if ( existingInquiryDate > newInquiryDate ) {
+
+							// do not update inquiry data for this family
+							updateInquiryData = false;
+						}
+					}
+
+					// if inquiry data should be updated...
+					if ( updateInquiryData ) {
+
+						// overwrite existing inquiry data with new inquiry data
+						existingFamilyEntry.latestInquiryData = {
+							id: inquiryDoc._id.toString(),
+							dateDisplay: utilsService.verifyAndFormatDate( inquiryDoc.takenOn ),
+							dateISO:  moment( inquiryDoc.takenOn ).toISOString()
+						};
+					}
+
+				// if the family doesn't exist...
+				} else {
+
+					// create the family entry and add the current inquiry data as the latest inquiry
+					activeFamilies[ familyId ] = {
+						familyDoc: inquiryDoc.family,
+						latestInquiryData: {
+							id: inquiryDoc._id.toString(),
+							dateDisplay: utilsService.verifyAndFormatDate( inquiryDoc.takenOn ),
+							dateISO:  moment( inquiryDoc.takenOn ).toISOString()
+						} 
+					};
 				}
-			}));
+			});
+
+			const familyActivity = Object.entries( activeFamilies ).map( activeFamily => {
+
+				const [ familyID, activityData ] = activeFamily;
+
+				return {
+					id: familyID,
+					registrationNumber: activityData.familyDoc.registrationNumber,
+					email: activityData.familyDoc.email,
+					registrationDate: utilsService.verifyAndFormatDate( activityData.familyDoc.createdAt ),
+					latestInquiry: activityData.latestInquiryData
+				};				
+			});
 
 			res.send({
 				noResultsFound: !familyActivity || familyActivity.length === 0,
