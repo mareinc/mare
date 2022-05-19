@@ -7,7 +7,8 @@
 		el: '.dashboard-content',
 
 		events: {
-            'click .family-activity-search-button'         : 'handleSearchClick'
+			'click .family-activity-fiscal-year-button'		: 'handleFiscalYearClick',
+            'click .family-activity-search-button'			: 'handleSearchClick'
         },
 
 		initialize: function() {
@@ -64,6 +65,15 @@
         handleResetClick: function() {},
 
         handleXlsxExportClick: function() {},
+
+		handleFiscalYearClick: function( event ) {
+			event.preventDefault();
+
+			// set the registration date range
+			var $dateRangeInputData = this.$el.find( '[name="family-activity-date-range"]' ).data( 'daterangepicker' );
+			$dateRangeInputData.setStartDate( moment( $( event.target ).data( 'yearStart' ) ) );
+			$dateRangeInputData.setEndDate( moment( $( event.target ).data( 'yearEnd' ) ) );
+		},
 
 		render: function( fromDate, toDate, params ) {
 			

@@ -17,7 +17,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6"></div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold">Family Activity Fiscal Years:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8 fiscal-year-button-container">
+                            {{#each fiscalYears as |fiscalYear|}}
+                                <button class="btn btn-outline-primary family-activity-fiscal-year-button"
+                                    data-year-start="{{ fiscalYear.startDate }}" 
+                                    data-year-end="{{ fiscalYear.endDate }}">
+                                        {{ fiscalYear.fiscalYear }}
+                                </button>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
 
