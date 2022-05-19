@@ -2260,8 +2260,11 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 				registrationNumber: inquiryDoc.family.registrationNumber,
 				email: inquiryDoc.family.email,
 				registrationDate: utilsService.verifyAndFormatDate( inquiryDoc.family.createdAt ),
-				latestInquiryDate: utilsService.verifyAndFormatDate( inquiryDoc.takenOn ),
-				latestInquiryDateISO: moment( inquiryDoc.takenOn ).toISOString()
+				latestInquiry: {
+					dateDisplay: utilsService.verifyAndFormatDate( inquiryDoc.takenOn ),
+					dateISO:  moment( inquiryDoc.takenOn ).toISOString(),
+					id: inquiryDoc._id.toString()
+				}
 			}));
 
 			res.send({

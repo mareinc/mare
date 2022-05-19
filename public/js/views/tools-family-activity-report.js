@@ -169,7 +169,10 @@
 				title: 'Latest Inquiry', 
 				data: function( row, type ) {
 					// return date in ISO format to enable column sorting
-					return type === 'sort' ? row.latestInquiryDateISO : row.latestInquiryDate;
+					return type === 'sort' ? row.latestInquiry.dateISO : row.latestInquiry.dateDisplay;
+				},
+				render: function( data, type, row, meta ) {
+					return '<a href="/keystone/inquiries/' + row.latestInquiry.id + '" target="_blank">' + data + '</a>';
 				}
 			},
             { title: 'Latest Event Registration', data: 'latestEventDate', defaultContent: '--' },
