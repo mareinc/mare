@@ -2258,6 +2258,13 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		placementDate: { $gte: fromDate, $lte: toDate }
 	};
 
+	// create the internal note activity search criteria
+	const internalNoteActivitySearchCriteria = {
+		date: { $gte: fromDate, $lte: toDate },
+		target: 'family',
+		family: { $exists: true, $ne: null }
+	};
+
 	// get the families that have submitted an inquiry within the specified date range
 	const inquiryActivityQuery = keystone.list( 'Inquiry' ).model
 		.find( inquiryActivitySearchCriteria )
@@ -2298,11 +2305,21 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.lean()
 		.exec();
 
-	Promise.all( [ inquiryActivityQuery, eventActivityQuery, matchActivityQuery, placementActivityQuery ] )
+	// get the families that have an internal note within the specified date range
+	const internalNoteActivityQuery = keystone.list( 'Internal Note' ).model
+		.find( internalNoteActivitySearchCriteria )
+		.limit( MAX_RESULTS )
+		.populate([
+			'family'
+		].join( ' ' ))
+		.lean()
+		.exec();
+
+	Promise.all( [ inquiryActivityQuery, eventActivityQuery, matchActivityQuery, placementActivityQuery, internalNoteActivityQuery ] )
 		.then( results => {
 
 			// destructure the activity data
-			const [ inquiryDocs, eventDocs, matchDocs, placementDocs ] = results;
+			const [ inquiryDocs, eventDocs, matchDocs, placementDocs, internalNoteDocs ] = results;
 
 			// create an object to capture all families with activity data of any type
 			const activeFamilies = {};
@@ -2538,6 +2555,63 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 				}
 			});
 
+			// ensure all internal note docs have a valid family relationship
+			const filteredInternalNoteResults = internalNoteDocs.filter( internalNoteDoc => internalNoteDoc.family && internalNoteDoc.family._id );
+
+			// add families with an internal note to active families object
+			filteredInternalNoteResults.forEach( internalNoteDoc => {
+
+				// check for existing family data in active families object
+				const familyId = internalNoteDoc.family._id.toString();
+				const existingFamilyEntry = activeFamilies[ familyId ];
+
+				// if the family already exists...
+				if ( existingFamilyEntry ) {
+
+					// check for existing internal note data
+					let existingInternalNote = existingFamilyEntry.latestInternalNoteData;
+					let updateInternalNoteData = true;
+
+					// if internal note data already exists for this family...
+					if ( existingInternalNote ) {
+
+						// get the dates of the existing and new internal notes
+						const existingInternalNoteDate = existingInternalNote.dateISO;
+						const newInternalNoteDate = moment( internalNoteDoc.date ).toISOString();
+
+						// if the existing internal note is more recent than the new internal note...
+						if ( existingInternalNoteDate > newInternalNoteDate ) {
+							// do not update internal note data for this family
+							updateInternalNoteData = false;
+						}
+					}
+
+					// if internal note data should be updated...
+					if ( updateInternalNoteData ) {
+
+						// overwrite existing internal note data with new internal note data
+						existingFamilyEntry.latestInternalNoteData = {
+							id: internalNoteDoc._id.toString(),
+							dateDisplay: utilsService.verifyAndFormatDate( internalNoteDoc.date ),
+							dateISO:  moment( internalNoteDoc.date ).toISOString()
+						};
+					}
+
+				// if the family doesn't exist...
+				} else {
+
+					// create the family entry and add the current internal note data as the latest internal note
+					activeFamilies[ familyId ] = {
+						familyDoc: internalNoteDoc.family,
+						latestInternalNoteData: {
+							id: internalNoteDoc._id.toString(),
+							dateDisplay: utilsService.verifyAndFormatDate( internalNoteDoc.date ),
+							dateISO:  moment( internalNoteDoc.date ).toISOString()
+						} 
+					};
+				}
+			});
+
 			// convert active families object into an array of family activity data to be displayed in results table
 			const familyActivity = Object.entries( activeFamilies ).map( activeFamily => {
 
@@ -2551,7 +2625,8 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 					latestInquiry: activityData.latestInquiryData,
 					latestEvent: activityData.latestEventData,
 					latestMatch: activityData.latestMatchData,
-					latestPlacement: activityData.latestplacementData
+					latestPlacement: activityData.latestplacementData,
+					latestInternalNote: activityData.latestInternalNoteData
 				};				
 			});
 

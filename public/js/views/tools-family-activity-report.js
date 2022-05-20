@@ -221,7 +221,20 @@
 					return data ? '<a href="/keystone/placements/' + row.latestPlacement.id + '" target="_blank">' + data + '</a>' : '--';
 				}
 			},
-            { title: 'Latest Note', data: 'latestNoteDate', defaultContent: '--' }
+			{ 
+				title: 'Latest Internal Note', 
+				data: function( row, type ) {
+					// return date in ISO format to enable column sorting
+					return row.latestInternalNote
+						? type === 'sort' 
+							? row.latestInternalNote.dateISO
+							: row.latestInternalNote.dateDisplay
+						: undefined;
+				},
+				render: function( data, type, row, meta ) {
+					return data ? '<a href="/keystone/internal-notes/' + row.latestInternalNote.id + '" target="_blank">' + data + '</a>' : '--';
+				}
+			}
 		]
 	});
 }());
