@@ -207,7 +207,20 @@
 					return data ? '<a href="/keystone/matches/' + row.latestMatch.id + '" target="_blank">' + data + '</a>' : '--';
 				}
 			},
-			{ title: 'Latest Placement', data: 'latestPlacementDate', defaultContent: '--' },
+			{ 
+				title: 'Latest Placement', 
+				data: function( row, type ) {
+					// return date in ISO format to enable column sorting
+					return row.latestPlacement
+						? type === 'sort' 
+							? row.latestPlacement.dateISO
+							: row.latestPlacement.dateDisplay
+						: undefined;
+				},
+				render: function( data, type, row, meta ) {
+					return data ? '<a href="/keystone/placements/' + row.latestPlacement.id + '" target="_blank">' + data + '</a>' : '--';
+				}
+			},
             { title: 'Latest Note', data: 'latestNoteDate', defaultContent: '--' }
 		]
 	});

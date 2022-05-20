@@ -2253,6 +2253,11 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		matchDate: { $gte: fromDate, $lte: toDate }
 	};
 
+	// create the placement activity search critera
+	const placementActivitySearchCriteria = {
+		placementDate: { $gte: fromDate, $lte: toDate }
+	};
+
 	// get the families that have submitted an inquiry within the specified date range
 	const inquiryActivityQuery = keystone.list( 'Inquiry' ).model
 		.find( inquiryActivitySearchCriteria )
@@ -2283,11 +2288,21 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.lean()
 		.exec();
 
-	Promise.all( [ inquiryActivityQuery, eventActivityQuery, matchActivityQuery ] )
+	// get the families that have had a placement within the specified date range
+	const placementActivityQuery = keystone.list( 'Placement' ).model
+		.find( placementActivitySearchCriteria )
+		.limit( MAX_RESULTS )
+		.populate([
+			'family'
+		].join( ' ' ))
+		.lean()
+		.exec();
+
+	Promise.all( [ inquiryActivityQuery, eventActivityQuery, matchActivityQuery, placementActivityQuery ] )
 		.then( results => {
 
 			// destructure the activity data
-			const [ inquiryDocs, eventDocs, matchDocs ] = results;
+			const [ inquiryDocs, eventDocs, matchDocs, placementDocs ] = results;
 
 			// create an object to capture all families with activity data of any type
 			const activeFamilies = {};
@@ -2466,6 +2481,63 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 				}
 			});
 
+			// ensure all placement docs have a valid family relationship
+			const filteredPlacementResults = placementDocs.filter( placementDoc => placementDoc.family && placementDoc.family._id );
+
+			// add placed families to active families object
+			filteredPlacementResults.forEach( placementDoc => {
+
+				// check for existing family data in active families object
+				const familyId = placementDoc.family._id.toString();
+				const existingFamilyEntry = activeFamilies[ familyId ];
+
+				// if the family already exists...
+				if ( existingFamilyEntry ) {
+
+					// check for existing placement data
+					let existingPlacement = existingFamilyEntry.latestplacementData;
+					let updatePlacementData = true;
+
+					// if placement data already exists for this family...
+					if ( existingPlacement ) {
+
+						// get the dates of the existing and new placements
+						const existingPlacementDate = existingPlacement.dateISO;
+						const newPlacementDate = moment( placementDoc.placementDate ).toISOString();
+
+						// if the existing placement is more recent than the new placement...
+						if ( existingPlacementDate > newPlacementDate ) {
+							// do not update placement data for this family
+							updatePlacementData = false;
+						}
+					}
+
+					// if placement data should be updated...
+					if ( updatePlacementData ) {
+
+						// overwrite existing placement data with new placement data
+						existingFamilyEntry.latestplacementData = {
+							id: placementDoc._id.toString(),
+							dateDisplay: utilsService.verifyAndFormatDate( placementDoc.placementDate ),
+							dateISO:  moment( placementDoc.placementDate ).toISOString()
+						};
+					}
+
+				// if the family doesn't exist...
+				} else {
+
+					// create the family entry and add the current placement data as the latest placement
+					activeFamilies[ familyId ] = {
+						familyDoc: placementDoc.family,
+						latestplacementData: {
+							id: placementDoc._id.toString(),
+							dateDisplay: utilsService.verifyAndFormatDate( placementDoc.placementDate ),
+							dateISO:  moment( placementDoc.placementDate ).toISOString()
+						} 
+					};
+				}
+			});
+
 			// convert active families object into an array of family activity data to be displayed in results table
 			const familyActivity = Object.entries( activeFamilies ).map( activeFamily => {
 
@@ -2478,7 +2550,8 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 					registrationDate: utilsService.verifyAndFormatDate( activityData.familyDoc.createdAt ),
 					latestInquiry: activityData.latestInquiryData,
 					latestEvent: activityData.latestEventData,
-					latestMatch: activityData.latestMatchData
+					latestMatch: activityData.latestMatchData,
+					latestPlacement: activityData.latestplacementData
 				};				
 			});
 
