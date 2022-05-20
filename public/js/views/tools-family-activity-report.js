@@ -169,13 +169,30 @@
 				title: 'Latest Inquiry', 
 				data: function( row, type ) {
 					// return date in ISO format to enable column sorting
-					return type === 'sort' ? row.latestInquiry.dateISO : row.latestInquiry.dateDisplay;
+					return row.latestInquiry 
+						? type === 'sort' 
+							? row.latestInquiry.dateISO 
+							: row.latestInquiry.dateDisplay
+						: undefined
 				},
 				render: function( data, type, row, meta ) {
-					return '<a href="/keystone/inquiries/' + row.latestInquiry.id + '" target="_blank">' + data + '</a>';
+					return data ? '<a href="/keystone/inquiries/' + row.latestInquiry.id + '" target="_blank">' + data + '</a>' : '--';
 				}
 			},
-            { title: 'Latest Event Registration', data: 'latestEventDate', defaultContent: '--' },
+			{ 
+				title: 'Latest Event Attended', 
+				data: function( row, type ) {
+					// return date in ISO format to enable column sorting
+					return row.latestEvent
+						? type === 'sort' 
+							? row.latestEvent.dateISO
+							: row.latestEvent.dateDisplay
+						: undefined;
+				},
+				render: function( data, type, row, meta ) {
+					return data ? '<a href="/keystone/events/' + row.latestEvent.id + '" target="_blank">' + data + '</a>' : '--';
+				}
+			},
             { title: 'Latest Match', data: 'latestMatchDate', defaultContent: '--' },
             { title: 'Latest Placement', data: 'latestPlacementDate', defaultContent: '--' },
             { title: 'Latest Note', data: 'latestNoteDate', defaultContent: '--' }

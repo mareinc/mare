@@ -2243,7 +2243,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		family: { $exists: true, $ne: null }
 	};
 
-	// get the families that have submitted an inquiry within specified date range
+	// create the event activity search criteria
+	const eventActivitySearchCriteria = {
+		startDate: { $gte: fromDate, $lte: toDate }
+	};
+
+	// get the families that have submitted an inquiry within the specified date range
 	const inquiryActivityQuery = keystone.list( 'Inquiry' ).model
 		.find( inquiryActivitySearchCriteria )
 		.limit( MAX_RESULTS )
@@ -2253,11 +2258,21 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.lean()
 		.exec();
 
-	Promise.all( [ inquiryActivityQuery ] )
+	// get the families that have attended an event within the specified date range
+	const eventActivityQuery = keystone.list( 'Event' ).model
+		.find( eventActivitySearchCriteria )
+		.limit( MAX_RESULTS )
+		.populate([
+			'familyAttendees'
+		].join( ' ' ))
+		.lean()
+		.exec();
+
+	Promise.all( [ inquiryActivityQuery, eventActivityQuery ] )
 		.then( results => {
 
 			// destructure the activity data
-			const [ inquiryDocs ] = results;
+			const [ inquiryDocs, eventDocs ] = results;
 
 			// create an object to capture all families with activity data of any type
 			const activeFamilies = {};
@@ -2265,7 +2280,7 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 			// ensure all inquiry docs have a valid family relationship
 			const filteredInquiryDocs = inquiryDocs.filter( inquiryDoc => inquiryDoc.family && inquiryDoc.family._id );
 
-			// add families to active families object
+			// add inquiring families to active families object
 			filteredInquiryDocs.forEach( inquiryDoc => {
 
 				// check for existing family data in active families object
@@ -2288,7 +2303,6 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 
 						// if the existing inquiry is more recent than the new inquiry...
 						if ( existingInquiryDate > newInquiryDate ) {
-
 							// do not update inquiry data for this family
 							updateInquiryData = false;
 						}
@@ -2296,7 +2310,7 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 
 					// if inquiry data should be updated...
 					if ( updateInquiryData ) {
-
+						
 						// overwrite existing inquiry data with new inquiry data
 						existingFamilyEntry.latestInquiryData = {
 							id: inquiryDoc._id.toString(),
@@ -2320,6 +2334,67 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 				}
 			});
 
+			// ensure all event docs have family attendees
+			const filteredEventDocs = eventDocs.filter( eventDoc => eventDoc.familyAttendees && eventDoc.familyAttendees.length > 0 );
+
+			// add families attending events to active families object
+			filteredEventDocs.forEach( eventDoc => {
+
+				eventDoc.familyAttendees.forEach( familyDoc => {
+
+					// check for existing family data in active families object
+					const familyId = familyDoc._id.toString();
+					const existingFamilyEntry = activeFamilies[ familyId ];
+
+					// if the family already exists...
+					if ( existingFamilyEntry ) {
+
+						// check for existing event data
+						let existingEvent = existingFamilyEntry.latestEventData;
+						let updateEventData = true;
+
+						// if event data already exists for this family...
+						if ( existingEvent ) {
+
+							// get the dates of the existing and new events
+							const existingEventDate = existingEvent.dateISO;
+							const newEventDate = moment( eventDoc.startDate ).toISOString();
+
+							// if the existing event is more recent than the new event...
+							if ( existingEventDate > newEventDate ) {
+								// do not update event data for this family
+								updateEventData = false;
+							}
+						}
+
+						// if event data should be updated...
+						if ( updateEventData ) {
+
+							// overwrite existing event data with new event data
+							existingFamilyEntry.latestEventData = {
+								id: eventDoc._id.toString(),
+								dateDisplay: utilsService.verifyAndFormatDate( eventDoc.startDate ),
+								dateISO: moment( eventDoc.startDate ).toISOString()
+							};
+						}
+
+					// if the family doesn't exist...
+					} else {
+
+						// create the family entry and add the current event data as the latest event
+						activeFamilies[ familyId ] = {
+							familyDoc,
+							latestEventData: {
+								id: eventDoc._id.toString(),
+								dateDisplay: utilsService.verifyAndFormatDate( eventDoc.startDate ),
+								dateISO:  moment( eventDoc.startDate ).toISOString()
+							} 
+						};
+					}
+				})
+			});
+
+			// convert active families object into an array of family activity data to be displayed in results table
 			const familyActivity = Object.entries( activeFamilies ).map( activeFamily => {
 
 				const [ familyID, activityData ] = activeFamily;
@@ -2329,10 +2404,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 					registrationNumber: activityData.familyDoc.registrationNumber,
 					email: activityData.familyDoc.email,
 					registrationDate: utilsService.verifyAndFormatDate( activityData.familyDoc.createdAt ),
-					latestInquiry: activityData.latestInquiryData
+					latestInquiry: activityData.latestInquiryData,
+					latestEvent: activityData.latestEventData
 				};				
 			});
 
+			// send the result data
 			res.send({
 				noResultsFound: !familyActivity || familyActivity.length === 0,
 				results: familyActivity,
