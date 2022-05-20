@@ -193,8 +193,21 @@
 					return data ? '<a href="/keystone/events/' + row.latestEvent.id + '" target="_blank">' + data + '</a>' : '--';
 				}
 			},
-            { title: 'Latest Match', data: 'latestMatchDate', defaultContent: '--' },
-            { title: 'Latest Placement', data: 'latestPlacementDate', defaultContent: '--' },
+			{ 
+				title: 'Latest Match', 
+				data: function( row, type ) {
+					// return date in ISO format to enable column sorting
+					return row.latestMatch
+						? type === 'sort' 
+							? row.latestMatch.dateISO
+							: row.latestMatch.dateDisplay
+						: undefined;
+				},
+				render: function( data, type, row, meta ) {
+					return data ? '<a href="/keystone/matches/' + row.latestMatch.id + '" target="_blank">' + data + '</a>' : '--';
+				}
+			},
+			{ title: 'Latest Placement', data: 'latestPlacementDate', defaultContent: '--' },
             { title: 'Latest Note', data: 'latestNoteDate', defaultContent: '--' }
 		]
 	});

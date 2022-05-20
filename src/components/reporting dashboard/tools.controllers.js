@@ -2248,6 +2248,11 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		startDate: { $gte: fromDate, $lte: toDate }
 	};
 
+	// create the match activity search critera
+	const matchActivitySearchCriteria = {
+		matchDate: { $gte: fromDate, $lte: toDate }
+	};
+
 	// get the families that have submitted an inquiry within the specified date range
 	const inquiryActivityQuery = keystone.list( 'Inquiry' ).model
 		.find( inquiryActivitySearchCriteria )
@@ -2268,11 +2273,21 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.lean()
 		.exec();
 
-	Promise.all( [ inquiryActivityQuery, eventActivityQuery ] )
+	// get the families that have had a match within the specified date range
+	const matchActivityQuery = keystone.list( 'Match' ).model
+		.find( matchActivitySearchCriteria )
+		.limit( MAX_RESULTS )
+		.populate([
+			'family'
+		].join( ' ' ))
+		.lean()
+		.exec();
+
+	Promise.all( [ inquiryActivityQuery, eventActivityQuery, matchActivityQuery ] )
 		.then( results => {
 
 			// destructure the activity data
-			const [ inquiryDocs, eventDocs ] = results;
+			const [ inquiryDocs, eventDocs, matchDocs ] = results;
 
 			// create an object to capture all families with activity data of any type
 			const activeFamilies = {};
@@ -2394,6 +2409,63 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 				})
 			});
 
+			// ensure all match docs have a valid family relationship
+			const filteredMatchResults = matchDocs.filter( matchDoc => matchDoc.family && matchDoc.family._id );
+
+			// add matched families to active families object
+			filteredMatchResults.forEach( matchDoc => {
+
+				// check for existing family data in active families object
+				const familyId = matchDoc.family._id.toString();
+				const existingFamilyEntry = activeFamilies[ familyId ];
+
+				// if the family already exists...
+				if ( existingFamilyEntry ) {
+
+					// check for existing match data
+					let existingMatch = existingFamilyEntry.latestMatchData;
+					let updateMatchData = true;
+
+					// if match data already exists for this family...
+					if ( existingMatch ) {
+
+						// get the dates of the existing and new matches
+						const existingMatchDate = existingMatch.dateISO;
+						const newMatchDate = moment( matchDoc.matchDate ).toISOString();
+
+						// if the existing match is more recent than the new match...
+						if ( existingMatchDate > newMatchDate ) {
+							// do not update match data for this family
+							updateMatchData = false;
+						}
+					}
+
+					// if match data should be updated...
+					if ( updateMatchData ) {
+
+						// overwrite existing match data with new match data
+						existingFamilyEntry.latestMatchData = {
+							id: matchDoc._id.toString(),
+							dateDisplay: utilsService.verifyAndFormatDate( matchDoc.matchDate ),
+							dateISO:  moment( matchDoc.matchDate ).toISOString()
+						};
+					}
+
+				// if the family doesn't exist...
+				} else {
+
+					// create the family entry and add the current match data as the latest match
+					activeFamilies[ familyId ] = {
+						familyDoc: matchDoc.family,
+						latestMatchData: {
+							id: matchDoc._id.toString(),
+							dateDisplay: utilsService.verifyAndFormatDate( matchDoc.matchDate ),
+							dateISO:  moment( matchDoc.matchDate ).toISOString()
+						} 
+					};
+				}
+			});
+
 			// convert active families object into an array of family activity data to be displayed in results table
 			const familyActivity = Object.entries( activeFamilies ).map( activeFamily => {
 
@@ -2405,7 +2477,8 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 					email: activityData.familyDoc.email,
 					registrationDate: utilsService.verifyAndFormatDate( activityData.familyDoc.createdAt ),
 					latestInquiry: activityData.latestInquiryData,
-					latestEvent: activityData.latestEventData
+					latestEvent: activityData.latestEventData,
+					latestMatch: activityData.latestMatchData
 				};				
 			});
 
