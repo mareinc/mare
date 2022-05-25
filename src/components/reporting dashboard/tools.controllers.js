@@ -2638,7 +2638,9 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 				return {
 					id: familyID,
 					registrationNumber: activityData.familyDoc.registrationNumber,
-					email: activityData.familyDoc.email,
+					email: activityData.familyDoc.email === ''
+						? undefined
+						: activityData.familyDoc.email,
 					registrationDate: utilsService.verifyAndFormatDate( activityData.familyDoc.createdAt ),
 					latestInquiry: activityData.latestInquiryData,
 					latestEvent: activityData.latestEventData,
