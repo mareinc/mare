@@ -48,6 +48,7 @@ exports = module.exports = ( req, res ) => {
 			locals.states = states;
 			locals.familyStages = utilsService.FAMILY_STAGES;
 			locals.familyServices = utilsService.FAMILY_SERVICES;
+			locals.familyLGBTQIdentityOptions = utilsService.FAMILY_LGBTQ_IDENTITY_OPTIONS;
             locals.lgbtqIdentityOptions = utilsService.LGBTQ_IDENTITY_OPTIONS;
 			locals.relationshipStatusOptions = utilsService.RELATIONSHIP_STATUS_OPTIONS;
 			locals.matchingExclusions = matchingExclusions.filter( matchingExclusion => ![ process.env.MATCHING_EXCLUSION_OLDER_CHILDREN, process.env.MATCHING_EXCLUSION_YOUNGER_CHILDREN ].includes( matchingExclusion._id.toString() ) ); // don't include Younger/Older children options

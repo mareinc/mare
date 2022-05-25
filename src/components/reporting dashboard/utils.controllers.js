@@ -43,6 +43,12 @@ exports.LGBTQ_IDENTITY_OPTIONS = [
     'Unknown'
 ];
 
+exports.FAMILY_LGBTQ_IDENTITY_OPTIONS = [
+    'Yes',
+    'No',
+    'Unknown/Prefers Not To Answer'
+];
+
 exports.RELATIONSHIP_STATUS_OPTIONS = [
 	'Single',
 	'Partnered',
