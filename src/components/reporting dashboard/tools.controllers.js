@@ -2248,7 +2248,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 
 	// state criteria
 	if ( query.state ) {
-		registrationActivitySearchCriteria['address.statea'] = { $in: query.state };
+		registrationActivitySearchCriteria['address.state'] = { $in: query.state };
+	}
+
+	// relationship status criteria
+	if (query.relationshipStatus) {
+		registrationActivitySearchCriteria.relationshipStatus = query.relationshipStatus;
 	}
 
 	// create the inquiry activity search criteria

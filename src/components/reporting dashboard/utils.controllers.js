@@ -43,6 +43,12 @@ exports.LGBTQ_IDENTITY_OPTIONS = [
     'Unknown'
 ];
 
+exports.RELATIONSHIP_STATUS_OPTIONS = [
+	'Single',
+	'Partnered',
+	'Unknown/Prefers Not To Answer'
+];
+
 // family stages are defined in an intentional, chronological, order - changing the order of the items 
 // in this list will impact the behavior of the family listing report (and potentially others)
 exports.FAMILY_STAGES = [{
