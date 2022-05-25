@@ -2236,6 +2236,11 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		return flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading family activity data' );
 	}
 
+	// create the baseline family registration activity search criteria
+	let registrationActivitySearchCriteria = {
+		initialContact: { $gte: fromDate, $lte: toDate }
+	};
+
 	// create the inquiry activity search criteria
 	const inquiryActivitySearchCriteria = {
 		takenOn: { $gte: fromDate, $lte: toDate },
@@ -2264,6 +2269,13 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		target: 'family',
 		family: { $exists: true, $ne: null }
 	};
+
+	// get the families that have registered within the specified date range
+	const registrationActivityQuery = keystone.list( 'Family' ).model
+		.find( registrationActivitySearchCriteria )
+		.limit( MAX_RESULTS )
+		.lean()
+		.exec();
 
 	// get the families that have submitted an inquiry within the specified date range
 	const inquiryActivityQuery = keystone.list( 'Inquiry' ).model
@@ -2315,14 +2327,20 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.lean()
 		.exec();
 
-	Promise.all( [ inquiryActivityQuery, eventActivityQuery, matchActivityQuery, placementActivityQuery, internalNoteActivityQuery ] )
+	Promise.all( [ registrationActivityQuery, inquiryActivityQuery, eventActivityQuery, matchActivityQuery, placementActivityQuery, internalNoteActivityQuery ] )
 		.then( results => {
 
 			// destructure the activity data
-			const [ inquiryDocs, eventDocs, matchDocs, placementDocs, internalNoteDocs ] = results;
+			const [ familyDocs, inquiryDocs, eventDocs, matchDocs, placementDocs, internalNoteDocs ] = results;
 
 			// create an object to capture all families with activity data of any type
 			const activeFamilies = {};
+
+			// add registered families to active families object
+			familyDocs.forEach( familyDoc => {
+				// create the family entry with the family doc data
+				activeFamilies[ familyDoc._id.toString() ] = { familyDoc };
+			});
 
 			// ensure all inquiry docs have a valid family relationship
 			const filteredInquiryDocs = inquiryDocs.filter( inquiryDoc => inquiryDoc.family && inquiryDoc.family._id );
@@ -2640,7 +2658,7 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.catch( err => {
 
 			// log an error for debugging purposes
-			console.error( `error loading family activity report for the dashboard - ${ err }` );
+			console.error( 'error loading family activity report for the dashboard', err );
 			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading family activity data' );
 		});
 };
