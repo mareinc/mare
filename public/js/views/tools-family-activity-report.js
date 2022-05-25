@@ -21,6 +21,33 @@
 
         initializeSearchForm: function( fromDate, toDate, params ) {
 
+			function fillIn() {
+				var input = jQuery( this );
+						
+				if ( input.attr( 'type' ) === 'checkbox' && ( _.contains( params[ paramName ], input.val() ) || params[ paramName ] === input.val() ) ) {
+					input.prop( 'checked', true );
+				}
+				
+				if ( input.prop( 'tagName' ).toLowerCase() === 'select' ) {
+					input.val( params[ paramName ] );
+				}
+			}
+			
+			// seed form fields based on url params
+			for ( var paramName in params ) {
+				if ( params.hasOwnProperty( paramName ) ) {
+					this.$el.find( '[name="' + paramName + '"], [name="' + paramName + '[]"]' ).each( fillIn );
+				}
+			}
+
+			this.$el.find( '.region-select' ).select2({
+				placeholder: 'All Regions'
+			});
+
+			this.$el.find( '.state-select' ).select2({
+				placeholder: 'All States'
+			});
+
             // initialize the date range picker
 			this.$el.find( '[name="family-activity-date-range"]' ).daterangepicker({
 				startDate: moment( fromDate ),

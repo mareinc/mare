@@ -2241,6 +2241,16 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		initialContact: { $gte: fromDate, $lte: toDate }
 	};
 
+	// region criteria
+	if ( query.region ) {
+		registrationActivitySearchCriteria['address.region'] = { $in: query.region };
+	}
+
+	// state criteria
+	if ( query.state ) {
+		registrationActivitySearchCriteria['address.statea'] = { $in: query.state };
+	}
+
 	// create the inquiry activity search criteria
 	const inquiryActivitySearchCriteria = {
 		takenOn: { $gte: fromDate, $lte: toDate },

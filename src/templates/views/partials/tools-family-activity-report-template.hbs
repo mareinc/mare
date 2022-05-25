@@ -33,6 +33,34 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="region" class="bold">Region:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="region" name="region[]" class="form-control region-select" multiple>
+                                {{#each regions as |region|}}
+                                    <option value="{{ region.id }}">{{ region.region }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="state" class="bold">State:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="state" name="state[]" class="form-control state-select" multiple>
+                                {{#each states as |state|}}
+                                    <option value="{{ state.id }}">{{ state.state }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
 

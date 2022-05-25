@@ -70,7 +70,8 @@
 	.child-listing-report > & > .row,
 	.family-listing-report > & > .row,
 	.family-stages-report > & > .row,
-    .caseload-report > & > .row {
+    .caseload-report > & > .row,
+	.family-activity-report > & > .row {
 
 		// workaround to ensure that report form fields line up with the date filter fields
 		// that have custom row styles applied to them (filter-form styles)
