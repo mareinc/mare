@@ -63,36 +63,6 @@
                 </div>
                 <div class="col-6">
                     <div class="row form-group">
-                         <div class="col-sm-12 col-md-4 text-sm-right" >
-                            <label for="identifies-as-lgbtq" class="bold">Identifies as LGBTQ+?:</label>
-                        </div>
-                        <div class="col-sm-12 col-md-8">
-                            <select id="identifies-as-lgbtq" name="identifiesAsLGBTQ" class="form-control">
-                                <option value="">Any</option>
-                                {{#each lgbtqIdentityOptions}}
-                                <option value="{{ . }}">{{ . }}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="row form-group">
-                         <div class="col-sm-12 col-md-4 text-sm-right" >
-                            <label for="relationship-status" class="bold">Relationship Status:</label>
-                        </div>
-                        <div class="col-sm-12 col-md-8">
-                            <select id="relationship-status" name="relationshipStatus" class="form-control">
-                                <option value="">Any</option>
-                                {{#each relationshipStatusOptions}}
-                                <option value="{{ . }}">{{ . }}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right">
                             <label for="contact-1-gender" class="bold">Contact 1 Gender:</label>
                         </div>
@@ -147,6 +117,52 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                         <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="contact-1-identifies-as-lgbtq" class="bold">Contact 1 Identifies as LGBTQ+?:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="contact-1-identifies-as-lgbtq" name="contact-1-identifies-as-lgbtq" class="form-control">
+                                <option value="">Any</option>
+                                {{#each lgbtqIdentityOptions}}
+                                <option value="{{ . }}">{{ . }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                         <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="contact-2-identifies-as-lgbtq" class="bold">Contact 2 Identifies as LGBTQ+?:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="contact-2-identifies-as-lgbtq" name="contact-2-identifies-as-lgbtq" class="form-control">
+                                <option value="">Any</option>
+                                {{#each lgbtqIdentityOptions}}
+                                <option value="{{ . }}">{{ . }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                         <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="relationship-status" class="bold">Relationship Status:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="relationship-status" name="relationshipStatus" class="form-control">
+                                <option value="">Any</option>
+                                {{#each relationshipStatusOptions}}
+                                <option value="{{ . }}">{{ . }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6"></div>
             </div>
         </form>
 

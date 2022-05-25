@@ -2256,24 +2256,34 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		registrationActivitySearchCriteria.relationshipStatus = query.relationshipStatus;
 	}
 
-	// contact 1 gender (multiple)
+	// contact 1 gender criteria (multiple)
 	if ( Array.isArray( query[ 'contact-1-gender' ] ) && query[ 'contact-1-gender' ].length > 0 ) {
 		registrationActivitySearchCriteria[ 'contact1.gender' ] = { $in: query[ 'contact-1-gender' ] };
 	}
 
-	// contact 2 gender (multiple)
+	// contact 2 gender criteria (multiple)
 	if ( Array.isArray( query[ 'contact-2-gender' ] ) && query[ 'contact-2-gender' ].length > 0 ) {
 		registrationActivitySearchCriteria[ 'contact2.gender' ] = { $in: query[ 'contact-2-gender' ] };
 	}
 
-	// contact 1 race (multiple)
+	// contact 1 race criteria (multiple)
 	if ( Array.isArray( query[ 'contact-1-race' ] ) && query[ 'contact-1-race' ].length > 0 ) {
 		registrationActivitySearchCriteria[ 'contact1.race' ] = { $in: query[ 'contact-1-race' ] };
 	}
 
-	// contact 2 race (multiple)
+	// contact 2 race criteria (multiple)
 	if ( Array.isArray( query[ 'contact-2-race' ] ) && query[ 'contact-2-race' ].length > 0 ) {
 		registrationActivitySearchCriteria[ 'contact2.race' ] = { $in: query[ 'contact-2-race' ] };
+	}
+
+	// contact 1 identifies as lgbtq+ criterion
+	if ( query['contact-1-identifies-as-lgbtq'] ) {
+		registrationActivitySearchCriteria[ 'contact1.doesIdentifyAsLGBTQ' ] = query['contact-1-identifies-as-lgbtq'];
+	}
+
+	// contact 2 identifies as lgbtq+ criterion
+	if ( query['contact-2-identifies-as-lgbtq'] ) {
+		registrationActivitySearchCriteria[ 'contact2.doesIdentifyAsLGBTQ' ] = query['contact-2-identifies-as-lgbtq'];
 	}
 
 	// create the inquiry activity search criteria
