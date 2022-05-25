@@ -2241,19 +2241,39 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		initialContact: { $gte: fromDate, $lte: toDate }
 	};
 
-	// region criteria
-	if ( query.region ) {
+	// region criteria (multiple)
+	if ( Array.isArray( query.region ) && query.region.length > 0 ) {
 		registrationActivitySearchCriteria['address.region'] = { $in: query.region };
 	}
 
-	// state criteria
-	if ( query.state ) {
+	// state criteria (multiple)
+	if ( Array.isArray( query.state ) && query.state.length > 0 ) {
 		registrationActivitySearchCriteria['address.state'] = { $in: query.state };
 	}
 
 	// relationship status criteria
 	if (query.relationshipStatus) {
 		registrationActivitySearchCriteria.relationshipStatus = query.relationshipStatus;
+	}
+
+	// contact 1 gender (multiple)
+	if ( Array.isArray( query[ 'contact-1-gender' ] ) && query[ 'contact-1-gender' ].length > 0 ) {
+		registrationActivitySearchCriteria[ 'contact1.gender' ] = { $in: query[ 'contact-1-gender' ] };
+	}
+
+	// contact 2 gender (multiple)
+	if ( Array.isArray( query[ 'contact-2-gender' ] ) && query[ 'contact-2-gender' ].length > 0 ) {
+		registrationActivitySearchCriteria[ 'contact2.gender' ] = { $in: query[ 'contact-2-gender' ] };
+	}
+
+	// contact 1 race (multiple)
+	if ( Array.isArray( query[ 'contact-1-race' ] ) && query[ 'contact-1-race' ].length > 0 ) {
+		registrationActivitySearchCriteria[ 'contact1.race' ] = { $in: query[ 'contact-1-race' ] };
+	}
+
+	// contact 2 race (multiple)
+	if ( Array.isArray( query[ 'contact-2-race' ] ) && query[ 'contact-2-race' ].length > 0 ) {
+		registrationActivitySearchCriteria[ 'contact2.race' ] = { $in: query[ 'contact-2-race' ] };
 	}
 
 	// create the inquiry activity search criteria

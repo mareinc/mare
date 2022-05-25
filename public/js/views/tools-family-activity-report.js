@@ -40,12 +40,21 @@
 				}
 			}
 
+			// initialize select inputs
 			this.$el.find( '.region-select' ).select2({
 				placeholder: 'All Regions'
 			});
 
 			this.$el.find( '.state-select' ).select2({
 				placeholder: 'All States'
+			});
+
+			this.$el.find( '.contact-1-gender-select, .contact-2-gender-select' ).select2({
+				placeholder: 'All Genders'
+			});
+
+			this.$el.find( '.contact-1-race-select, .contact-2-race-select' ).select2({
+				placeholder: 'All Races'
 			});
 
             // initialize the date range picker
