@@ -163,8 +163,19 @@
 					return '<a href="/keystone/families/' + row.id + '" target="_blank">' + data + '</a>';
 				}
 			},
-			{ title: 'Email', data: 'email',  defaultContent: '--' },
-            { title: 'Registration Date', data: 'registrationDate', defaultContent: '--' },
+			{ title: 'Email', data: 'email', defaultContent: '--' },
+            { 
+				title: 'Registration Date', 
+				data: function( row, type ) {
+					// return date in ISO format to enable column sorting
+					return row.registrationDate 
+						? type === 'sort' 
+							? row.registrationDate.dateISO 
+							: row.registrationDate.dateDisplay
+						: undefined
+				},
+				defaultContent: '--'
+			},
             { 
 				title: 'Latest Inquiry', 
 				data: function( row, type ) {

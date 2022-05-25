@@ -2641,7 +2641,10 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 					email: activityData.familyDoc.email === ''
 						? undefined
 						: activityData.familyDoc.email,
-					registrationDate: utilsService.verifyAndFormatDate( activityData.familyDoc.createdAt ),
+					registrationDate: {
+						dateDisplay: utilsService.verifyAndFormatDate( activityData.familyDoc.initialContact ),
+						dateISO:  moment( activityData.familyDoc.initialContact ).toISOString()
+					},
 					latestInquiry: activityData.latestInquiryData,
 					latestEvent: activityData.latestEventData,
 					latestMatch: activityData.latestMatchData,
