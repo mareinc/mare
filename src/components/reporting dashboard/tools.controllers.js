@@ -2236,55 +2236,59 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		return flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading family activity data' );
 	}
 
-	// create the baseline family registration activity search criteria
-	let registrationActivitySearchCriteria = {
-		initialContact: { $gte: fromDate, $lte: toDate }
-	};
+	// create family search criteria
+	const familySearchCriteria = {};
 
 	// region criteria (multiple)
 	if ( Array.isArray( query.region ) && query.region.length > 0 ) {
-		registrationActivitySearchCriteria['address.region'] = { $in: query.region };
+		familySearchCriteria['address.region'] = { $in: query.region };
 	}
 
 	// state criteria (multiple)
 	if ( Array.isArray( query.state ) && query.state.length > 0 ) {
-		registrationActivitySearchCriteria['address.state'] = { $in: query.state };
+		familySearchCriteria['address.state'] = { $in: query.state };
 	}
 
 	// relationship status criteria
-	if (query.relationshipStatus) {
-		registrationActivitySearchCriteria.relationshipStatus = query.relationshipStatus;
+	if ( query.relationshipStatus ) {
+		familySearchCriteria.relationshipStatus = query.relationshipStatus;
 	}
 
 	// contact 1 gender criteria (multiple)
 	if ( Array.isArray( query[ 'contact-1-gender' ] ) && query[ 'contact-1-gender' ].length > 0 ) {
-		registrationActivitySearchCriteria[ 'contact1.gender' ] = { $in: query[ 'contact-1-gender' ] };
+		familySearchCriteria[ 'contact1.gender' ] = { $in: query[ 'contact-1-gender' ] };
 	}
 
 	// contact 2 gender criteria (multiple)
 	if ( Array.isArray( query[ 'contact-2-gender' ] ) && query[ 'contact-2-gender' ].length > 0 ) {
-		registrationActivitySearchCriteria[ 'contact2.gender' ] = { $in: query[ 'contact-2-gender' ] };
+		familySearchCriteria[ 'contact2.gender' ] = { $in: query[ 'contact-2-gender' ] };
 	}
 
 	// contact 1 race criteria (multiple)
 	if ( Array.isArray( query[ 'contact-1-race' ] ) && query[ 'contact-1-race' ].length > 0 ) {
-		registrationActivitySearchCriteria[ 'contact1.race' ] = { $in: query[ 'contact-1-race' ] };
+		familySearchCriteria[ 'contact1.race' ] = { $in: query[ 'contact-1-race' ] };
 	}
 
 	// contact 2 race criteria (multiple)
 	if ( Array.isArray( query[ 'contact-2-race' ] ) && query[ 'contact-2-race' ].length > 0 ) {
-		registrationActivitySearchCriteria[ 'contact2.race' ] = { $in: query[ 'contact-2-race' ] };
+		familySearchCriteria[ 'contact2.race' ] = { $in: query[ 'contact-2-race' ] };
 	}
 
 	// contact 1 identifies as lgbtq+ criterion
 	if ( query['contact-1-identifies-as-lgbtq'] ) {
-		registrationActivitySearchCriteria[ 'contact1.doesIdentifyAsLGBTQ' ] = query['contact-1-identifies-as-lgbtq'];
+		familySearchCriteria[ 'contact1.doesIdentifyAsLGBTQ' ] = query['contact-1-identifies-as-lgbtq'];
 	}
 
 	// contact 2 identifies as lgbtq+ criterion
 	if ( query['contact-2-identifies-as-lgbtq'] ) {
-		registrationActivitySearchCriteria[ 'contact2.doesIdentifyAsLGBTQ' ] = query['contact-2-identifies-as-lgbtq'];
+		familySearchCriteria[ 'contact2.doesIdentifyAsLGBTQ' ] = query['contact-2-identifies-as-lgbtq'];
 	}
+
+	// create the family registration activity search criteria
+	const registrationActivitySearchCriteria = {
+		initialContact: { $gte: fromDate, $lte: toDate },
+		...familySearchCriteria
+	};
 
 	// create the inquiry activity search criteria
 	const inquiryActivitySearchCriteria = {
@@ -2676,26 +2680,81 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 			});
 
 			// convert active families object into an array of family activity data to be displayed in results table
-			const familyActivity = Object.entries( activeFamilies ).map( activeFamily => {
+			const familyActivity = [];
+			
+			Object.entries( activeFamilies ).forEach( activeFamily => {
 
 				const [ familyID, activityData ] = activeFamily;
+				let doesActiveFamilyMatchFamilySearchCriteria = true;
 
-				return {
-					id: familyID,
-					registrationNumber: activityData.familyDoc.registrationNumber,
-					email: activityData.familyDoc.email === ''
-						? undefined
-						: activityData.familyDoc.email,
-					registrationDate: {
-						dateDisplay: utilsService.verifyAndFormatDate( activityData.familyDoc.initialContact ),
-						dateISO:  moment( activityData.familyDoc.initialContact ).toISOString()
-					},
-					latestInquiry: activityData.latestInquiryData,
-					latestEvent: activityData.latestEventData,
-					latestMatch: activityData.latestMatchData,
-					latestPlacement: activityData.latestplacementData,
-					latestInternalNote: activityData.latestInternalNoteData
-				};				
+				// ensure active families that were captured from non-family-model sources match all family search criteria
+
+				const regionCriteria = familySearchCriteria['address.region'];
+				if ( doesActiveFamilyMatchFamilySearchCriteria && regionCriteria && !regionCriteria.$in.includes( activityData.familyDoc.address.region && activityData.familyDoc.address.region.toString() ) ) {
+					doesActiveFamilyMatchFamilySearchCriteria = false;
+				}
+
+				const stateCriteria = familySearchCriteria['address.state'];
+				if ( doesActiveFamilyMatchFamilySearchCriteria && stateCriteria && !stateCriteria.$in.includes( activityData.familyDoc.address.state && activityData.familyDoc.address.state.toString() ) ) {
+					doesActiveFamilyMatchFamilySearchCriteria = false;
+				}
+
+				const relationsipStatusCriteria = familySearchCriteria['relationshipStatus'];
+				if ( doesActiveFamilyMatchFamilySearchCriteria && relationsipStatusCriteria && relationsipStatusCriteria !== activityData.familyDoc.relationshipStatus ) {
+					doesActiveFamilyMatchFamilySearchCriteria = false;
+				}
+
+				const contact1GenderCriteria = familySearchCriteria[ 'contact1.gender' ];
+				if ( doesActiveFamilyMatchFamilySearchCriteria && contact1GenderCriteria && !contact1GenderCriteria.$in.includes( activityData.familyDoc.contact1.gender && activityData.familyDoc.contact1.gender.toString() ) ) {
+					doesActiveFamilyMatchFamilySearchCriteria = false;
+				}
+
+				const contact2GenderCriteria = familySearchCriteria[ 'contact2.gender' ];
+				if ( doesActiveFamilyMatchFamilySearchCriteria && contact2GenderCriteria && !contact2GenderCriteria.$in.includes( activityData.familyDoc.contact1.gender && activityData.familyDoc.contact1.gender.toString() ) ) {
+					doesActiveFamilyMatchFamilySearchCriteria = false;
+				}
+
+				const contact1RaceCriteria = familySearchCriteria[ 'contact1.race' ];
+				if ( doesActiveFamilyMatchFamilySearchCriteria && contact1RaceCriteria && _.intersection( contact1RaceCriteria.$in, activityData.familyDoc.contact1.race.map( r => r.toString() ) ).length === 0 ) {
+					doesActiveFamilyMatchFamilySearchCriteria = false;
+				}
+
+				const contact2RaceCriteria = familySearchCriteria[ 'contact2.race' ];
+				if ( doesActiveFamilyMatchFamilySearchCriteria && contact2RaceCriteria && _.intersection( contact2RaceCriteria.$in, activityData.familyDoc.contact2.race.map( r => r.toString() ) ).length === 0 ) {
+					doesActiveFamilyMatchFamilySearchCriteria = false;
+				}
+
+				const contact1LGBTQIdentityCriteria = familySearchCriteria[ 'contact1.doesIdentifyAsLGBTQ' ];
+				if ( doesActiveFamilyMatchFamilySearchCriteria && contact1LGBTQIdentityCriteria && contact1LGBTQIdentityCriteria !== activityData.familyDoc.contact1.doesIdentifyAsLGBTQ ) {
+					doesActiveFamilyMatchFamilySearchCriteria = false;
+				}
+
+				const contact2LGBTQIdentityCriteria = familySearchCriteria[ 'contact2.doesIdentifyAsLGBTQ' ];
+				if ( doesActiveFamilyMatchFamilySearchCriteria && contact2LGBTQIdentityCriteria && contact2LGBTQIdentityCriteria !== activityData.familyDoc.contact2.doesIdentifyAsLGBTQ ) {
+					doesActiveFamilyMatchFamilySearchCriteria = false;
+				}
+
+				// if active family matches all family search criteria...
+				if ( doesActiveFamilyMatchFamilySearchCriteria ) {
+
+					// add the family activity data to the result list
+					familyActivity.push({
+						id: familyID,
+						registrationNumber: activityData.familyDoc.registrationNumber,
+						email: activityData.familyDoc.email === ''
+							? undefined
+							: activityData.familyDoc.email,
+						registrationDate: {
+							dateDisplay: utilsService.verifyAndFormatDate( activityData.familyDoc.initialContact ),
+							dateISO:  moment( activityData.familyDoc.initialContact ).toISOString()
+						},
+						latestInquiry: activityData.latestInquiryData,
+						latestEvent: activityData.latestEventData,
+						latestMatch: activityData.latestMatchData,
+						latestPlacement: activityData.latestplacementData,
+						latestInternalNote: activityData.latestInternalNoteData
+					});
+				}
 			});
 
 			// send the result data
