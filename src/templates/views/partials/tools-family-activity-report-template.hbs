@@ -55,7 +55,7 @@
                         <div class="col-sm-12 col-md-8">
                             <select id="city-or-town" name="city-or-town[]" class="form-control city-or-town-select" multiple>
                                 \{{#each citiesAndTowns as |cityOrTown|}}
-                                    <option value="\{{ cityOrTown.id }}" selected>\{{ cityOrTown.cityOrTown }}</option>
+                                    <option value="\{{ cityOrTown.id }}" selected>\{{ cityOrTown.text }}</option>
                                 \{{/each}}
                             </select>
                         </div>

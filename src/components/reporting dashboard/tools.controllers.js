@@ -2259,12 +2259,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 
 	// region criteria (multiple)
 	if ( Array.isArray( query.region ) && query.region.length > 0 ) {
-		familySearchCriteria['address.region'] = { $in: query.region };
+		familySearchCriteria[ 'address.region' ] = { $in: query.region };
 	}
 
-	// state criteria (multiple)
-	if ( Array.isArray( query.state ) && query.state.length > 0 ) {
-		familySearchCriteria['address.state'] = { $in: query.state };
+	// city or town criteria (multiple)
+	if ( Array.isArray( query[ 'city-or-town' ] ) && query[ 'city-or-town' ].length > 0 ) {
+		familySearchCriteria[ 'address.city' ] = { $in: query[ 'city-or-town' ] };
 	}
 
 	// relationship status criteria
@@ -2394,11 +2394,25 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.lean()
 		.exec();
 
-	Promise.all( [ registrationActivityQuery, inquiryActivityQuery, eventActivityQuery, matchActivityQuery, placementActivityQuery, internalNoteActivityQuery ] )
+	// if thare are any city or town criteria specified, get the city or town docs to seed the city or town selects on the search form
+	const cityOrTownQuery = familySearchCriteria[ 'address.city' ]
+		? keystone.list( 'City or Town' ).model
+			.find( { _id: familySearchCriteria[ 'address.city' ] } )
+			.lean()
+			.exec()
+			.catch( err => {
+				// log an error for debugging purposes
+				console.error( `error loading cities and towns for the family activity report dashboard - ${ err }` );
+				// return false to allow the view to render regardless of the error
+				return false;
+			})
+		: false;
+
+	Promise.all( [ registrationActivityQuery, inquiryActivityQuery, eventActivityQuery, matchActivityQuery, placementActivityQuery, internalNoteActivityQuery, cityOrTownQuery ] )
 		.then( results => {
 
 			// destructure the activity data
-			const [ familyDocs, inquiryDocs, eventDocs, matchDocs, placementDocs, internalNoteDocs ] = results;
+			const [ familyDocs, inquiryDocs, eventDocs, matchDocs, placementDocs, internalNoteDocs, cityOrTownDocs ] = results;
 
 			// create an object to capture all families with activity data of any type
 			const activeFamilies = {};
@@ -2707,17 +2721,17 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 
 				// ensure active families that were captured from non-family-model sources match all family search criteria
 
-				const regionCriteria = familySearchCriteria['address.region'];
+				const regionCriteria = familySearchCriteria[ 'address.region' ];
 				if ( doesActiveFamilyMatchFamilySearchCriteria && regionCriteria && !regionCriteria.$in.includes( activityData.familyDoc.address.region && activityData.familyDoc.address.region.toString() ) ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
-				const stateCriteria = familySearchCriteria['address.state'];
-				if ( doesActiveFamilyMatchFamilySearchCriteria && stateCriteria && !stateCriteria.$in.includes( activityData.familyDoc.address.state && activityData.familyDoc.address.state.toString() ) ) {
+				const cityOrTownCriteria = familySearchCriteria[ 'address.city' ];
+				if ( doesActiveFamilyMatchFamilySearchCriteria && cityOrTownCriteria && !cityOrTownCriteria.$in.includes( activityData.familyDoc.address.city && activityData.familyDoc.address.city.toString() ) ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
-				const relationsipStatusCriteria = familySearchCriteria['relationshipStatus'];
+				const relationsipStatusCriteria = familySearchCriteria[ 'relationshipStatus' ];
 				if ( doesActiveFamilyMatchFamilySearchCriteria && relationsipStatusCriteria && relationsipStatusCriteria !== activityData.familyDoc.relationshipStatus ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
@@ -2779,7 +2793,8 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 			res.send({
 				noResultsFound: !familyActivity || familyActivity.length === 0,
 				results: familyActivity,
-				limitReached: familyActivity.length === MAX_RESULTS
+				limitReached: familyActivity.length === MAX_RESULTS,
+				citiesAndTowns: utilsService.extractCityAndTownData( cityOrTownDocs || [] )
 			});
 		})
 		.catch( err => {

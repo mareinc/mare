@@ -184,6 +184,17 @@ exports.extractAgenicesData = agencies => {
 	});
 }
 
+
+/* map cities and towns array to an array of simple objects */
+exports.extractCityAndTownData = citiesAndTowns => {
+	return citiesAndTowns.map( cityOrTown => {
+		return {
+			id: cityOrTown._id.toString(),
+			text: cityOrTown.cityOrTown
+		}
+	});
+}
+
 /* 
 	create an array of plain JS objects to serve as <select> options and determine which options should be selected
 	options represent Other Consideration documents
