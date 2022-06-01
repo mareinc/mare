@@ -9,6 +9,7 @@
 		events: {
 			'click .family-activity-fiscal-year-button'		: 'handleFiscalYearClick',
             'click .family-activity-search-button'			: 'handleSearchClick',
+			'click .family-activity-search-reset-button'	: 'handleResetClick',
 			'click .family-activity-export-xlsx-button'		: 'handleXlsxExportClick'
         },
 
@@ -108,7 +109,9 @@
 			mare.routers.tools.navigate( 'family-activity-report/' + fromDate + '/' + toDate + ( queryString.length > 0 ? '?' + queryString : '' ), { trigger: true } );
 		},
 
-        handleResetClick: function() {},
+		handleResetClick: function() {
+			mare.routers.tools.navigate( 'family-activity-report', { trigger: true } );
+		},
 
         handleXlsxExportClick: function() {
 			var table = this.$el.find( '.results-table' ),
