@@ -8,7 +8,8 @@
 
 		events: {
 			'click .family-activity-fiscal-year-button'		: 'handleFiscalYearClick',
-            'click .family-activity-search-button'			: 'handleSearchClick'
+            'click .family-activity-search-button'			: 'handleSearchClick',
+			'click .family-activity-export-xlsx-button'		: 'handleXlsxExportClick'
         },
 
 		initialize: function() {
@@ -109,7 +110,13 @@
 
         handleResetClick: function() {},
 
-        handleXlsxExportClick: function() {},
+        handleXlsxExportClick: function() {
+			var table = this.$el.find( '.results-table' ),
+				wb = XLSX.utils.table_to_book( table[ 0 ] );
+				
+			// convert HTML table to XLSX file
+			XLSX.writeFile( wb, table.data( 'filename' ) );
+		},
 
 		handleFiscalYearClick: function( event ) {
 			event.preventDefault();

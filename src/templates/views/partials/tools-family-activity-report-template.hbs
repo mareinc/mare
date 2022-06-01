@@ -182,7 +182,7 @@
         \{{#if results }}
             <h3>Results: </h3>
             <div class="matching-results-table__button-bar">
-                <button class="button button--teal caseload-export-xlsx-button">XLSX Export</button>
+                <button class="button button--teal family-activity-export-xlsx-button">XLSX Export</button>
                 <div class="matching-results-table__record-count">
                     <div class="record-count__label">Total Active Families:</div>
                     \{{ results.length }}
@@ -196,7 +196,28 @@
             <table id="family-activity-results" class="stripe" width="100%"></table>
 
             {{!-- Results table for Excel export (hidden) --}}
-            <table width="100%" class="results-table hidden" data-filename="\{{metadata.excelExportFilename}}"></table>
+            <table width="100%" class="results-table hidden" data-filename="FamilyActivityReportExport.xlsx">
+                <tr>
+                    <th>Email</th>
+                    <th>Registration Date</th>
+                    <th>Latest Inquiry</th>
+                    <th>Latest Event</th>
+                    <th>Latest Match</th>
+                    <th>Latest Placement</th>
+                    <th>Latest Internal Note</th>
+                </tr>
+                \{{#each results as |result|}}
+                    <tr>
+                        <td>\{{ result.email }}</td>
+                        <td>\{{ result.registrationDate.dateDisplay }}</td>
+                        <td>\{{ result.latestInquiry.dateDisplay }}</td>
+                        <td>\{{ result.latestEvent.dateDisplay }}</td>
+                        <td>\{{ result.latestMatch.dateDisplay }}</td>
+                        <td>\{{ result.latestPlacement.dateDisplay }}</td>
+                        <td>\{{ result.latestInternalNote.dateDisplay }}</td>
+                    </tr>
+                \{{/each}}
+            </table>
         \{{/if}}
     </div>
 </script>
