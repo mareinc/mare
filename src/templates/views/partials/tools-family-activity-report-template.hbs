@@ -205,6 +205,7 @@
                     <th>Latest Match</th>
                     <th>Latest Placement</th>
                     <th>Latest Internal Note</th>
+                    <th>Latest Bookmark</th>
                 </tr>
                 \{{#each results as |result|}}
                     <tr>
@@ -215,6 +216,7 @@
                         <td>\{{ result.latestMatch.dateDisplay }}</td>
                         <td>\{{ result.latestPlacement.dateDisplay }}</td>
                         <td>\{{ result.latestInternalNote.dateDisplay }}</td>
+                        <td>\{{ result.latestBookmark.dateDisplay }}</td>
                     </tr>
                 \{{/each}}
             </table>

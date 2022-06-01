@@ -2337,6 +2337,13 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		family: { $exists: true, $ne: null }
 	};
 
+	// create the bookmark activity search criteria
+	const bookmarkActivitySearchCriteria = {
+		date: { $gte: fromDate, $lte: toDate },
+		family: { $exists: true, $ne: null },
+		summary: { $regex: 'bookmarked', $options: 'i' }
+	};
+
 	// get the families that have registered within the specified date range
 	const registrationActivityQuery = keystone.list( 'Family' ).model
 		.find( registrationActivitySearchCriteria )
@@ -2394,6 +2401,16 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.lean()
 		.exec();
 
+	// get the families that have bookmarked a child or sibling group within the specified date range
+	const bookmarkActivityQuery = keystone.list( 'Family History' ).model
+		.find( bookmarkActivitySearchCriteria )
+		.limit( MAX_RESULTS )
+		.populate([
+			'family'
+		].join( ' ' ))
+		.lean()
+		.exec();
+
 	// if thare are any city or town criteria specified, get the city or town docs to seed the city or town selects on the search form
 	const cityOrTownQuery = familySearchCriteria[ 'address.city' ]
 		? keystone.list( 'City or Town' ).model
@@ -2408,11 +2425,11 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 			})
 		: false;
 
-	Promise.all( [ registrationActivityQuery, inquiryActivityQuery, eventActivityQuery, matchActivityQuery, placementActivityQuery, internalNoteActivityQuery, cityOrTownQuery ] )
+	Promise.all( [ registrationActivityQuery, inquiryActivityQuery, eventActivityQuery, matchActivityQuery, placementActivityQuery, internalNoteActivityQuery, bookmarkActivityQuery, cityOrTownQuery ] )
 		.then( results => {
 
 			// destructure the activity data
-			const [ familyDocs, inquiryDocs, eventDocs, matchDocs, placementDocs, internalNoteDocs, cityOrTownDocs ] = results;
+			const [ familyDocs, inquiryDocs, eventDocs, matchDocs, placementDocs, internalNoteDocs, bookmarkDocs, cityOrTownDocs ] = results;
 
 			// create an object to capture all families with activity data of any type
 			const activeFamilies = {};
@@ -2711,6 +2728,63 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 				}
 			});
 
+			// ensure all bookmark docs have a valid family relationship
+			const filteredBookmarkResults = bookmarkDocs.filter( bookmarkDoc => bookmarkDoc.family && bookmarkDoc.family._id );
+
+			// add families with a bookmark to active families object
+			filteredBookmarkResults.forEach( bookmarkDoc => {
+
+				// check for existing family data in active families object
+				const familyId = bookmarkDoc.family._id.toString();
+				const existingFamilyEntry = activeFamilies[ familyId ];
+
+				// if the family already exists...
+				if ( existingFamilyEntry ) {
+
+					// check for existing bookmark data
+					let existingBookmark = existingFamilyEntry.latestBookmarkData;
+					let updateBookmarkData = true;
+
+					// if bookmark data already exists for this family...
+					if ( existingBookmark ) {
+
+						// get the dates of the existing and new bookmarks
+						const existingBookmarkDate = existingBookmark.dateISO;
+						const newBookmarkDate = moment( bookmarkDoc.date ).toISOString();
+
+						// if the existing bookmark is more recent than the new bookmark...
+						if ( existingBookmarkDate > newBookmarkDate ) {
+							// do not update bookmark data for this family
+							updateBookmarkData = false;
+						}
+					}
+
+					// if bookmark data should be updated...
+					if ( updateBookmarkData ) {
+
+						// overwrite existing bookmark data with new bookmark data
+						existingFamilyEntry.latestBookmarkData = {
+							id: bookmarkDoc._id.toString(),
+							dateDisplay: utilsService.verifyAndFormatDate( bookmarkDoc.date ),
+							dateISO:  moment( bookmarkDoc.date ).toISOString()
+						};
+					}
+
+				// if the family doesn't exist...
+				} else {
+
+					// create the family entry and add the current bookmark data as the latest bookmark
+					activeFamilies[ familyId ] = {
+						familyDoc: bookmarkDoc.family,
+						latestBookmarkData: {
+							id: bookmarkDoc._id.toString(),
+							dateDisplay: utilsService.verifyAndFormatDate( bookmarkDoc.date ),
+							dateISO:  moment( bookmarkDoc.date ).toISOString()
+						} 
+					};
+				}
+			});
+
 			// convert active families object into an array of family activity data to be displayed in results table
 			const familyActivity = [];
 			
@@ -2784,7 +2858,8 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 						latestEvent: activityData.latestEventData,
 						latestMatch: activityData.latestMatchData,
 						latestPlacement: activityData.latestplacementData,
-						latestInternalNote: activityData.latestInternalNoteData
+						latestInternalNote: activityData.latestInternalNoteData,
+						latestBookmark: activityData.latestBookmarkData
 					});
 				}
 			});

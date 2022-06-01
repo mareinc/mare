@@ -300,6 +300,20 @@
 				render: function( data, type, row, meta ) {
 					return data ? '<a href="/keystone/internal-notes/' + row.latestInternalNote.id + '" target="_blank">' + data + '</a>' : '--';
 				}
+			},
+			{ 
+				title: 'Latest Bookmark', 
+				data: function( row, type ) {
+					// return date in ISO format to enable column sorting
+					return row.latestBookmark
+						? type === 'sort' 
+							? row.latestBookmark.dateISO
+							: row.latestBookmark.dateDisplay
+						: undefined;
+				},
+				render: function( data, type, row, meta ) {
+					return data ? '<a href="/keystone/family-histories/' + row.latestBookmark.id + '" target="_blank">' + data + '</a>' : '--';
+				}
 			}
 		]
 	});
