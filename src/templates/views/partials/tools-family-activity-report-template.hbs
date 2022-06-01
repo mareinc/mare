@@ -198,7 +198,11 @@
             {{!-- Results table for Excel export (hidden) --}}
             <table width="100%" class="results-table hidden" data-filename="FamilyActivityReportExport.xlsx">
                 <tr>
+                    <th>Registration Number</th>
+                    <th>Display Name</th>
                     <th>Email</th>
+                    <th>Contact 1 Gender</th>
+                    <th>Contact 2 Gender</th>
                     <th>Registration Date</th>
                     <th>Latest Inquiry</th>
                     <th>Latest Event</th>
@@ -209,7 +213,11 @@
                 </tr>
                 \{{#each results as |result|}}
                     <tr>
+                        <td>\{{ result.registrationNumber }}</td>
+                        <td>\{{ result.displayName }}</td>
                         <td>\{{ result.email }}</td>
+                        <td>\{{ result.contact1Gender }}</td>
+                        <td>\{{ result.contact2Gender }}</td>
                         <td>\{{ result.registrationDate.dateDisplay }}</td>
                         <td>\{{ result.latestInquiry.dateDisplay }}</td>
                         <td>\{{ result.latestEvent.dateDisplay }}</td>

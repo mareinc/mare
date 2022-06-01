@@ -2348,6 +2348,10 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 	const registrationActivityQuery = keystone.list( 'Family' ).model
 		.find( registrationActivitySearchCriteria )
 		.limit( MAX_RESULTS )
+		.populate([
+			'contact1.gender',
+			'contact2.gender'
+		].join( ' ' ))
 		.lean()
 		.exec();
 
@@ -2355,9 +2359,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 	const inquiryActivityQuery = keystone.list( 'Inquiry' ).model
 		.find( inquiryActivitySearchCriteria )
 		.limit( MAX_RESULTS )
-		.populate([
-			'family'
-		].join( ' ' ))
+		.populate({
+			path: 'family',
+			populate: {
+				path: [ 'contact1.gender', 'contact2.gender' ].join( ' ' )
+			}
+		})
 		.lean()
 		.exec();
 
@@ -2365,9 +2372,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 	const eventActivityQuery = keystone.list( 'Event' ).model
 		.find( eventActivitySearchCriteria )
 		.limit( MAX_RESULTS )
-		.populate([
-			'familyAttendees'
-		].join( ' ' ))
+		.populate({
+			path: 'familyAttendees',
+			populate: {
+				path: [ 'contact1.gender', 'contact2.gender' ].join( ' ' )
+			}
+		})
 		.lean()
 		.exec();
 
@@ -2375,9 +2385,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 	const matchActivityQuery = keystone.list( 'Match' ).model
 		.find( matchActivitySearchCriteria )
 		.limit( MAX_RESULTS )
-		.populate([
-			'family'
-		].join( ' ' ))
+		.populate({
+			path: 'family',
+			populate: {
+				path: [ 'contact1.gender', 'contact2.gender' ].join( ' ' )
+			}
+		})
 		.lean()
 		.exec();
 
@@ -2385,9 +2398,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 	const placementActivityQuery = keystone.list( 'Placement' ).model
 		.find( placementActivitySearchCriteria )
 		.limit( MAX_RESULTS )
-		.populate([
-			'family'
-		].join( ' ' ))
+		.populate({
+			path: 'family',
+			populate: {
+				path: [ 'contact1.gender', 'contact2.gender' ].join( ' ' )
+			}
+		})
 		.lean()
 		.exec();
 
@@ -2395,9 +2411,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 	const internalNoteActivityQuery = keystone.list( 'Internal Note' ).model
 		.find( internalNoteActivitySearchCriteria )
 		.limit( MAX_RESULTS )
-		.populate([
-			'family'
-		].join( ' ' ))
+		.populate({
+			path: 'family',
+			populate: {
+				path: [ 'contact1.gender', 'contact2.gender' ].join( ' ' )
+			}
+		})
 		.lean()
 		.exec();
 
@@ -2405,9 +2424,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 	const bookmarkActivityQuery = keystone.list( 'Family History' ).model
 		.find( bookmarkActivitySearchCriteria )
 		.limit( MAX_RESULTS )
-		.populate([
-			'family'
-		].join( ' ' ))
+		.populate({
+			path: 'family',
+			populate: {
+				path: [ 'contact1.gender', 'contact2.gender' ].join( ' ' )
+			}
+		})
 		.lean()
 		.exec();
 
@@ -2847,9 +2869,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 					familyActivity.push({
 						id: familyID,
 						registrationNumber: activityData.familyDoc.registrationNumber,
+						displayName: activityData.familyDoc.displayName,
 						email: activityData.familyDoc.email === ''
 							? undefined
 							: activityData.familyDoc.email,
+						contact1Gender: activityData.familyDoc.contact1.gender && activityData.familyDoc.contact1.gender.gender,
+						contact2Gender: activityData.familyDoc.contact2.gender && activityData.familyDoc.contact2.gender.gender,
 						registrationDate: {
 							dateDisplay: utilsService.verifyAndFormatDate( activityData.familyDoc.initialContact ),
 							dateISO:  moment( activityData.familyDoc.initialContact ).toISOString()
