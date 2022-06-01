@@ -2789,11 +2789,20 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 				}
 			});
 
+			// check if any of the various searches reached the result limit before they were filtered
+			const wasResultLimitReached = 
+				familyDocs.length >= MAX_RESULTS ||
+				inquiryDocs.length >= MAX_RESULTS ||
+				eventDocs.length >= MAX_RESULTS ||
+				matchDocs.length >= MAX_RESULTS ||
+				placementDocs.length >= MAX_RESULTS ||
+				internalNoteDocs.length >= MAX_RESULTS;
+
 			// send the result data
 			res.send({
 				noResultsFound: !familyActivity || familyActivity.length === 0,
 				results: familyActivity,
-				limitReached: familyActivity.length === MAX_RESULTS,
+				limitReached: wasResultLimitReached,
 				citiesAndTowns: utilsService.extractCityAndTownData( cityOrTownDocs || [] )
 			});
 		})
