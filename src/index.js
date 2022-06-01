@@ -132,6 +132,7 @@ exports = module.exports = app => {
 	app.get( '/tools'											, accountMiddleware.requireUser( 'admin' ), routes.views.tools );
 	app.get( '/tools/services/get-agencies-data'				, accountMiddleware.requireUser( 'admin' ), toolsService.getAgenciesData );
 	app.get( '/tools/services/get-social-workers-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getSocialWorkersData );
+	app.get( '/tools/services/get-cities-or-towns-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getCitiesAndTownsData );
 	app.get( '/tools/services/get-families-data'				, accountMiddleware.requireUser( 'admin' ), toolsService.getFamiliesData );
 	app.get( '/tools/services/get-children-data'				, accountMiddleware.requireUser( 'admin' ), toolsService.getChildrenData );
 	app.get( '/tools/services/get-sources-data'					, accountMiddleware.requireUser( 'admin' ), toolsService.getSourcesData );

@@ -698,6 +698,38 @@ exports.getCityOrTownById = id => {
 	});
 };
 
+/* get all cities and towns that match the query in the name field and sort them by name */
+exports.getCitiesAndTownsByName = ( nameQuery, maxResults ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no maxResults was passed in
+		if( !maxResults ) {
+			// return control to the calling context
+			return reject( new Error( `error fetching cities and towns by name - no maxResults passed in` ) );
+		}
+		
+		// fetch the city and town records
+		keystone.list( 'City or Town' ).model
+			.find( {
+				'cityOrTown' : new RegExp( nameQuery, 'i' )
+			})
+			.sort( {
+				'cityOrTown' : 'asc'
+			})
+			.limit( maxResults )
+			.exec()
+			.then( citiesOrTowns => {
+				// resolve the promise with the returned cities and towns
+				resolve( citiesOrTowns );
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching cities and towns by name ${ nameQuery } and max results ${ maxResults }`, err );
+				// reject the promise with details about the error
+				reject( new Error( `error fetching cities and towns by name ${ nameQuery } and max results ${ maxResults } - ${ err }` ) );
+			});
+	});
+};
+
 // TODO: this needs to be un-async'ed
 exports.getChildStatusIdByName = ( req, res, done, name ) => {
 

@@ -422,6 +422,24 @@ exports.getSocialWorkersData = ( req, res, next ) => {
 
 };
 
+/* return cities and towns based on keyword query */
+exports.getCitiesAndTownsData = ( req, res, next ) => {
+
+	const MAX_RESULTS = 10;
+
+	utilsService.fetchModelsMapAndSendResults(
+		listsService.getCitiesAndTownsByName( req.query.q, MAX_RESULTS ),
+		cityOrTown => {
+			return {
+				id: cityOrTown._id.toString(),
+				text: cityOrTown.cityOrTown
+			}
+		},
+		res
+	);
+
+};
+
 /* return families based on keyword */
 exports.getFamiliesData = ( req, res, next ) => {
 	
