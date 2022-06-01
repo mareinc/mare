@@ -50,13 +50,13 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right">
-                            <label for="state" class="bold">State:</label>
+                            <label for="city-or-town" class="bold">City or Town:</label>
                         </div>
                         <div class="col-sm-12 col-md-8">
-                            <select id="state" name="state[]" class="form-control state-select" multiple>
-                                {{#each states as |state|}}
-                                    <option value="{{ state.id }}">{{ state.state }}</option>
-                                {{/each}}
+                            <select id="city-or-town" name="city-or-town[]" class="form-control city-or-town-select" multiple>
+                                \{{#each citiesAndTowns as |cityOrTown|}}
+                                    <option value="\{{ cityOrTown.id }}" selected>\{{ cityOrTown.cityOrTown }}</option>
+                                \{{/each}}
                             </select>
                         </div>
                     </div>

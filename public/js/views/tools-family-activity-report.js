@@ -57,6 +57,15 @@
 				placeholder: 'All Races'
 			});
 
+			this.$el.find( '.city-or-town-select' ).select2({
+				placeholder: 'All Cities and Towns',
+				multiple: true,
+				ajax: {
+					url: '/tools/services/get-cities-or-towns-data',
+					dataType: 'json'
+				}
+			});
+
             // initialize the date range picker
 			this.$el.find( '[name="family-activity-date-range"]' ).daterangepicker({
 				startDate: moment( fromDate ),
