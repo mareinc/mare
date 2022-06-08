@@ -1,32 +1,32 @@
 {{#each featuredItems}}
 <ul class="featured-items">
 	<li class="featured-item card">
-		<a href="{{ aboutUs.url }}#racial_equity_statement" class="featured-item__link cover">
+		<a href="{{ featuredItem1.url }}" class="featured-item__link cover">
 			<div class="featured-item__title-container">
-				<span class="featured-item__title">{{ aboutUs.title }}</span>
+				<span class="featured-item__title">{{ featuredItem1.title }}</span>
 			</div>
-			{{#if hasAboutUsImage}}
-			<img src="{{ aboutUs.image.url }}" alt="{{ aboutUs.title }}" class="featured-item__image">
+			{{#if featuredItem1HasImage}}
+			<img src="{{ featuredItem1.image.url }}" alt="{{ featuredItem1.title }}" class="featured-item__image">
 			{{/if}}
 		</a>
 	</li>
 	<li class="featured-item card">
-		<a href="{{ successStory.url }}" class="featured-item__link cover">
+		<a href="{{ featuredItem2.url }}" class="featured-item__link cover">
 			<div class="featured-item__title-container">
-				<span class="featured-item__title">{{ successStory.title }}</span>
+				<span class="featured-item__title">{{ featuredItem2.title }}</span>
 			</div>
-			{{#if hasSuccessStoryImage}}
-			<img src="{{ successStory.image.url }}" alt="{{ successStory.title }}" class="featured-item__image">
+			{{#if featuredItem2HasImage}}
+			<img src="{{ featuredItem2.image.url }}" alt="{{ featuredItem2.title }}" class="featured-item__image">
 			{{/if}}
 		</a>
 	</li>
 	<li class="featured-item card">
-		<a href="{{ event.url }}" class="featured-item__link cover">
+		<a href="{{ featuredItem3.url }}" class="featured-item__link cover">
 			<div class="featured-item__title-container">
-				<span class="featured-item__title">{{ event.title }}</span>
+				<span class="featured-item__title">{{ featuredItem3.title }}</span>
 			</div>
-			{{#if hasEventImage}}
-			<img src="{{ event.image.url }}" alt="{{ event.title }}" class="featured-item__image">
+			{{#if featuredItem3HasImage}}
+			<img src="{{ featuredItem3.image.url }}" alt="{{ featuredItem3.title }}" class="featured-item__image">
 			{{/if}}
 		</a>
 	</li>
