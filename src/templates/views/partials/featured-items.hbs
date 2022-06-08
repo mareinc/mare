@@ -1,7 +1,7 @@
 {{#each featuredItems}}
 <ul class="featured-items">
 	<li class="featured-item card">
-		<a href="{{ featuredItem1.url }}" class="featured-item__link cover">
+		<a href="{{ featuredItem1.url }}" {{#if featuredItem1.openLinkInNewPage}}target="_blank"{{/if}} class="featured-item__link cover">
 			<div class="featured-item__title-container">
 				<span class="featured-item__title">{{ featuredItem1.title }}</span>
 			</div>
@@ -11,7 +11,7 @@
 		</a>
 	</li>
 	<li class="featured-item card">
-		<a href="{{ featuredItem2.url }}" class="featured-item__link cover">
+		<a href="{{ featuredItem2.url }}" {{#if featuredItem2.openLinkInNewPage}}target="_blank"{{/if}} class="featured-item__link cover">
 			<div class="featured-item__title-container">
 				<span class="featured-item__title">{{ featuredItem2.title }}</span>
 			</div>
@@ -21,7 +21,7 @@
 		</a>
 	</li>
 	<li class="featured-item card">
-		<a href="{{ featuredItem3.url }}" class="featured-item__link cover">
+		<a href="{{ featuredItem3.url }}" {{#if featuredItem3.openLinkInNewPage}}target="_blank"{{/if}} class="featured-item__link cover">
 			<div class="featured-item__title-container">
 				<span class="featured-item__title">{{ featuredItem3.title }}</span>
 			</div>

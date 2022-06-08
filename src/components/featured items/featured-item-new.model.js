@@ -39,7 +39,8 @@ FeaturedItem.add({
 	featuredItem1: {
 		title: { type: Types.Text, label: 'title', initial: true, required: true },
 		image: { type: Types.File, storage: imageStorage, label: 'image' },
-		url: { type: Types.Url, label: 'url', initial: true, required: true }
+		url: { type: Types.Url, label: 'url', initial: true, required: true },
+        openLinkInNewPage: { type: Types.Boolean, label: 'open link in new page' }
 	}
 
 }, 'Featured Item 2', {
@@ -47,7 +48,8 @@ FeaturedItem.add({
 	featuredItem2: {
 		title: { type: Types.Text, label: 'title', initial: true, required: true },
 		image: { type: Types.File, storage: imageStorage, label: 'image' },
-		url: { type: Types.Url, label: 'url', initial: true, required: true }
+		url: { type: Types.Url, label: 'url', initial: true, required: true },
+        openLinkInNewPage: { type: Types.Boolean, label: 'open link in new page' }
 	}
 
 }, 'Featured Item 3', {
@@ -55,7 +57,8 @@ FeaturedItem.add({
 	featuredItem3: {
 		title: { type: Types.Text, label: 'title', initial: true, required: true },
 		image: { type: Types.File, storage: imageStorage, label: 'image' },
-		url: { type: Types.Url, label: 'url', initial: true, required: true }
+		url: { type: Types.Url, label: 'url', initial: true, required: true },
+        openLinkInNewPage: { type: Types.Boolean, label: 'open link in new page' }
 	}
 });
 
