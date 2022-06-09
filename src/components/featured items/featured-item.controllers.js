@@ -5,7 +5,7 @@ exports.fetchFeaturedItems = () => {
 	// return a promise for cleaner asynchronous processing
 	return new Promise( ( resolve, reject ) => {
 		// fetch the model specified in the field using it's _id value
-		keystone.list( 'Featured Item v2' ).model
+		keystone.list( 'Featured Item' ).model
 			.find()
 			.exec()
 			.then( featuredItems => {

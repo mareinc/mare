@@ -24,108 +24,60 @@ const imageStorage = new keystone.Storage({
 });
 
 // create model
-var Featured = new keystone.List( 'Featured Item', {
+const FeaturedItem = new keystone.List( 'Featured Item', {
 	autokey: { path: 'key', from: 'title', unique: true },
 	map: { name: 'title' }
 });
 
 // create fields
-Featured.add({
+FeaturedItem.add({
 
 	title: { type: Types.Text, label: 'title', default: 'Featured Items', noedit: true, initial: true }
 
-}, 'About Us', {
+}, 'Featured Item 1', {
 
-	aboutUs: {
-		title: { type: Types.Text, label: 'about us title', initial: true, default: 'Our Services' },
-		target: { type: Types.Relationship, ref: 'Page', label: 'about us page', filter: { type: 'aboutUs' }, required: true, initial: true },
-		image: { type: Types.File, storage: imageStorage, label: 'about us image' },
-		url: { type: Types.Url, label: 'about us url', noedit: true }
+	featuredItem1: {
+		title: { type: Types.Text, label: 'title', initial: true, required: true },
+		image: { type: Types.File, storage: imageStorage, label: 'image' },
+		url: { type: Types.Url, label: 'url', initial: true, required: true },
+        openLinkInNewPage: { type: Types.Boolean, label: 'open link in new page' }
 	}
 
-}, 'Success Story', {
+}, 'Featured Item 2', {
 
-	successStory: {
-		title: { type: Types.Text, label: 'success story title', initial: true, default: 'Adoption Stories' },
-		target: { type: Types.Relationship, ref: 'Success Story', label: 'success story', required: true, initial: true },
-		image: { type: Types.File, storage: imageStorage, label: 'success story image' },
-		url: { type: Types.Url, label: 'success story url', noedit: true }
+	featuredItem2: {
+		title: { type: Types.Text, label: 'title', initial: true, required: true },
+		image: { type: Types.File, storage: imageStorage, label: 'image' },
+		url: { type: Types.Url, label: 'url', initial: true, required: true },
+        openLinkInNewPage: { type: Types.Boolean, label: 'open link in new page' }
 	}
 
-}, 'Upcoming Event', {
+}, 'Featured Item 3', {
 
-	event: {
-		title: { type: Types.Text, label: 'event title', initial: true, default: 'Events' },
-		target: { type: Types.Relationship, ref: 'Event', label: 'event', filters: { isActive: true }, required: true, initial: true },
-		image: { type: Types.File, storage: imageStorage, label: 'event image' },
-		url: { type: Types.Url, label: 'event url', noedit: true }
+	featuredItem3: {
+		title: { type: Types.Text, label: 'title', initial: true, required: true },
+		image: { type: Types.File, storage: imageStorage, label: 'image' },
+		url: { type: Types.Url, label: 'url', initial: true, required: true },
+        openLinkInNewPage: { type: Types.Boolean, label: 'open link in new page' }
 	}
 });
 
-Featured.schema.virtual( 'hasAboutUsImage' ).get( function() {
+FeaturedItem.schema.virtual( 'featuredItem1HasImage' ).get( function() {
 	'use strict';
 
-	return !!this.aboutUs.image.url;
+	return !!this.featuredItem1.image.url;
 });
 
-Featured.schema.virtual( 'hasSuccessStoryImage' ).get( function() {
+FeaturedItem.schema.virtual( 'featuredItem2HasImage' ).get( function() {
 	'use strict';
 
-	return !!this.successStory.image.url;
+	return !!this.featuredItem2.image.url;
 });
 
-Featured.schema.virtual( 'hasEventImage' ).get( function() {
+FeaturedItem.schema.virtual( 'featuredItem3HasImage' ).get( function() {
 	'use strict';
 
-	return !!this.event.image.url;
+	return !!this.featuredItem3.image.url;
 });
 
-// pre save
-Featured.schema.pre( 'save', function( next ) {
-	'use strict';
-
-	// create objects of values to pass into the updateFieldsFunction
-	const aboutUsOptions		= { id: this.aboutUs.target, targetModel: 'Page', field: 'aboutUs' },
-		  successStoryOptions	= { id: this.successStory.target, targetModel: 'Success Story', field: 'successStory', url: '/adoption-stories' },
-		  eventOptions			= { id: this.event.target, targetModel: 'Event', field: 'event' };
-	// call updateFields for each of the three main model sections and receive a promise back for each
-	const aboutUsUpdated		= this.updateFields( aboutUsOptions ),
-		  successStoryUpdated	= this.updateFields( successStoryOptions ),
-		  eventUpdated			= this.updateFields( eventOptions );
-	// once all three model sections have been updated
-	Promise.all( [ aboutUsUpdated, successStoryUpdated, eventUpdated ] ).then( () => {
-		next();
-	});
-});
-
-Featured.schema.methods.updateFields = function updateFields( { id, targetModel, field, url } ) {
-	// return a promise for cleaner asynchronous processing
-	return new Promise( ( resolve, reject ) => {
-		// if no selection was made, we won't have an _id, abort execution and resolve with an undefined value
-		if( !id ) {
-			return resolve();
-		}
-		// fetch the model specified in the field using it's _id value
-		keystone.list( targetModel ).model
-				.findById( id )
-				.exec()
-				.then( model => {
-					// if we can't find the model (it may have been deleted since last save), abort execution and resolve with an undefined value
-					if( !model ) {
-						return resolve();
-					}
-					// populate the related fields
-					this[ field ].url = url ? url : model.get( 'url' );
-					// resolve with the _id of the model for easy refetching further down the line
-					resolve( model.get( '_id' ) );
-
-				}, err => {
-					// if there was an error while fetching the model, reject the promise and return the error 
-					reject( err );
-				});
-	});
-};
-
-// define default columns in the admin interface and register the model
-Featured.defaultColumns = 'title, aboutUs.target, successStory.target, event.target';
-Featured.register();
+FeaturedItem.register();

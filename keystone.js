@@ -135,7 +135,7 @@ keystone.set( 'nav', {
 	'matching histories': [ 'child-matching-histories', 'family-matching-histories' ],
 	'change tracking'	: [ 'child-histories', 'family-histories', 'social-worker-histories' ],
 	'donations'			: [ 'donations' ],
-	'images'			: [ 'featured-items', 'featured-item-v-2s', 'slideshows', 'slideshow-items' ],
+	'images'			: [ 'featured-items', 'slideshows', 'slideshow-items' ],
 	'content pages'		: [ 'pages' ],
 	'content snippets'	: [ 'success-stories', 'global-alerts' ],
 	'lists'				: [ 'child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods', 'disabilities',
