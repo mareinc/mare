@@ -2833,12 +2833,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 				}
 
 				const contact1GenderCriteria = familySearchCriteria[ 'contact1.gender' ];
-				if ( doesActiveFamilyMatchFamilySearchCriteria && contact1GenderCriteria && !contact1GenderCriteria.$in.includes( activityData.familyDoc.contact1.gender && activityData.familyDoc.contact1.gender.toString() ) ) {
+				if ( doesActiveFamilyMatchFamilySearchCriteria && contact1GenderCriteria && !contact1GenderCriteria.$in.includes( activityData.familyDoc.contact1.gender && activityData.familyDoc.contact1.gender._id.toString() ) ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
 				const contact2GenderCriteria = familySearchCriteria[ 'contact2.gender' ];
-				if ( doesActiveFamilyMatchFamilySearchCriteria && contact2GenderCriteria && !contact2GenderCriteria.$in.includes( activityData.familyDoc.contact1.gender && activityData.familyDoc.contact1.gender.toString() ) ) {
+				if ( doesActiveFamilyMatchFamilySearchCriteria && contact2GenderCriteria && !contact2GenderCriteria.$in.includes( activityData.familyDoc.contact1.gender && activityData.familyDoc.contact1.gender._id.toString() ) ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
