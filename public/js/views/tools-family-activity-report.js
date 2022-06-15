@@ -220,7 +220,7 @@
 			},
 			{ title: 'Email', data: 'email', defaultContent: '--' },
             { 
-				title: 'Registration Date', 
+				title: 'Account Creation Date', 
 				data: function( row, type ) {
 					// return date in ISO format to enable column sorting
 					return row.registrationDate 
