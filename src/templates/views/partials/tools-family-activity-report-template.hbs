@@ -78,24 +78,10 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right">
-                            <label for="contact-1-race" class="bold">Contact 1 Race(s):</label>
+                            <label for="race" class="bold">Race(s):</label>
                         </div>
                         <div class="col-sm-12 col-md-8">
-                            <select id="contact-1-race" name="contact-1-race[]" class="form-control contact-1-race-select" multiple>
-                                {{#each races as |race|}}
-                                    <option value="{{ race.id }}">{{ race.race }}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="row form-group">
-                        <div class="col-sm-12 col-md-4 text-sm-right">
-                            <label for="contact-2-race" class="bold">Contact 2 Race(s):</label>
-                        </div>
-                        <div class="col-sm-12 col-md-8">
-                            <select id="contact-2-race" name="contact-2-race[]" class="form-control contact-2-race-select" multiple>
+                            <select id="race" name="race[]" class="form-control race-select" multiple>
                                 {{#each races as |race|}}
                                     <option value="{{ race.id }}">{{ race.race }}</option>
                                 {{/each}}

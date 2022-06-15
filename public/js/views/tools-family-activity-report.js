@@ -55,7 +55,7 @@
 				placeholder: 'All Genders'
 			});
 
-			this.$el.find( '.contact-1-race-select, .contact-2-race-select' ).select2({
+			this.$el.find( '.race-select' ).select2({
 				placeholder: 'All Races'
 			});
 
