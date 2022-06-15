@@ -181,15 +181,14 @@
 
         \{{#if results }}
             <h3>Results: </h3>
+            <div class="matching-results-table__record-count matching-results-table__record-count--left-align">
+                <div class="record-count__label record-count__label--large">Total Families Served: \{{ results.length }}</div>
+                \{{#if limitReached}}
+                <div class="recoord-count__limit">*Your search returned the maximum allowed number of results, some results could not be displayed.</div>
+                \{{/if}}
+            </div>
             <div class="matching-results-table__button-bar">
                 <button class="button button--teal family-activity-export-xlsx-button">XLSX Export</button>
-                <div class="matching-results-table__record-count">
-                    <div class="record-count__label">Total Active Families:</div>
-                    \{{ results.length }}
-                    \{{#if limitReached}}
-                    <div class="recoord-count__limit">*Your search returned the maximum allowed number of results, some results could not be displayed.</div>
-                    \{{/if}}
-                </div>
             </div>
 
             {{!-- Results table for site display --}}            

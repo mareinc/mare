@@ -23,9 +23,23 @@
         flex-flow: row wrap;
         justify-content: flex-end;
 
+        &--left-align {
+            margin-left: unset;
+            margin-bottom: 1em;
+            justify-content: flex-start;
+
+            .recoord-count__limit {
+                text-align: left !important;
+            }
+        }
+
         .record-count__label {
             margin-right: 3px;
             font-weight: 700;
+
+            &--large {
+                font-size: 24px;
+            }
         }
 
         .recoord-count__limit {
