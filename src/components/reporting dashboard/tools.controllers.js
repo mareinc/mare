@@ -2350,7 +2350,9 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.limit( MAX_RESULTS )
 		.populate([
 			'contact1.gender',
-			'contact2.gender'
+			'contact2.gender',
+			'contact1.race',
+			'contact2.race'
 		].join( ' ' ))
 		.lean()
 		.exec();
@@ -2362,7 +2364,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.populate({
 			path: 'family',
 			populate: {
-				path: [ 'contact1.gender', 'contact2.gender' ].join( ' ' )
+				path: [ 
+					'contact1.gender',
+					'contact2.gender',
+					'contact1.race',
+					'contact2.race'
+				].join( ' ' )
 			}
 		})
 		.lean()
@@ -2375,7 +2382,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.populate({
 			path: 'familyAttendees',
 			populate: {
-				path: [ 'contact1.gender', 'contact2.gender' ].join( ' ' )
+				path: [ 
+					'contact1.gender',
+					'contact2.gender',
+					'contact1.race',
+					'contact2.race'
+				].join( ' ' )
 			}
 		})
 		.lean()
@@ -2388,7 +2400,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.populate({
 			path: 'family',
 			populate: {
-				path: [ 'contact1.gender', 'contact2.gender' ].join( ' ' )
+				path: [ 
+					'contact1.gender',
+					'contact2.gender',
+					'contact1.race',
+					'contact2.race'
+				].join( ' ' )
 			}
 		})
 		.lean()
@@ -2401,7 +2418,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.populate({
 			path: 'family',
 			populate: {
-				path: [ 'contact1.gender', 'contact2.gender' ].join( ' ' )
+				path: [ 
+					'contact1.gender',
+					'contact2.gender',
+					'contact1.race',
+					'contact2.race'
+				].join( ' ' )
 			}
 		})
 		.lean()
@@ -2414,7 +2436,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.populate({
 			path: 'family',
 			populate: {
-				path: [ 'contact1.gender', 'contact2.gender' ].join( ' ' )
+				path: [ 
+					'contact1.gender',
+					'contact2.gender',
+					'contact1.race',
+					'contact2.race'
+				].join( ' ' )
 			}
 		})
 		.lean()
@@ -2427,7 +2454,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.populate({
 			path: 'family',
 			populate: {
-				path: [ 'contact1.gender', 'contact2.gender' ].join( ' ' )
+				path: [ 
+					'contact1.gender',
+					'contact2.gender',
+					'contact1.race',
+					'contact2.race'
+				].join( ' ' )
 			}
 		})
 		.lean()
@@ -2848,11 +2880,11 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
-				if ( doesActiveFamilyMatchFamilySearchCriteria && contact1RaceCriteria && _.intersection( contact1RaceCriteria.$in, activityData.familyDoc.contact1.race.map( r => r.toString() ) ).length === 0 ) {
+				if ( doesActiveFamilyMatchFamilySearchCriteria && contact1RaceCriteria && _.intersection( contact1RaceCriteria.$in, activityData.familyDoc.contact1.race.map( r => r._id.toString() ) ).length === 0 ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
-				if ( doesActiveFamilyMatchFamilySearchCriteria && contact2RaceCriteria && _.intersection( contact2RaceCriteria.$in, activityData.familyDoc.contact2.race.map( r => r.toString() ) ).length === 0 ) {
+				if ( doesActiveFamilyMatchFamilySearchCriteria && contact2RaceCriteria && _.intersection( contact2RaceCriteria.$in, activityData.familyDoc.contact2.race.map( r => r._id.toString() ) ).length === 0 ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
@@ -2877,6 +2909,14 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 							: activityData.familyDoc.email,
 						contact1Gender: activityData.familyDoc.contact1.gender && activityData.familyDoc.contact1.gender.gender,
 						contact2Gender: activityData.familyDoc.contact2.gender && activityData.familyDoc.contact2.gender.gender,
+						contact1Race: activityData.familyDoc.contact1.race && activityData.familyDoc.contact1.race.length > 0
+							? activityData.familyDoc.contact1.race.map( race => race.race ).join( ', ' )
+							: undefined,
+						contact2Race: activityData.familyDoc.contact2.race && activityData.familyDoc.contact2.race.length > 0
+							? activityData.familyDoc.contact2.race.map( race => race.race ).join( ', ' )
+							: undefined,
+						contact1LGBTQIdentity: activityData.familyDoc.contact1.doesIdentifyAsLGBTQ,
+						contact2LGBTQIdentity: activityData.familyDoc.contact2.doesIdentifyAsLGBTQ,
 						registrationDate: {
 							dateDisplay: utilsService.verifyAndFormatDate( activityData.familyDoc.initialContact ),
 							dateISO:  moment( activityData.familyDoc.initialContact ).toISOString()
