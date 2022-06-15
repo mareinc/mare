@@ -51,7 +51,7 @@
 				placeholder: 'All States'
 			});
 
-			this.$el.find( '.contact-1-gender-select, .contact-2-gender-select' ).select2({
+			this.$el.find( '.gender-select' ).select2({
 				placeholder: 'All Genders'
 			});
 

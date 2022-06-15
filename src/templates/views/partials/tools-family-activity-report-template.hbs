@@ -64,24 +64,10 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right">
-                            <label for="contact-1-gender" class="bold">Contact 1 Gender:</label>
+                            <label for="gender" class="bold">Gender(s):</label>
                         </div>
                         <div class="col-sm-12 col-md-8">
-                            <select id="contact-1-gender" name="contact-1-gender[]" class="form-control contact-1-gender-select" multiple>
-                                {{#each genders as |gender|}}
-                                    <option value="{{ gender.id }}">{{ gender.gender }}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="row form-group">
-                        <div class="col-sm-12 col-md-4 text-sm-right">
-                            <label for="contact-2-gender" class="bold">Contact 2 Gender:</label>
-                        </div>
-                        <div class="col-sm-12 col-md-8">
-                            <select id="contact-2-gender" name="contact-2-gender[]" class="form-control contact-2-gender-select" multiple>
+                            <select id="gender" name="gender[]" class="form-control gender-select" multiple>
                                 {{#each genders as |gender|}}
                                     <option value="{{ gender.id }}">{{ gender.gender }}</option>
                                 {{/each}}

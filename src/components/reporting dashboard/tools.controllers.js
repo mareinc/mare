@@ -2273,13 +2273,12 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 	}
 
 	// contact 1 gender criteria (multiple)
-	if ( Array.isArray( query[ 'contact-1-gender' ] ) && query[ 'contact-1-gender' ].length > 0 ) {
-		familySearchCriteria[ 'contact1.gender' ] = { $in: query[ 'contact-1-gender' ] };
-	}
-
-	// contact 2 gender criteria (multiple)
-	if ( Array.isArray( query[ 'contact-2-gender' ] ) && query[ 'contact-2-gender' ].length > 0 ) {
-		familySearchCriteria[ 'contact2.gender' ] = { $in: query[ 'contact-2-gender' ] };
+	if ( Array.isArray( query[ 'gender' ] ) && query[ 'gender' ].length > 0 ) {
+		familySearchCriteria[ '$or' ] = familySearchCriteria[ '$or' ] || [];
+		familySearchCriteria[ '$or' ].push(
+			{ 'contact1.gender': { $in: query[ 'gender' ] } },
+			{ 'contact2.gender': { $in: query[ 'gender' ] } }
+		);
 	}
 
 	// contact 1 race criteria (multiple)
@@ -2843,8 +2842,8 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 			const regionCriteria = familySearchCriteria[ 'address.region' ];
 			const cityOrTownCriteria = familySearchCriteria[ 'address.city' ];
 			const relationsipStatusCriteria = familySearchCriteria[ 'relationshipStatus' ];
-			const contact1GenderCriteria = familySearchCriteria[ 'contact1.gender' ];
-			const contact2GenderCriteria = familySearchCriteria[ 'contact2.gender' ];
+			let genderCriteria = familySearchCriteria[ '$or' ] && familySearchCriteria[ '$or' ].find( criterion => !!criterion[ 'contact1.gender' ] );
+			genderCriteria = genderCriteria && genderCriteria[ 'contact1.gender' ];
 			const contact1RaceCriteria = familySearchCriteria[ 'contact1.race' ];
 			const contact2RaceCriteria = familySearchCriteria[ 'contact2.race' ];
 			const contact1LGBTQIdentityCriteria = familySearchCriteria[ 'contact1.doesIdentifyAsLGBTQ' ];
@@ -2872,12 +2871,17 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
-				if ( doesActiveFamilyMatchFamilySearchCriteria && contact1GenderCriteria && !contact1GenderCriteria.$in.includes( activityData.familyDoc.contact1.gender && activityData.familyDoc.contact1.gender._id.toString() ) ) {
-					doesActiveFamilyMatchFamilySearchCriteria = false;
-				}
+				if ( doesActiveFamilyMatchFamilySearchCriteria && genderCriteria ) {
+					
+					// create a combined list of both contact's genders
+					const contact1Gender = activityData.familyDoc.contact1.gender && activityData.familyDoc.contact1.gender._id.toString();
+					const contact2Gender = activityData.familyDoc.contact2.gender && activityData.familyDoc.contact2.gender._id.toString();
+					const combinbedContactGenders = [ contact1Gender, contact2Gender ].filter( gender => !!gender );
 
-				if ( doesActiveFamilyMatchFamilySearchCriteria && contact2GenderCriteria && !contact2GenderCriteria.$in.includes( activityData.familyDoc.contact1.gender && activityData.familyDoc.contact1.gender._id.toString() ) ) {
-					doesActiveFamilyMatchFamilySearchCriteria = false;
+					// determine if there are any matches between the gender criteria specified and the combined list of contact genders
+					if ( _.intersection( genderCriteria.$in, combinbedContactGenders ).length < 1 ) {
+						doesActiveFamilyMatchFamilySearchCriteria = false;
+					}
 				}
 
 				if ( doesActiveFamilyMatchFamilySearchCriteria && contact1RaceCriteria && _.intersection( contact1RaceCriteria.$in, activityData.familyDoc.contact1.race.map( r => r._id.toString() ) ).length === 0 ) {
