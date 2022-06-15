@@ -2807,6 +2807,17 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 				}
 			});
 
+			// extract filtering criteria from family search criteria
+			const regionCriteria = familySearchCriteria[ 'address.region' ];
+			const cityOrTownCriteria = familySearchCriteria[ 'address.city' ];
+			const relationsipStatusCriteria = familySearchCriteria[ 'relationshipStatus' ];
+			const contact1GenderCriteria = familySearchCriteria[ 'contact1.gender' ];
+			const contact2GenderCriteria = familySearchCriteria[ 'contact2.gender' ];
+			const contact1RaceCriteria = familySearchCriteria[ 'contact1.race' ];
+			const contact2RaceCriteria = familySearchCriteria[ 'contact2.race' ];
+			const contact1LGBTQIdentityCriteria = familySearchCriteria[ 'contact1.doesIdentifyAsLGBTQ' ];
+			const contact2LGBTQIdentityCriteria = familySearchCriteria[ 'contact2.doesIdentifyAsLGBTQ' ];
+
 			// convert active families object into an array of family activity data to be displayed in results table
 			const familyActivity = [];
 			
@@ -2817,47 +2828,38 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 
 				// ensure active families that were captured from non-family-model sources match all family search criteria
 
-				const regionCriteria = familySearchCriteria[ 'address.region' ];
 				if ( doesActiveFamilyMatchFamilySearchCriteria && regionCriteria && !regionCriteria.$in.includes( activityData.familyDoc.address.region && activityData.familyDoc.address.region.toString() ) ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
-				const cityOrTownCriteria = familySearchCriteria[ 'address.city' ];
 				if ( doesActiveFamilyMatchFamilySearchCriteria && cityOrTownCriteria && !cityOrTownCriteria.$in.includes( activityData.familyDoc.address.city && activityData.familyDoc.address.city.toString() ) ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
-				const relationsipStatusCriteria = familySearchCriteria[ 'relationshipStatus' ];
 				if ( doesActiveFamilyMatchFamilySearchCriteria && relationsipStatusCriteria && relationsipStatusCriteria !== activityData.familyDoc.relationshipStatus ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
-				const contact1GenderCriteria = familySearchCriteria[ 'contact1.gender' ];
 				if ( doesActiveFamilyMatchFamilySearchCriteria && contact1GenderCriteria && !contact1GenderCriteria.$in.includes( activityData.familyDoc.contact1.gender && activityData.familyDoc.contact1.gender._id.toString() ) ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
-				const contact2GenderCriteria = familySearchCriteria[ 'contact2.gender' ];
 				if ( doesActiveFamilyMatchFamilySearchCriteria && contact2GenderCriteria && !contact2GenderCriteria.$in.includes( activityData.familyDoc.contact1.gender && activityData.familyDoc.contact1.gender._id.toString() ) ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
-				const contact1RaceCriteria = familySearchCriteria[ 'contact1.race' ];
 				if ( doesActiveFamilyMatchFamilySearchCriteria && contact1RaceCriteria && _.intersection( contact1RaceCriteria.$in, activityData.familyDoc.contact1.race.map( r => r.toString() ) ).length === 0 ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
-				const contact2RaceCriteria = familySearchCriteria[ 'contact2.race' ];
 				if ( doesActiveFamilyMatchFamilySearchCriteria && contact2RaceCriteria && _.intersection( contact2RaceCriteria.$in, activityData.familyDoc.contact2.race.map( r => r.toString() ) ).length === 0 ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
-				const contact1LGBTQIdentityCriteria = familySearchCriteria[ 'contact1.doesIdentifyAsLGBTQ' ];
 				if ( doesActiveFamilyMatchFamilySearchCriteria && contact1LGBTQIdentityCriteria && contact1LGBTQIdentityCriteria !== activityData.familyDoc.contact1.doesIdentifyAsLGBTQ ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
-				const contact2LGBTQIdentityCriteria = familySearchCriteria[ 'contact2.doesIdentifyAsLGBTQ' ];
 				if ( doesActiveFamilyMatchFamilySearchCriteria && contact2LGBTQIdentityCriteria && contact2LGBTQIdentityCriteria !== activityData.familyDoc.contact2.doesIdentifyAsLGBTQ ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
@@ -2909,7 +2911,7 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.catch( err => {
 
 			// log an error for debugging purposes
-			console.error( 'error loading family activity report for the dashboard', err );
-			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading family activity data' );
+			console.error( 'error loading families served report for the dashboard', err );
+			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading families served data' );
 		});
 };
