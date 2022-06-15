@@ -2290,14 +2290,13 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		);
 	}
 
-	// contact 1 identifies as lgbtq+ criterion
-	if ( query['contact-1-identifies-as-lgbtq'] ) {
-		familySearchCriteria[ 'contact1.doesIdentifyAsLGBTQ' ] = query['contact-1-identifies-as-lgbtq'];
-	}
-
-	// contact 2 identifies as lgbtq+ criterion
-	if ( query['contact-2-identifies-as-lgbtq'] ) {
-		familySearchCriteria[ 'contact2.doesIdentifyAsLGBTQ' ] = query['contact-2-identifies-as-lgbtq'];
+	// identifies as lgbtq+ criterion
+	if ( query['identifies-as-lgbtq'] ) {
+		familySearchCriteria[ '$or' ] = familySearchCriteria[ '$or' ] || [];
+		familySearchCriteria[ '$or' ].push(
+			{ 'contact1.doesIdentifyAsLGBTQ': query['identifies-as-lgbtq'] },
+			{ 'contact2.doesIdentifyAsLGBTQ': query['identifies-as-lgbtq'] }
+		);
 	}
 
 	// create the family registration activity search criteria
@@ -2845,8 +2844,8 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 			genderCriteria = genderCriteria && genderCriteria[ 'contact1.gender' ];
 			let raceCriteria = familySearchCriteria[ '$or' ] && familySearchCriteria[ '$or' ].find( criterion => !!criterion[ 'contact1.race' ] );
 			raceCriteria = raceCriteria && raceCriteria[ 'contact1.race' ];
-			const contact1LGBTQIdentityCriteria = familySearchCriteria[ 'contact1.doesIdentifyAsLGBTQ' ];
-			const contact2LGBTQIdentityCriteria = familySearchCriteria[ 'contact2.doesIdentifyAsLGBTQ' ];
+			let lgbtqIdentityCriteria = familySearchCriteria[ '$or' ] && familySearchCriteria[ '$or' ].find( criterion => !!criterion[ 'contact1.doesIdentifyAsLGBTQ' ] );
+			lgbtqIdentityCriteria = lgbtqIdentityCriteria && lgbtqIdentityCriteria[ 'contact1.doesIdentifyAsLGBTQ' ];
 
 			// convert active families object into an array of family activity data to be displayed in results table
 			const familyActivity = [];
@@ -2898,12 +2897,17 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 					}
 				}
 
-				if ( doesActiveFamilyMatchFamilySearchCriteria && contact1LGBTQIdentityCriteria && contact1LGBTQIdentityCriteria !== activityData.familyDoc.contact1.doesIdentifyAsLGBTQ ) {
-					doesActiveFamilyMatchFamilySearchCriteria = false;
-				}
+				if ( doesActiveFamilyMatchFamilySearchCriteria && lgbtqIdentityCriteria ) {
+					
+					// create a combined list of both contact's lgbtq+ identities
+					const contact1LGBTQIdentity = activityData.familyDoc.contact1.doesIdentifyAsLGBTQ;
+					const contact2LGBTQIdentity = activityData.familyDoc.contact2.doesIdentifyAsLGBTQ;
+					const combinbedContactLGBTQIdentities = [ contact1LGBTQIdentity, contact2LGBTQIdentity ].filter( identity => !!identity );
 
-				if ( doesActiveFamilyMatchFamilySearchCriteria && contact2LGBTQIdentityCriteria && contact2LGBTQIdentityCriteria !== activityData.familyDoc.contact2.doesIdentifyAsLGBTQ ) {
-					doesActiveFamilyMatchFamilySearchCriteria = false;
+					// determine if there are any matches between the lgbtq+ identity criteria specified and the combined list of contact lgbtq identities
+					if ( !combinbedContactLGBTQIdentities.includes( lgbtqIdentityCriteria ) ) {
+						doesActiveFamilyMatchFamilySearchCriteria = false;
+					}
 				}
 
 				// if active family matches all family search criteria...
