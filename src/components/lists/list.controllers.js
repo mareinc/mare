@@ -866,7 +866,7 @@ exports.getSourceByName = name => {
 	});
 };
 
-exports.getSourcesByNameFragment = ( nameQuery, maxResults ) => {
+exports.getSourcesByNameFragment = ( nameQuery, maxResults, sourceType ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if no maxResults was passed in
@@ -874,14 +874,22 @@ exports.getSourcesByNameFragment = ( nameQuery, maxResults ) => {
 			// return control to the calling context
 			return reject( new Error( `error fetching sources by name - no maxResults passed in` ) );
 		}
+
+		// construct the query object
+		const query = {
+			source: new RegExp( nameQuery, 'i' )
+		};
+
+		// append source type params if specified
+		if ( sourceType ) {
+			query.type = sourceType;
+		}
 		
 		// fetch the sources
 		keystone.list( 'Source' ).model
-			.find( {
-				'source' : new RegExp( nameQuery, 'i' )
-			})
-			.sort( {
-				'source' : 'asc'
+			.find( query )
+			.sort({
+				source: 'asc'
 			})
 			.limit( maxResults )
 			.exec()

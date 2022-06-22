@@ -483,7 +483,7 @@ exports.getSourcesData = ( req, res, next ) => {
 	const MAX_RESULTS = 10;
 
 	utilsService.fetchModelsMapAndSendResults(
-		listsService.getSourcesByNameFragment( req.query.q, MAX_RESULTS ),
+		listsService.getSourcesByNameFragment( req.query.q, MAX_RESULTS, 'media' ),
 		source => ( { id: source._id.toString(), text: source.source } ),
 		res
 	);
