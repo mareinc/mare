@@ -160,6 +160,7 @@
                     <th>Max Intellectual Needs</th>
                     <th>Max Emotional Needs</th>
                     <th>Disabilities</th>
+                    <th>Accepted?</th>
                 </tr>
                 \{{#each results as |result|}}
                     <tr>
@@ -189,6 +190,7 @@
                         <td>\{{ result.maxIntellectualNeeds }}</td>
                         <td>\{{ result.maxEmotionalNeeds }}</td>
                         <td>\{{ result.disabilities }}</td>
+                        <td>\{{ result.isAccepted }}</td>
                     </tr>
                 \{{/each}}
             </table>

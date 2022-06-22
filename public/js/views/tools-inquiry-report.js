@@ -338,6 +338,12 @@
 				data: 'disabilities',
 				defaultContent: '--',
 				visible: false
+			},
+			{
+				title: 'Accepted?',
+				data: 'isAccepted',
+				defaultContent: '--',
+				visible: false
 			}
 		]
 	});
