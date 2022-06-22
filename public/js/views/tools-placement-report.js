@@ -294,6 +294,12 @@
 				defaultContent: '--',
 				visible: false
 			},
+			{
+				title: 'Identifies as LGBTQ+?',
+				data: 'childLGBTQIdentity',
+				defaultContent: '--',
+				visible: false
+			},
 			{ 
 				title: 'Legal Status',
 				data: 'childLegalStatus',
