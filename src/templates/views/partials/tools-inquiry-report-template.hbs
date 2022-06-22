@@ -154,6 +154,8 @@
                     <th>Additional Source(s)</th>
                     <th>Source Description</th>
                     <th>Family and Reg #</th>
+                    <th>Contact 1 Email</th>
+                    <th>Contact 2 Email</th>
                     <th>Inquiry Type</th>
                     <th>Inquiry Method</th>
                     <th>Max Physical Needs</th>
@@ -184,6 +186,8 @@
                         <td>\{{ result.familyContact1 }} 
                             \{{#if result.familyRegistrationNumber}} (\{{ result.familyRegistrationNumber }}) \{{/if}}
                         </td>
+                        <td>\{{ result.familyContact1Email }}</td>
+                        <td>\{{ result.familyContact2Email }}</td>
                         <td>\{{ result.inquiryType }}</td>
                         <td>\{{ result.inquiryMethod }}</td>
                         <td>\{{ result.maxPhysicalNeeds }}</td>

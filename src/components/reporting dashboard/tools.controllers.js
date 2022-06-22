@@ -725,6 +725,8 @@ exports.getInquiryData = ( req, res, next ) => {
 					familyRegistrationNumber: family ? family.registrationNumber : '',
 					familyContact1: family ? family.contact1.name.full : 'Not Specified',
 					familyContact2: family && family.contact2.name.full ? family.contact2.name.full : 'Not Specified',
+					familyContact1Email: family && family.contact1.email ? family.contact1.email : 'Not Specified',
+					familyContact2Email: family && family.contact2.email ? family.contact2.email : 'Not Specified',
 					inquiryType: inquiryDoc.inquiryType,
 					inquiryMethod: inquiryDoc.inquiryMethod.inquiryMethod,
 					inquiryDate: moment.utc( inquiryDoc.takenOn ).format( 'MM/DD/YYYY' ),

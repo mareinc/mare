@@ -287,7 +287,9 @@
 				defaultContent: '--'
 			},
 			{ title: 'Contact 1', data: 'familyContact1' },
+			{ title: 'Contact 1 Email', data: 'familyContact1Email', visible: false },
 			{ title: 'Contact 2', data: 'familyContact2' },
+			{ title: 'Contact 2 Email', data: 'familyContact2Email', visible: false },
 			{ 
 				title: 'Reg #',
 				data: 'familyRegistrationNumber',
