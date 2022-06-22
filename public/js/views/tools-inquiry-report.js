@@ -299,6 +299,7 @@
 						: '--';
 				}
 			},
+			{ title: 'Family Region', data: 'familyRegion', visible: false },
 			{
 				title: 'Source',
 				data: 'source',

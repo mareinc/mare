@@ -614,7 +614,7 @@ exports.getInquiryData = ( req, res, next ) => {
 		keystone.list( 'Inquiry' ).model
 			.find( searchCriteria )
 			.limit( MAX_RESULTS )
-			.populate( 'inquiryMethod family source additionalSources' )
+			.populate( 'inquiryMethod source additionalSources' )
 			.populate({
 				path: 'childsSocialWorker',
 				populate: {
@@ -628,6 +628,12 @@ exports.getInquiryData = ( req, res, next ) => {
 				path: 'children',
 				populate: {
 					path: 'disabilities legalStatus',
+				}
+			})
+			.populate({
+				path: 'family',
+				populate: {
+					path: 'address.region',
 				}
 			})
 			.lean()
@@ -727,6 +733,7 @@ exports.getInquiryData = ( req, res, next ) => {
 					familyContact2: family && family.contact2.name.full ? family.contact2.name.full : 'Not Specified',
 					familyContact1Email: family && family.contact1.email ? family.contact1.email : 'Not Specified',
 					familyContact2Email: family && family.contact2.email ? family.contact2.email : 'Not Specified',
+					familyRegion: family && family.address.region && family.address.region.region ? family.address.region.region : 'Not Specified',
 					inquiryType: inquiryDoc.inquiryType,
 					inquiryMethod: inquiryDoc.inquiryMethod.inquiryMethod,
 					inquiryDate: moment.utc( inquiryDoc.takenOn ).format( 'MM/DD/YYYY' ),
