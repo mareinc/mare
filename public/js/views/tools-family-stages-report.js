@@ -248,6 +248,7 @@
 			{ title: 'Contact 1', data: 'contact1.fullName', defaultContent: '--' },
 			{ title: 'Contact 2', data: 'contact2.fullName', defaultContent: '--' },
 			{ title: 'Most Recent Stage', data: 'currentStage.websiteDisplay', defaultContent: '--' },
+			{ title: 'Oldest Stage', data: 'oldestStage.websiteDisplay', defaultContent: '--' },
 			{ title: 'Region', data: 'region', defaultContent: '--' },
 			{ title: 'State', data: 'state', defaultContent: '--' },
 			{ title: 'Constellation', data: 'constellation', defaultContent: '--' },

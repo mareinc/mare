@@ -258,10 +258,13 @@ exports.getFamilyStagesData = familyDoc => {
 	});
 };
 
-exports.getCurrentFamilyStage = familyDoc => {
+exports.getFamilyStage = (familyDoc, getOldestStage = false) => {
 
-	// starting from the last stage (chronoligically), find the first stage that is complete
-	return exports.getFamilyStagesData( familyDoc ).reverse().find( stage => stage.value );
+	return getOldestStage
+		// find the oldest stage that is complete
+		? exports.getFamilyStagesData( familyDoc ).find( stage => stage.value )
+		// starting from the last stage (chronoligically), find the first stage that is complete
+		: exports.getFamilyStagesData( familyDoc ).reverse().find( stage => stage.value );
 };
 
 exports.getFamilyServices = familyDoc => {

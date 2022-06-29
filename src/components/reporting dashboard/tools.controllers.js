@@ -1861,7 +1861,7 @@ exports.getFamilyListingData = ( req, res, next ) => {
 					: 'registered (no status)'
 				: 'ungregistered',
 			stages: utilsService.getFamilyStagesData( familyDoc ),
-			currentStage: utilsService.getCurrentFamilyStage( familyDoc ),
+			currentStage: utilsService.getFamilyStage( familyDoc ),
 			services: utilsService.getFamilyServices( familyDoc )
 		}));
 
@@ -2111,7 +2111,8 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 						? familyDoc.contact2.race.map( race => race.race ).join( ', ' )
 						: undefined
 				},
-				currentStage: utilsService.getCurrentFamilyStage( familyDoc ),
+				currentStage: utilsService.getFamilyStage( familyDoc ),
+				oldestStage: utilsService.getFamilyStage( familyDoc, true ),
 				region: familyDoc.address.region && familyDoc.address.region.region,
 				state: familyDoc.address.state && familyDoc.address.state.state,
 				constellation: familyDoc.familyConstellation && familyDoc.familyConstellation.familyConstellation,
