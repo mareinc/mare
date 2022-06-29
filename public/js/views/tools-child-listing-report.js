@@ -281,6 +281,7 @@
 			{ title: 'Placement Status', data: 'placementStatus' },
 			{ title: 'Current Age', data: 'currentAge' },
 			{ title: 'Adoption Worker', data: 'adoptionWorker' },
+			{ title: 'Adoption Worker Agency', data: 'adoptionWorkerAgency' },
 			{ title: 'Adoption Worker Region', data: 'adoptionWorkerRegion' },
 			{ title: 'Must be placed with siblings?', data: 'mustBePlacedWithSiblings' },
 			{ title: 'Siblings to be placed with', data: 'siblingsToBePlacedWith', visible: false },

@@ -1537,7 +1537,7 @@ exports.getChildListingData = ( req, res, next ) => {
 		keystone.list( 'Child' ).model
 			.find( searchCriteria )
 			.limit( MAX_RESULTS )
-			.populate( 'gender race status legalStatus residence adoptionWorker adoptionWorkerAgencyRegion siblingsToBePlacedWith' )
+			.populate( 'gender race status legalStatus residence adoptionWorker adoptionWorkerAgency adoptionWorkerAgencyRegion siblingsToBePlacedWith' )
 			.lean()
 			.exec(),
 		// if thare are any social worker criteria specified, get the social worker docs to seed the social worker selects on the search form
@@ -1588,6 +1588,7 @@ exports.getChildListingData = ( req, res, next ) => {
 			emotionalNeeds: childDoc.emotionalNeeds || '--',
 			intellectualNeeds: childDoc.intellectualNeeds || '--',
 			adoptionWorker: childDoc.adoptionWorker ? childDoc.adoptionWorker.name.full : 'N/A',
+			adoptionWorkerAgency: childDoc.adoptionWorkerAgency ? childDoc.adoptionWorkerAgency.name : 'N/A',
 			adoptionWorkerRegion: childDoc.adoptionWorkerAgencyRegion ? childDoc.adoptionWorkerAgencyRegion.region : 'N/A',
 			currentAge: moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.birthDate ), 'years' ),
 			daysSinceRegistration: moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.registrationDate ), 'days' ),
