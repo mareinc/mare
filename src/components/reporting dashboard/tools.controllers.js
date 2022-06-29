@@ -2150,6 +2150,7 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 						? familyDoc.registeredWithMARE.status.familyStatus
 						: 'registered (no status)'
 					: 'ungregistered',
+				accountCreatedDate: utilsService.verifyAndFormatDate( familyDoc.createdAt )
 			}));
 
 			res.send({

@@ -281,7 +281,8 @@
 			{ title: 'Online Matching Date', data: 'onlineMatchingDate', defaultContent: '--' },
 			{ title: 'Registered With MARE Date', data: 'registeredWithMAREDate', defaultContent: '--' },
 			{ title: 'Family Profile Created Date', data: 'familyProfileCreatedDate', defaultContent: '--' },
-			{ title: 'Closed Date', data: 'closedDate', defaultContent: '--' }
+			{ title: 'Closed Date', data: 'closedDate', defaultContent: '--' },
+			{ title: 'Account Created Date', data: 'accountCreatedDate', defaultContent: '--' }
 		],
 
 		getFamilyStagesData: function( params ) {
