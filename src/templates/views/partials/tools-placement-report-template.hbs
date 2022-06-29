@@ -146,7 +146,9 @@
                     <th>Family State</th>
                     <th>Family Constellation</th>
                     <th>Contact 1 Race</th>
+                    <th>Contact 1 Identifies as LGBTQ+?</th>
                     <th>Contact 2 Race</th>
+                    <th>Contact 2 Identifies as LGBTQ+?</th>
                     <th>Registered With MARE</th>
                 </tr>
                 \{{#each results as |result|}}
@@ -193,7 +195,9 @@
                         <td>\{{ result.familyState }}</td>
                         <td>\{{ result.familyConstellation }}</td>
                         <td>\{{ result.familyContact1Race }}</td>
+                        <td>\{{ result.familyContact1LGBTQIdentity }}</td>
                         <td>\{{ result.familyContact2Race }}</td>
+                        <td>\{{ result.familyContact2LGBTQIdentity }}</td>
                         <td>\{{ result.familyRegisteredWithMARE }}</td>
                     </tr>
                 \{{/each}}

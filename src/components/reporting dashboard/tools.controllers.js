@@ -987,6 +987,7 @@ exports.getPlacementData = ( req, res, next ) => {
 						: placement.familyDetails.name
 							? placement.familyDetails.name && placement.familyDetails.name !== ''
 							: 'Not Specified',
+					familyContact1LGBTQIdentity: placement.family && placement.family.contact1.doesIdentifyAsLGBTQ ? placement.family.contact1.doesIdentifyAsLGBTQ : 'Not Specified',
 					familyContact1Race: placement.family
 						? placement.family.contact1.race && placement.family.contact1.race.length > 0
 							? placement.family.contact1.race.map( race => race.race ).join( ', ' )
@@ -1002,6 +1003,7 @@ exports.getPlacementData = ( req, res, next ) => {
 					familyContact2: placement.family && placement.family.contact2.name.full
 						? placement.family.contact2.name.full
 						: 'Not Specified',
+					familyContact2LGBTQIdentity: placement.family && placement.family.contact2.doesIdentifyAsLGBTQ ? placement.family.contact2.doesIdentifyAsLGBTQ : 'Not Specified',
 					familySWAgency: placement.familyDetails && placement.familyDetails.agency
 						? placement.familyDetails.agency.name
 						: placement.familyAgency
