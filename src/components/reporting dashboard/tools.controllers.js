@@ -1610,6 +1610,7 @@ exports.getChildListingData = ( req, res, next ) => {
 			weekendFamilyConnections: childDoc.weekendFamilyConnections ? 'Yes' : 'No',
 			specializedRecruitment: childDoc.specializedRecruitment ? 'Yes' : 'No',
             identifiesAsLGBTQ: childDoc.identifiesAsLGBTQ || '--',
+			identifiesAsLGBTQDetails: childDoc.identifiesAsLGBTQDetails || '--',
 			displayImage: childDoc.image && childDoc.image.url ? childDoc.image.url : undefined
 		}));
 

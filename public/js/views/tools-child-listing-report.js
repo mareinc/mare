@@ -304,6 +304,7 @@
 			{ title: 'Weekend Family Connections', data: 'weekendFamilyConnections', visible: false },
 			{ title: 'Specialized Recruitment', data: 'specializedRecruitment', visible: false },
             { title: 'Identifies as LGBTQ+', data: 'identifiesAsLGBTQ', visible: false },
+			{ title: 'LGBTQ+ Identity Comments', data: 'identifiesAsLGBTQDetails', visible: false },
 			{ 
 				title: 'Display Image',
 				data: 'displayImage',
