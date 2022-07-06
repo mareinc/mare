@@ -50,9 +50,8 @@ keystone.set( '500', function( err, req, res, next ) {
 	// log the error itself
 	console.error( err );
 
-	// set the status code to 500 and display the 500 page
-	// TODO: create a hbs template for the 500 page and provide better messaging
-	res.status( 500 ).send( 'We encountered an error while trying to process your request.' )
+	// pass execution to the notFound middleware, which will set the status code to 500 and display the 500 page
+	res.err();
 });
 
 // import route controllers

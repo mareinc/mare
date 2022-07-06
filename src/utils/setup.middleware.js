@@ -90,6 +90,16 @@ exports.initLocals = function( req, res, next ) {
 // initialize global error handlers
 exports.initErrorHandlers = function initErrorHandlers( req, res, next ) {
     
+    res.err = function( 
+		title = '500 - Internal Server Error',
+		message = `We encountered an error while trying to process your request.`
+	) {
+        res.status( 500 ).render( 'errors/500', {
+            errorTitle: title,
+            errorMsg: message
+        });
+    }
+    
     res.notFound = function(
 		title = '404 - Page Not Found',
 		message = `Sorry, we can't seem to find the page you're looking for.`
