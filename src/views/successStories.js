@@ -22,8 +22,6 @@ exports = module.exports = ( req, res ) => {
 		targetsArray: [ 0 ]
 	}];
 
-	throw new Error('test error');
-
 	// set how the text will be truncated for short content displays
 	const truncateOptions = { targetLength: 400 };
 
