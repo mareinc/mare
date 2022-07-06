@@ -86,3 +86,19 @@ exports.initLocals = function( req, res, next ) {
 
 	next();
 };
+
+// initialize global error handlers
+exports.initErrorHandlers = function initErrorHandlers( req, res, next ) {
+    
+    res.notFound = function(
+		title = '404 - Page Not Found',
+		message = `Sorry, we can't seem to find the page you're looking for.`
+	) {
+        res.status( 404 ).render( 'errors/404', {
+            errorTitle: title,
+            errorMsg: message
+        });
+    }
+    
+    next();
+};	

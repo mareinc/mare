@@ -1,0 +1,12 @@
+.error-container {
+
+    // set a min height bc the error content is usually minimal, which leaves blank space below the footer
+    min-height: 35vh;
+    @media all and (min-width: 660px) {
+		min-height: 70vh;
+	}
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}

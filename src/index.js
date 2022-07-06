@@ -24,7 +24,7 @@ const keystone						= require( 'keystone' ),
 	  importRoutes					= keystone.importer( __dirname );
 
 // common middleware
-keystone.pre( 'routes', setupMiddleware.initLocals );
+keystone.pre( 'routes', setupMiddleware.initLocals, setupMiddleware.initErrorHandlers );
 keystone.pre( 'render', notificationMiddleware.flashMessages, globalAlertMiddleware.globalAlert );
 
 // handle non-existent routes
@@ -33,9 +33,8 @@ keystone.set( '404', function( req, res, next ) {
 	// log the path the generated the 404
 	console.log( `unhandled route (404) encountered with path: ${req.path}` );
     
-	// set status code to 404 and display the 404 page
-	// TODO: create a hbs template for the 404 page and provide better messaging
-	res.status( 404 ).send( 'Page Not Found' );
+	// pass execution to the notFound middleware, which will set status code to 404 and display the 404 page
+	res.notFound();
 });
  
 // handle generic server errors (some routes/services already have error handling, this should not take precedence)
