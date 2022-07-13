@@ -61,10 +61,27 @@
 		},
 
 		updateTableColumnVisibility: function( columnVisibility ) {
+			
 			// ensure a column visibility map exists
 			this.tableColumnVisibility = this.tableColumnVisibility || [];
-			// add new columnVisibility entry
-			this.tableColumnVisibility.push( columnVisibility );
+
+			// check for existing column visibility entries for the same column
+			var existingColumnVisibility = this.tableColumnVisibility.find( function( existingColVis ) {
+				return existingColVis.columnIndex === columnVisibility.columnIndex;
+			});
+
+			// if there's already a visibility preference for this column...
+			if ( existingColumnVisibility ) {
+				
+				// update the preference value
+				existingColumnVisibility.visibility = columnVisibility.visibility;
+
+			// if no visibility preference exists for this column...
+			} else {
+
+				// add new columnVisibility entry
+				this.tableColumnVisibility.push( columnVisibility );
+			}
 		},
 
 		// TODO: all the functions below should use a data-attribute instead of a class to specify what's shown
