@@ -227,25 +227,11 @@
 							}
 						});
 
-						// handle column visibility change event
-						mare.views.tools.table.on( 'column-visibility.dt', function ( e, settings, column, state ) {
-							// capture column visibility preference so it can be applied as a query string param on next search
-							mare.views.tools.updateTableColumnVisibility( { columnIndex: column, visibility: state ? 'visible' : 'hidden' } );
-						});
+						// capture column visibility preference so it can be applied as a query string param on next search
+						mare.views.tools.table.on( 'column-visibility.dt', mare.views.tools.handleColumnVisibilityChanged);
 
-						$.each( params[ 'colVis[]' ], function( index, value ) {
-							
-							// extract column visibility setting from query param
-							// format: [ columnIndex, columnVisibility ]
-							var columnVisiblitySetting = value.split( '-' );
-							
-							// show or hide the column based on visibility setting
-							// do not immediately redraw the table (deferring until all visibility preferences have been applied)
-							mare.views.tools.table.columns( [ columnVisiblitySetting[ 0 ] ] ).visible( columnVisiblitySetting[ 1 ] === 'visible' ? true : false, false );
-						});
-
-						// apply all column visibility updates
-						mare.views.tools.table.columns.adjust().draw( false );
+						// apply any existing visibility preferences (must happen after event listener is added to persist existing preferences)
+						mare.views.tools.applyColumnVisibilityFromParams( params );
 					});
 			}
 		},

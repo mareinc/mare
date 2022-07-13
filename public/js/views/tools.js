@@ -60,13 +60,17 @@
 			}
 		},
 
-		updateTableColumnVisibility: function( columnVisibility ) {
-			
+		// handler for column visibility changed events fired by DataTables in reporting views
+		handleColumnVisibilityChanged: function ( event, tableSettings, column, state ) {
+
 			// ensure a column visibility map exists
-			this.tableColumnVisibility = this.tableColumnVisibility || [];
+			mare.views.tools.tableColumnVisibility = mare.views.tools.tableColumnVisibility || [];
+
+			// create column visibility object from event data
+			var columnVisibility = { columnIndex: column, visibility: state ? 'visible' : 'hidden' };
 
 			// check for existing column visibility entries for the same column
-			var existingColumnVisibility = this.tableColumnVisibility.find( function( existingColVis ) {
+			var existingColumnVisibility = mare.views.tools.tableColumnVisibility.find( function( existingColVis ) {
 				return existingColVis.columnIndex === columnVisibility.columnIndex;
 			});
 
@@ -80,8 +84,26 @@
 			} else {
 
 				// add new columnVisibility entry
-				this.tableColumnVisibility.push( columnVisibility );
+				mare.views.tools.tableColumnVisibility.push( columnVisibility );
 			}
+		},
+
+		// parses report params (in the form of a query string) and applies any column visibility preferences to the current DataTable
+		applyColumnVisibilityFromParams: function( params ) {
+
+			$.each( params[ 'colVis[]' ], function( index, value ) {
+							
+				// extract column visibility setting from query param
+				// format: [ columnIndex, columnVisibility ]
+				var columnVisiblitySetting = value.split( '-' );
+				
+				// show or hide the column based on visibility setting
+				// do not immediately redraw the table (deferring until all visibility preferences have been applied)
+				mare.views.tools.table.columns( [ columnVisiblitySetting[ 0 ] ] ).visible( columnVisiblitySetting[ 1 ] === 'visible' ? true : false, false );
+			});
+
+			// apply all column visibility updates
+			mare.views.tools.table.columns.adjust().draw( false );
 		},
 
 		// TODO: all the functions below should use a data-attribute instead of a class to specify what's shown
