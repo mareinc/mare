@@ -103,7 +103,15 @@
 			params = _.filter( params, function( value ) {
 				return value && value.value && value.value.length > 0 && value.name !== 'inquiry-date-range';
 			});
-			
+
+			// add results table column visibility settings to params
+			var columnVisibilitySettings = mare.views.tools.tableColumnVisibility;
+			if ( columnVisibilitySettings && columnVisibilitySettings.length > 0 ) {
+				$.each( columnVisibilitySettings, function( index, value ) {
+					params.push( { name: 'colVis[]', value: value.columnIndex + '-' + value.visibility } );
+				});
+			}
+
 			// build the query string
 			var queryString = jQuery.param( params );
 
@@ -218,6 +226,26 @@
 								}
 							}
 						});
+
+						// handle column visibility change event
+						mare.views.tools.table.on( 'column-visibility.dt', function ( e, settings, column, state ) {
+							// capture column visibility preference so it can be applied as a query string param on next search
+							mare.views.tools.updateTableColumnVisibility( { columnIndex: column, visibility: state ? 'visible' : 'hidden' } );
+						});
+
+						$.each( params[ 'colVis[]' ], function( index, value ) {
+							
+							// extract column visibility setting from query param
+							// format: [ columnIndex, columnVisibility ]
+							var columnVisiblitySetting = value.split( '-' );
+							
+							// show or hide the column based on visibility setting
+							// do not immediately redraw the table (deferring until all visibility preferences have been applied)
+							mare.views.tools.table.columns( [ columnVisiblitySetting[ 0 ] ] ).visible( columnVisiblitySetting[ 1 ] === 'visible' ? true : false, false );
+						});
+
+						// apply all column visibility updates
+						mare.views.tools.table.columns.adjust().draw( false );
 					});
 			}
 		},

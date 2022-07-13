@@ -53,9 +53,18 @@
 		// destroys a table that has been created by a previous view
 		destroyTable: function() {
 			if ( this.table ) {
+				this.table.off( 'column-visibility.dt' );
 				this.table.destroy();
 				this.table = undefined;
+				this.tableColumnVisibility = [];
 			}
+		},
+
+		updateTableColumnVisibility: function( columnVisibility ) {
+			// ensure a column visibility map exists
+			this.tableColumnVisibility = this.tableColumnVisibility || [];
+			// add new columnVisibility entry
+			this.tableColumnVisibility.push( columnVisibility );
 		},
 
 		// TODO: all the functions below should use a data-attribute instead of a class to specify what's shown
