@@ -92,7 +92,7 @@ exports.initErrorHandlers = function initErrorHandlers( req, res, next ) {
     
     res.err = function( 
 		title = '500 - Internal Server Error',
-		message = `Oops! We encountered an error trying to process your request. Try submitting your request again. If the problem persists, contact us at <a href="mailto:web@mareinc.org">web@mareinc.org</a>.`
+		message = `Oops!<br><br> We encountered an error trying to process your request. Try submitting your request again. If the problem persists, contact us at <a href="mailto:web@mareinc.org">web@mareinc.org</a>.`
 	) {
         res.status( 500 ).render( 'errors/500', {
             errorTitle: title,
@@ -102,7 +102,7 @@ exports.initErrorHandlers = function initErrorHandlers( req, res, next ) {
     
     res.notFound = function(
 		title = '404 - Page Not Found',
-		message = `Oops! We can't seem to find the page you are looking for. Let's get you back on track.`
+		message = `Oops!<br><br> We can't seem to find the page you are looking for. Let's get you back on track.`
 	) {
         res.status( 404 ).render( 'errors/404', {
             errorTitle: title,
