@@ -318,8 +318,8 @@ Family.add( 'Permissions', {
 	},
 
 	registeredWithMARE: {
-		registered: { type: Types.Boolean, label: 'registered with MARE', default: false, initial: true },
-		date: { type: Types.Date, label: 'date registered with MARE', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { 'registeredWithMARE.registered': true }, initial: true, collapse: true },
+		registered: { type: Types.Boolean, label: 'homestudy registered with MARE', default: false, initial: true },
+		date: { type: Types.Date, label: 'date of homestudy registration with MARE', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { 'registeredWithMARE.registered': true }, initial: true, collapse: true },
 		status: { type: Types.Relationship, label: 'status', ref: 'Family Status', dependsOn: { 'registeredWithMARE.registered': true }, initial: true, collapse: true }
 	},
 
