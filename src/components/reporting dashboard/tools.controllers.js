@@ -2358,16 +2358,20 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		summary: { $regex: 'bookmarked', $options: 'i' }
 	};
 
+	// fields to populate on all family models being queried
+	const familyPropsToPopulate = [
+		'contact1.gender',
+		'contact2.gender',
+		'contact1.race',
+		'contact2.race',
+		'address.region'
+	];
+
 	// get the families that have registered within the specified date range
 	const registrationActivityQuery = keystone.list( 'Family' ).model
 		.find( registrationActivitySearchCriteria )
 		.limit( MAX_RESULTS )
-		.populate([
-			'contact1.gender',
-			'contact2.gender',
-			'contact1.race',
-			'contact2.race'
-		].join( ' ' ))
+		.populate( familyPropsToPopulate.join( ' ' ) )
 		.lean()
 		.exec();
 
@@ -2378,12 +2382,7 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.populate({
 			path: 'family',
 			populate: {
-				path: [ 
-					'contact1.gender',
-					'contact2.gender',
-					'contact1.race',
-					'contact2.race'
-				].join( ' ' )
+				path: familyPropsToPopulate.join( ' ' )
 			}
 		})
 		.lean()
@@ -2396,12 +2395,7 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.populate({
 			path: 'familyAttendees',
 			populate: {
-				path: [ 
-					'contact1.gender',
-					'contact2.gender',
-					'contact1.race',
-					'contact2.race'
-				].join( ' ' )
+				path: familyPropsToPopulate.join( ' ' )
 			}
 		})
 		.lean()
@@ -2414,12 +2408,7 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.populate({
 			path: 'family',
 			populate: {
-				path: [ 
-					'contact1.gender',
-					'contact2.gender',
-					'contact1.race',
-					'contact2.race'
-				].join( ' ' )
+				path: familyPropsToPopulate.join( ' ' )
 			}
 		})
 		.lean()
@@ -2432,12 +2421,7 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.populate({
 			path: 'family',
 			populate: {
-				path: [ 
-					'contact1.gender',
-					'contact2.gender',
-					'contact1.race',
-					'contact2.race'
-				].join( ' ' )
+				path: familyPropsToPopulate.join( ' ' )
 			}
 		})
 		.lean()
@@ -2450,12 +2434,7 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.populate({
 			path: 'family',
 			populate: {
-				path: [ 
-					'contact1.gender',
-					'contact2.gender',
-					'contact1.race',
-					'contact2.race'
-				].join( ' ' )
+				path: familyPropsToPopulate.join( ' ' )
 			}
 		})
 		.lean()
@@ -2468,12 +2447,7 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 		.populate({
 			path: 'family',
 			populate: {
-				path: [ 
-					'contact1.gender',
-					'contact2.gender',
-					'contact1.race',
-					'contact2.race'
-				].join( ' ' )
+				path: familyPropsToPopulate.join( ' ' )
 			}
 		})
 		.lean()
@@ -2948,6 +2922,8 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 							: undefined,
 						contact1LGBTQIdentity: activityData.familyDoc.contact1.doesIdentifyAsLGBTQ,
 						contact2LGBTQIdentity: activityData.familyDoc.contact2.doesIdentifyAsLGBTQ,
+						city: activityData.familyDoc.address.displayCity || 'Unknown',
+						region: activityData.familyDoc.address.region ? activityData.familyDoc.address.region.region : 'Unknown',
 						registrationDate: {
 							dateDisplay: utilsService.verifyAndFormatDate( activityData.familyDoc.initialContact ),
 							dateISO:  moment( activityData.familyDoc.initialContact ).toISOString()
