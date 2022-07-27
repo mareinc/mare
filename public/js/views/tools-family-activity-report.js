@@ -101,6 +101,14 @@
 			params = _.filter( params, function( value ) {
 				return value && value.value && value.value.length > 0 && value.name !== 'family-activity-date-range';
 			});
+
+			// add results table column visibility settings to params
+			var columnVisibilitySettings = mare.views.tools.tableColumnVisibility;
+			if ( columnVisibilitySettings && columnVisibilitySettings.length > 0 ) {
+				$.each( columnVisibilitySettings, function( index, value ) {
+					params.push( { name: 'colVis[]', value: value.columnIndex + '-' + value.visibility } );
+				});
+			}
 			
 			// build the query string
 			var queryString = jQuery.param( params );
@@ -176,6 +184,12 @@
 								}
 							]
 						});
+
+						// capture column visibility preference so it can be applied as a query string param on next search
+						mare.views.tools.table.on( 'column-visibility.dt', mare.views.tools.handleColumnVisibilityChanged);
+
+						// apply any existing visibility preferences (must happen after event listener is added to persist existing preferences)
+						mare.views.tools.applyColumnVisibilityFromParams( params );
                     });
             }
         },
