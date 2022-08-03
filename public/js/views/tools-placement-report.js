@@ -405,8 +405,8 @@
 				visible: false
 			},
 			{
-				title: 'Family Constellation',
-				data: 'familyConstellation',
+				title: 'Relationship Status',
+				data: 'relationshipStatus',
 				defaultContent: '--',
 				visible: false
 			},

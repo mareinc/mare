@@ -1023,13 +1023,7 @@ exports.getPlacementData = ( req, res, next ) => {
 						: placement.familyDetails.address && placement.familyDetails.address.state
 							? placement.familyDetails.address.state.state
 							: undefined,
-					familyConstellation: placement.family
-						? placement.family.familyConstellation
-							? placement.family.familyConstellation.familyConstellation
-							: undefined
-						: placement.familyDetails.familyConstellation
-							? placement.familyDetails.familyConstellation.familyConstellation
-							: undefined,
+					relationshipStatus: placement.family ? placement.family.relationshipStatus : 'Not Specified',
 					familyRegisteredWithMARE: placement.family 
 						? placement.family.registeredWithMARE.registered
 							? 'Y'
