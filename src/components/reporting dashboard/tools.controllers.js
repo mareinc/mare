@@ -1824,7 +1824,8 @@ exports.getFamilyListingData = ( req, res, next ) => {
 				gender: familyDoc.contact1.gender && familyDoc.contact1.gender.gender,
 				race: familyDoc.contact1.race && familyDoc.contact1.race.length > 0
 					? familyDoc.contact1.race.map( race => race.race ).join( ', ' )
-					: undefined
+					: undefined,
+				identifiesAsLGBTQ: familyDoc.contact1.doesIdentifyAsLGBTQ || 'Not Specified'
 			},
 			contact2: {
 				firstName: familyDoc.contact2.name.first,
@@ -1834,9 +1835,10 @@ exports.getFamilyListingData = ( req, res, next ) => {
 				gender: familyDoc.contact2.gender && familyDoc.contact2.gender.gender,
 				race: familyDoc.contact2.race && familyDoc.contact2.race.length > 0
 					? familyDoc.contact2.race.map( race => race.race ).join( ', ' )
-					: undefined
+					: undefined,
+				identifiesAsLGBTQ: familyDoc.contact2.doesIdentifyAsLGBTQ || 'Not Specified'
 			},
-			constellation: familyDoc.familyConstellation && familyDoc.familyConstellation.familyConstellation,
+			relationshipStatus: familyDoc.relationshipStatus,
 			region: familyDoc.address.region && familyDoc.address.region.region,
 			state: familyDoc.address.state && familyDoc.address.state.state,
 			socialWorker: familyDoc.socialWorker && familyDoc.socialWorker.name.full,
