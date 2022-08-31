@@ -12,7 +12,8 @@ const keystone 						= require( 'keystone' ),
 	  mailchimpService				= require( '../mailchimp lists/mailchimp-list.controllers' ),
 	  utilities						= require( '../../utils/utility.controllers' ),
 	  errorUtils					= require( '../../utils/errors.controllers' ),
-	  flashMessages					= require( '../../utils/notification.middleware' );
+	  flashMessages					= require( '../../utils/notification.middleware' ),
+	  hubspotService				= require( '../hubspot services/hubspot.controllers' );
 
 exports.registerUser = ( req, res, next ) => {
 	// store a reference to locals
@@ -87,6 +88,9 @@ exports.registerUser = ( req, res, next ) => {
 												console.error( `error adding new site visitor ${ newSiteVisitorDoc.get( 'name.full' ) } (${ newSiteVisitorDoc.get( 'email' ) }) to mailing lists` );
 												console.error( err );
 											});
+
+										// if the user doesn't exist as a contact in HubSpot, create it
+										hubspotService.findOrCreateNewContact( newSiteVisitorDoc.get( 'email' ), newSiteVisitorDoc.get( 'name.first' ), newSiteVisitorDoc.get( 'name.last' ) );
 								})
 								// log any unhandled errors
 								.catch( error => console.error( error ) );
