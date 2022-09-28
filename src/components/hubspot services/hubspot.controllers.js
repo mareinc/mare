@@ -44,13 +44,15 @@ exports.findContactByEmail = async function findContactByEmail( email ) {
 }
 
 // create a hubspot cms contact
-exports.createNewContact = async function createNewContact( email, firstName, lastName ) {
+exports.createNewContact = async function createNewContact( userDoc ) {
 
     // configure contact properties
+    const userType = userDoc.get( 'userType' );
     const properties = {
-        'email': email,
-        'firstname': firstName,
-        'lastname': lastName
+        'email': userDoc.get( 'email' ),
+        'firstname': userDoc.get( 'name.first' ),
+        'lastname': userDoc.get( 'name.last' ),
+        'keystone_record': generateKeystoneRecordUrl( userDoc._id, userType )
     };
 
     let hubspotApiResponse = false;
@@ -144,7 +146,7 @@ exports.updateOrCreateNewContact = async function updateOrCreateNewContact( user
         } else {
 
             // create a new contact
-            const createNewContactResponse = await exports.createNewContact( email, firstName, lastName );
+            const createNewContactResponse = await exports.createNewContact( userDoc );
             
             // if the contact was created successfully...
             if ( !createNewContactResponse.message ) {
