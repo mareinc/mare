@@ -1,6 +1,21 @@
 const hubspot = require( '@hubspot/api-client' );
 const hubspotClient = new hubspot.Client({ accessToken: process.env.HUBSPOT_API_KEY });
 
+// helper to generate a keystone record URL from the record id and type
+function generateKeystoneRecordUrl( recordId, userType ) {
+
+    const recordUrlBase = 'https://mareinc.org/keystone/';
+
+    if ( userType === 'site visitor' ) {
+
+        return `${recordUrlBase}site-visitors/${recordId}`;
+
+    } else {
+
+        return `${recordUrlBase}families/${recordId}`; 
+    }
+}
+
 // find hubspot cms contact by email address
 exports.findContactByEmail = async function findContactByEmail( email ) {
 
