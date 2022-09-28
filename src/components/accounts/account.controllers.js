@@ -89,8 +89,8 @@ exports.registerUser = ( req, res, next ) => {
 												console.error( err );
 											});
 
-										// if the user doesn't exist as a contact in HubSpot, create it
-										hubspotService.findOrCreateNewContact( newSiteVisitorDoc.get( 'email' ), newSiteVisitorDoc.get( 'name.first' ), newSiteVisitorDoc.get( 'name.last' ) );
+										// update or create the contact in Hubspot
+										hubspotService.updateOrCreateNewContact( newSiteVisitorDoc );
 								})
 								// log any unhandled errors
 								.catch( error => console.error( error ) );
