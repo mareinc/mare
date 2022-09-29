@@ -89,8 +89,8 @@ exports.registerUser = ( req, res, next ) => {
 												console.error( err );
 											});
 
-										// update or create the contact in Hubspot
-										hubspotService.updateOrCreateNewContact( newSiteVisitorDoc );
+										// update or create the contact in HubSpot
+										hubspotService.updateOrCreateSiteVisitorContact( newSiteVisitorDoc );
 								})
 								// log any unhandled errors
 								.catch( error => console.error( error ) );

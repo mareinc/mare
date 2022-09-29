@@ -16,7 +16,7 @@ function generateKeystoneRecordUrl( recordId, userType ) {
     }
 }
 
-// find hubspot cms contact by email address
+// find HubSpot cms contact by email address
 exports.findContactByEmail = async function findContactByEmail( email ) {
 
     // configure search filter
@@ -43,17 +43,8 @@ exports.findContactByEmail = async function findContactByEmail( email ) {
     return hubspotApiResponse;
 }
 
-// create a hubspot cms contact
-exports.createNewContact = async function createNewContact( userDoc ) {
-
-    // configure contact properties
-    const userType = userDoc.get( 'userType' );
-    const properties = {
-        'email': userDoc.get( 'email' ),
-        'firstname': userDoc.get( 'name.first' ),
-        'lastname': userDoc.get( 'name.last' ),
-        'keystone_record': generateKeystoneRecordUrl( userDoc._id, userType )
-    };
+// create a HubSpot cms contact
+async function createNewContact( contactProperties ) {
 
     let hubspotApiResponse = false;
 
@@ -61,7 +52,7 @@ exports.createNewContact = async function createNewContact( userDoc ) {
 
         // create the contact in hubspot
         hubspotApiResponse = await hubspotClient.crm.contacts.basicApi.create({
-            properties
+            properties: contactProperties
         });
 
     } catch ( error ) {
@@ -75,17 +66,8 @@ exports.createNewContact = async function createNewContact( userDoc ) {
     return hubspotApiResponse;
 }
 
-// update a hubspot cms contact
-exports.updateContact = async function updateContact( contactId, userDoc ) {
-
-    const userType = userDoc.get( 'userType' );
-    const simplePublicObjectInput = {
-        'properties': {
-            'firstname': userDoc.get( 'name.first' ),
-            'lastname': userDoc.get( 'name.last' ),
-            'keystone_record': generateKeystoneRecordUrl( userDoc._id, userType )
-        }
-    };
+// update a HubSpot cms contact
+async function updateContact( contactId, contactProperties ) {
 
     let hubspotApiResponse = false;
 
@@ -94,7 +76,7 @@ exports.updateContact = async function updateContact( contactId, userDoc ) {
         // update existing hubspot contact
         hubspotApiResponse = await hubspotClient.crm.contacts.basicApi.update(
             contactId,
-            simplePublicObjectInput
+            { properties: contactProperties }
         );
 
     } catch ( error ) {
@@ -109,16 +91,14 @@ exports.updateContact = async function updateContact( contactId, userDoc ) {
 }
 
 // helper function to update or create a HubSpot contact from a Keystone user
-exports.updateOrCreateNewContact = async function updateOrCreateNewContact( userDoc ) {
+async function updateOrCreateContact( contactProperties ) {
 
-    const email = userDoc.get( 'email' );
-
-    console.log( `Updating or creating HubSpot contact for user with email: ${email}` );
+    console.log( `Updating or creating HubSpot contact for user with email: ${contactProperties.email}` );
     
     try {
 
         // search for an existing contact
-        const findContactByEmailResponse = await exports.findContactByEmail( email );
+        const findContactByEmailResponse = await exports.findContactByEmail( contactProperties.email );
 
         // if the contact already exists, update the existing contact
         if ( findContactByEmailResponse && findContactByEmailResponse.total > 0 ) {
@@ -128,7 +108,7 @@ exports.updateOrCreateNewContact = async function updateOrCreateNewContact( user
             // get the contact id from the response
             const contactId = findContactByEmailResponse.results[0].id;
             // update the contact properties to ensure they're in sync with Keystone data
-            const updateExistingContactResponse = await exports.updateContact( contactId, userDoc );
+            const updateExistingContactResponse = await updateContact( contactId, contactProperties );
 
             // if the contact was updated successfully...
             if ( !updateExistingContactResponse.message ) {
@@ -146,12 +126,12 @@ exports.updateOrCreateNewContact = async function updateOrCreateNewContact( user
         } else {
 
             // create a new contact
-            const createNewContactResponse = await exports.createNewContact( userDoc );
+            const createNewContactResponse = await createNewContact( contactProperties );
             
             // if the contact was created successfully...
             if ( !createNewContactResponse.message ) {
                 
-                console.log( `Created a new HubSpot contact for user with email: ${email}` );
+                console.log( `Created a new HubSpot contact for user with email: ${contactProperties.email}` );
                 console.log( `HubSpot contact ID: ${createNewContactResponse.id}` );
             
             // if there was an error during contact creation...
@@ -168,4 +148,18 @@ exports.updateOrCreateNewContact = async function updateOrCreateNewContact( user
             ? console.error( JSON.stringify( error.response, null, 2 ) )
             : console.error( error );
     }
+}
+
+exports.updateOrCreateSiteVisitorContact = async function updateOrCreateSiteVisitorContact( siteVisitorDoc ) {
+
+    // destructure data from site visitor doc
+    const contactProperties = {
+        'email': siteVisitorDoc.get( 'email' ),
+        'firstname': siteVisitorDoc.get( 'name.first' ),
+        'lastname': siteVisitorDoc.get( 'name.last' ),
+        'keystone_record': generateKeystoneRecordUrl( siteVisitorDoc._id, siteVisitorDoc.get( 'userType' ) )
+    };
+
+    // update or create HubSpot contact
+    updateOrCreateContact( contactProperties );
 }
