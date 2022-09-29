@@ -163,3 +163,31 @@ exports.updateOrCreateSiteVisitorContact = async function updateOrCreateSiteVisi
     // update or create HubSpot contact
     updateOrCreateContact( contactProperties );
 }
+
+exports.updateOrCreateFamilyContacts = async function updateOrCreateFamilyContacts( familyDoc ) {
+
+    // destructure contact 1 data from family doc
+    const contact1Properties = {
+        'email': familyDoc.get( 'email' ),
+        'firstname': familyDoc.get( 'contact1.name.first' ),
+        'lastname': familyDoc.get( 'contact1.name.last' ),
+        'keystone_record': generateKeystoneRecordUrl( familyDoc._id, familyDoc.get( 'userType' ) )
+    };
+
+    // update or create contact 1 HubSpot contact
+    updateOrCreateContact( contact1Properties );
+
+    // destructure contact 2 data from family doc
+    const contact2Properties = {
+        'email': familyDoc.get( 'contact2.email' ),
+        'firstname': familyDoc.get( 'contact2.name.first' ),
+        'lastname': familyDoc.get( 'contact2.name.last' ),
+        'keystone_record': generateKeystoneRecordUrl( familyDoc._id, familyDoc.get( 'userType' ) )
+    };
+
+    // determine if contact 2 exists and HubSpot contact needs to be created/updated
+    const shouldCreateOrUpdateContact2 = !!contact2Properties.email;
+    if ( shouldCreateOrUpdateContact2 ) {
+        updateOrCreateContact( contact2Properties );
+    }
+}

@@ -209,6 +209,9 @@ exports.registerUser = ( req, res, next ) => {
 											console.error( `error adding new family ${ newFamilyDoc.get( 'displayName' ) } (${ newFamilyDoc.get( 'email' ) }) to mailing lists`, err );
 											console.error( err );
 										});
+
+									// update or create the contact(s) in HubSpot
+									hubspotService.updateOrCreateFamilyContacts( newFamilyDoc );
 								})
 								// log any unhandled errors
 								.catch( error => console.error( error ) );
