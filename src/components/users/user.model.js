@@ -1,6 +1,7 @@
 var keystone			= require( 'keystone' ),
 	Types				= keystone.Field.Types,
-	mailchimpService 	= require( '../mailchimp lists/mailchimp-list.controllers' );
+	mailchimpService 	= require( '../mailchimp lists/mailchimp-list.controllers' ),
+	hubspotService 		= require( '../hubspot services/hubspot.controllers' );
 
 // Create model
 var User = new keystone.List( 'User', {
@@ -86,6 +87,13 @@ User.schema.post( 'save', function() {
 				console.error( new Error( `Automatic subscription to mailing lists failed for user ${ this.email }` ) );
 				console.error( err );
 			});
+
+		// update or create HubSpot contact(s) for site visitor and family users
+		if ( this.userType === 'site visitor' ) {
+			hubspotService.updateOrCreateSiteVisitorContact( this );
+		} else if ( this.userType === 'family' ) {
+			hubspotService.updateOrCreateFamilyContacts( this );
+		}
 	
 	// if this was not the first save, see if the email address or state of residence tags need to be updated
 	} else {
