@@ -1,5 +1,6 @@
 const hubspot = require( '@hubspot/api-client' );
 const hubspotClient = new hubspot.Client({ accessToken: process.env.HUBSPOT_API_KEY });
+const ALLOW_UPDATES = process.env.ALLOW_HUBSPOT_API_UPDATES === 'true';
 
 // helper to generate a keystone record URL from the record id and type
 function generateKeystoneRecordUrl( recordId, userType ) {
@@ -93,7 +94,15 @@ async function updateContact( contactId, contactProperties ) {
 // helper function to update or create a HubSpot contact from a Keystone user
 async function updateOrCreateContact( contactProperties ) {
 
-    console.log( `Updating or creating HubSpot contact for user with email: ${contactProperties.email}` );
+    if ( ALLOW_UPDATES ) {
+
+        console.log( `Updating or creating HubSpot contact for user with email: ${contactProperties.email}` );
+
+    } else {
+
+        console.log( 'HubSpot updates are disabled by envrironment variables.  To enable, set ALLOW_HUBSPOT_API_UPDATES variable to true' );
+        return;
+    }
     
     try {
 
