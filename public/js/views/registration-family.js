@@ -27,7 +27,6 @@
 			this.$state									= this.$( '#family-state' );
 			this.$homestudyCompletionDate				= this.$( '#homestudy-date-complete' );
 			this.$socialWorkerName						= this.$( '#social-worker-name' );
-			this.$socialWorkerPhone						= this.$( '#social-worker-phone' );
 			this.$socialWorkerEmail						= this.$( '.social-worker-email' );
 			this.$homestudySection						= this.$( '.family-submit-your-homestudy-section' );
 			this.$homestudySubmissionSection			= this.$( '.family-homestudy-details-section' );
@@ -70,7 +69,6 @@
 			this.homestudyCompletionDateValidator 	= this.$homestudyCompletionDate.parsley();
 
 			this.socialWorkerNameValidator 			= this.$socialWorkerName.parsley();
-			this.socialWorkerPhoneValidator 		= this.$socialWorkerPhone.parsley();
 			this.socialWorkerEmailValidator 		= this.$socialWorkerEmail.parsley();
 			// DOM cache the Parsley validation message for the hidden 'other' field for use in binding/unbinding validation
 			this.$howDidYouHearOtherErrorMessage = this.$howDidYouHearOther.next();
@@ -142,23 +140,19 @@
 				// clear out the homestudy input fields since the section is hidden and not part of the form submission
 				this.$homestudyCompletionDate.val( '' );
 				this.$socialWorkerName.val( '' );
-				this.$socialWorkerPhone.val( '' );
 				this.$socialWorkerEmail.val( '' );
 				// remove validation bindings
 				this.$homestudyCompletionDate.attr( 'data-parsley-required', 'false' );
 				this.$socialWorkerName.attr( 'data-parsley-required', 'false' );
-				this.$socialWorkerPhone.attr( 'data-parsley-required', 'false' );
 				this.$socialWorkerEmail.attr( 'data-parsley-required', 'false' );
 				// reset validation on the fields.  If they were already validated, we need to clear out the checks so the form can be submitted
 				this.homestudyCompletionDateValidator.reset();
 				this.socialWorkerNameValidator.reset();
-				this.socialWorkerPhoneValidator.reset();
 				this.socialWorkerEmailValidator.reset();
 			} else {
 				// add validation binding
 				this.$homestudyCompletionDate.attr( 'data-parsley-required', 'true' );
 				this.$socialWorkerName.attr( 'data-parsley-required', 'true' );
-				this.$socialWorkerPhone.attr( 'data-parsley-required', 'true' );
 				this.$socialWorkerEmail.attr( 'data-parsley-required', 'true' );
 			}
 		},
