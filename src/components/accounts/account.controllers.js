@@ -524,6 +524,7 @@ exports.saveFamily = user => {
 
 			socialWorkerNotListed				: true,
 			socialWorkerText					: user.socialWorkerName,
+			socialWorkerEmail					: user.socialWorkerEmail,
 
 			matchingPreferences: {
 				gender							: user.preferredGender,
