@@ -96,7 +96,7 @@ exports = module.exports = app => {
 	app.get( '/forms/social-worker-family-registration'	, accountMiddleware.requireUser( 'social worker' ), routes.views.form_familyRegistration );
 	app.post( '/forms/social-worker-family-registration', accountMiddleware.requireUser( 'social worker' ), familyService.registerHomestudy );
 
-	app.get( '/forms/information-request'				, routes.views.form_informationRequest );
+	app.get( '/forms/information-request'				, inquiryMiddleware.requireInStateFamily, routes.views.form_informationRequest );
 	app.post( '/forms/information-request'				, inquiryMiddleware.submitInquiry );
 
 	app.get( '/forms/have-a-question'					, routes.views.form_haveAQuestion );

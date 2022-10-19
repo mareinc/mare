@@ -1,4 +1,5 @@
 const inquiryService = require( '../../components/inquiries/inquiry.controllers' );
+const listService = require( '../lists/list.controllers' );
 
 exports.submitInquiry = function submitInquiry( req, res, next ) {
 	// reload the form to display the flash message
@@ -49,4 +50,48 @@ exports.saveInquiryNote = function saveInquiryNote( req, res, next ) {
     inquiryService.saveInquiryNote( inquiryId, notes )
         .catch( error => console.error( error ) )
         .finally( () => res.send() );
+};
+
+// ensure a user lives in-state (or in New England) before allowing them to submit an inquiry
+exports.requireInStateFamily = function requireInStateFamily( req, res, next ) {
+
+	// if the user is not logged in, or is not a family, allow them through to the existing inquiry page flow
+	if ( !req.user || req.user.userType !== 'family' ) {
+
+		next();
+
+	// if the user is logged in, check to see if they live in a state that allows them to submit an inquiry	
+	} else {
+		
+		const ALLOWED_STATE_ABBREVIATIONS = [ 'NH', 'NY', 'ME', 'VT', 'MA', 'CT', 'RI' ];
+		const OUT_OF_STATE_INQUIRY_PAGE_PATH = '/page/out-of-state-inquiries';
+		
+		listService.getAllStates()
+			.then( stateDocs => {
+
+				// determine if the user is in an allowed state
+				const allowedStates = stateDocs.filter( state => ALLOWED_STATE_ABBREVIATIONS.includes( state.abbreviation ) );
+				const userState = req.user.address.state.toString();
+				const isUserInAllowedState = allowedStates.find( allowedState => allowedState._id.toString() === userState );
+				
+				// if the user is in an allowed state
+				if ( isUserInAllowedState ) {
+					
+					// continue execution and allow them to view the inquiry page
+					next();
+				
+				// if the user is not in an allowed state
+				} else {
+
+					// redirect them to the out of state inquiry page
+					res.redirect( 302, OUT_OF_STATE_INQUIRY_PAGE_PATH );
+				}
+			})
+			.catch( error => {
+
+				console.log( 'could not verify that family is in a state that allows them to submit an inquiry.' );
+				console.error( error );
+				res.redirect( 302, OUT_OF_STATE_INQUIRY_PAGE_PATH );
+			});
+	}
 };
