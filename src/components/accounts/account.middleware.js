@@ -19,7 +19,9 @@ exports.requireUser = function( userType ) {
 					: 'Please log in to continue'
 			});
 
-			return res.redirect( 303, '/' );
+			// if there is no specific user type required, maintain redirect path so the user is returned to the
+			// page they were trying to access on successful login
+			return !userType ? res.redirect( 303, `/?showLogin=true&redirectPath=${req.path}` ) : res.redirect( 303, '/' );
 		}
 		
 		next();

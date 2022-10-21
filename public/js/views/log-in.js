@@ -26,8 +26,13 @@
 		},
 
 		render: function render() {
+
+			// check if a redirectPath has been specified
+			var params = new URLSearchParams( window.location.search );
+			var redirectPath = params.get( 'redirectPath' );
+
 			// Pass the child model to through the template we stored during initialization
-			var html = this.template( { target: mare.url.redirect } );
+			var html = this.template( { target: redirectPath } );
 			this.$el.html( html );
 			// Render the contents area and tabs
 			$( '.modal-container__contents' ).html( this.$el );

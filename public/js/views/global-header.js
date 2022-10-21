@@ -48,6 +48,12 @@
 			// initialize global header height so that height will transition on first menu open
 			this.$header.css( 'height', this.findBaseHeaderHeight() );
 			this.$header.data( 'height', 0 );
+
+			// check if the login modal should be displayed
+			var params = new URLSearchParams( window.location.search );
+			if ( params.get( 'showLogin' ) ) {
+				this.showLogInModal();
+			}
 		},
 
 		// set timeout for header transition to avoid odd gaps/spacing
