@@ -11,6 +11,9 @@
         {{#if shouldRenderInquiriesSection}}
         <option value="inquiries" \{{#ifeq selectedRoute 'inquiries' }}selected="selected"\{{/ifeq}}>Inquiries</option>
         {{/if}}
+        {{#ifeq user.userType 'social worker'}}
+        <option value="registration-links" \{{#ifeq selectedRoute 'registration-links' }}selected="selected"\{{/ifeq}}>Registration</option>
+        {{/ifeq}}
         {{#ifeq user.userType 'admin'}}
         <option value="admin">Admin</option>
         {{/ifeq}}

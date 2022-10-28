@@ -14,6 +14,7 @@
 			mare.views.accountEmailList	= mare.views.accountEmailList || new mare.views.AccountEmailList();
 			mare.views.accountEvents	= mare.views.accountEvents || new mare.views.AccountEvents();
             mare.views.accountInquiries = mare.views.accountInquiries || new mare.views.AccountInquiries();
+			mare.views.accountRegistrationLinks = mare.views.accountRegistrationLinks || new mare.views.AccountRegistrationLinks();
 
 			this.initializeInfoSection();
 
@@ -75,6 +76,7 @@
 			mare.views.accountEmailList.hide();
 			mare.views.accountEvents.hide();
             mare.views.accountInquiries.hide();
+			mare.views.accountRegistrationLinks.hide();
 			// show the account subsection that is currently selected, and render it
 			mare.views.accountInfo.show();
 		},
@@ -87,6 +89,7 @@
 			mare.views.accountEmailList.hide();
 			mare.views.accountEvents.hide();
             mare.views.accountInquiries.hide();
+			mare.views.accountRegistrationLinks.hide();
 			// show the account subsection that is currently selected, and render it
 			mare.views.accountChildren.show();
 
@@ -107,6 +110,7 @@
 			mare.views.accountChildren.hide();
 			mare.views.accountEvents.hide();
             mare.views.accountInquiries.hide();
+			mare.views.accountRegistrationLinks.hide();
 			// show the account subsection that is currently selected, and render it
 			mare.views.accountEmailList.show();
 			mare.views.accountEmailList.render();
@@ -120,6 +124,7 @@
 			mare.views.accountChildren.hide();
 			mare.views.accountEmailList.hide();
             mare.views.accountInquiries.hide();
+			mare.views.accountRegistrationLinks.hide();
 			// show the account subsection that is currently selected, and render it
 			mare.views.accountEvents.show();
 			mare.views.accountEvents.render();
@@ -133,9 +138,24 @@
 			mare.views.accountChildren.hide();
 			mare.views.accountEvents.hide();
             mare.views.accountEmailList.hide();
+			mare.views.accountRegistrationLinks.hide();
 			// show the account subsection that is currently selected, and render it
 			mare.views.accountInquiries.show();
 			mare.views.accountInquiries.render();
+		},
+
+		openRegistrationLinkSection: function openRegistrationLinkSection() {
+			// update the navigation sections with the currently selected section
+			this.renderNavigation( 'registration-links' );
+			// hide the account subsections that are not currently selected
+			mare.views.accountInfo.hide();
+			mare.views.accountChildren.hide();
+			mare.views.accountEvents.hide();
+            mare.views.accountEmailList.hide();
+			mare.views.accountInquiries.hide();
+			// show the account subsection that is currently selected, and render it
+			mare.views.accountRegistrationLinks.show();
+			mare.views.accountRegistrationLinks.render();
 		}
 	});
 }());

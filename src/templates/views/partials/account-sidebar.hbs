@@ -31,6 +31,13 @@
         </li>
         {{/if}}
 
+        {{#ifeq user.userType 'social worker'}}
+         <li class="button button--teal account-nav-link \{{#ifeq selectedRoute 'registration-links' }}account-nav-link--active\{{/ifeq}}" data-section="registration-links">
+            <i class="fa fa-inbox"></i>
+            <span class="account-nav-link__title">Registration</span>
+        </li>
+        {{/ifeq}}
+
         {{#ifeq user.userType 'admin'}}
         <a href="/keystone"><li class="button button--green account-nav-link account-nav-link--admin">Admin Panel</li></a>
         <a href="/tools"><li class="button button--green account-nav-link account-nav-link--admin">Dashboard</li></a>

@@ -148,3 +148,13 @@
         }
     }
 }
+
+.account__registration-links {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+
+    a + a {
+        margin-top: 1rem;
+    }
+}

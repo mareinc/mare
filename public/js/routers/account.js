@@ -4,13 +4,14 @@
 	mare.routers.Account = Backbone.Router.extend({
 
 		routes: {
-			''				: 'loadDefault',
-			'info'			: 'loadInfo',
-			'email-list'	: 'loadEmailList',
-			'events'		: 'loadEvents',
-			'children'		: 'loadChildren',
-            'inquiries'     : 'loadInquiries',
-			'*other'		: 'loadDefault'
+			''						: 'loadDefault',
+			'info'					: 'loadInfo',
+			'email-list'			: 'loadEmailList',
+			'events'				: 'loadEvents',
+			'children'				: 'loadChildren',
+            'inquiries'     		: 'loadInquiries',
+			'registration-links'	: 'loadRegistrationLinks',
+			'*other'				: 'loadDefault'
 		},
 
 		initialize: function initialize() {
@@ -61,6 +62,10 @@
         loadInquiries: function loadInquiries() {
             mare.views.account.openInquiriesSection();
         },
+
+		loadRegistrationLinks: function loadRegistrationLinks() {
+			mare.views.account.openRegistrationLinkSection();
+		},
 
 		/* handle any poorly formed routes or navigation to the account info page */
 		loadDefault: function loadDefault() {
