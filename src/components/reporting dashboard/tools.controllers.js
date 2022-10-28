@@ -2844,7 +2844,7 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 
 				// ensure active families that were captured from non-family-model sources match all family search criteria
 
-				if ( doesActiveFamilyMatchFamilySearchCriteria && regionCriteria && !regionCriteria.$in.includes( activityData.familyDoc.address.region && activityData.familyDoc.address.region.toString() ) ) {
+				if ( doesActiveFamilyMatchFamilySearchCriteria && regionCriteria && !regionCriteria.$in.includes( activityData.familyDoc.address.region && activityData.familyDoc.address.region._id.toString() ) ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
