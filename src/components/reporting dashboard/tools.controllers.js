@@ -481,9 +481,12 @@ exports.getChildrenData = ( req, res, next ) => {
 exports.getSourcesData = ( req, res, next ) => {
 
 	const MAX_RESULTS = 10;
+	
+	// get the source type to filter by (optional)
+	const sourceType = req.query.sourceType;
 
 	utilsService.fetchModelsMapAndSendResults(
-		listsService.getSourcesByNameFragment( req.query.q, MAX_RESULTS, 'media' ),
+		listsService.getSourcesByNameFragment( req.query.q, MAX_RESULTS, sourceType ),
 		source => ( { id: source._id.toString(), text: source.source } ),
 		res
 	);
