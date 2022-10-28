@@ -15,7 +15,7 @@
 		initialize: function() {
 			/* TODO: these are sharing classes with the top nav, they should either be made more generic, or renamed to be specific to the mobile menu */
 			/* TODO: donation clicks for the global header are handled in Backbone instead of an href, it should be consistent one way or the other across the two views */
-			var content = [ '<a class="mobile-menu__link mobile-menu__item mobile-menu__button mobile-menu__button--green" href="/donate">Donate</a>' ];
+			var content = [ '<a class="mobile-menu__link mobile-menu__item mobile-menu__button mobile-menu__button--green" href="https://give.mareinc.org/give/437626/#!/donation/checkout">Donate</a>' ];
 			
 			// store whether the user is logged in.  This is passed as a data attribute on the mobile menu because the menu is rendered client-side instead of server-side
 			var isLoggedIn = this.$el.data( 'is-logged-in' );
