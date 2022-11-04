@@ -6,7 +6,6 @@
 		routes: {
 			''				: 'loadDefault',
 			'family'		: 'loadFamilyRegistration',
-			'site-visitor' 	: 'loadSiteVisitorRegistration',
 			'social-worker'	: 'loadSocialWorkerRegistration',
 			'*other'		: 'loadDefault'
 		},
@@ -14,15 +13,6 @@
 		initialize: function() {
 			// load the view for the registration page as a whole
 			mare.views.registration = mare.views.registration || new mare.views.Registration();
-		},
-
-		loadSiteVisitorRegistration: function loadSiteVisitorRegistration() {
-			// initialize the view for the site user form if it doesn't already exist
-			mare.views.siteVisitorRegistration = mare.views.siteVisitorRegistration || new mare.views.SiteVisitorRegistration();
-			// update the form selector to match the form we're showing the user
-			mare.views.registration.updateFormSelector('siteVisitor');
-			// use the view for the reigistraiton page as a whole to display the correct area
-			mare.views.registration.showSiteVisitorForm();
 		},
 
 		loadSocialWorkerRegistration: function loadSocialWorkerRegistration() {
