@@ -32,7 +32,7 @@ exports = module.exports = ( req, res ) => {
 			locals.pageActions			= pageActions;
 
 			// set the layout to render with the right sidebar
-			locals[ 'render-with-sidebar' ] = true;
+			locals[ 'render-with-sidebar' ] = false;
 			// render the view using the steps-in-the-process.hbs template
 			view.render( 'steps-in-the-process' );
 		})

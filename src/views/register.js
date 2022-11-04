@@ -61,7 +61,7 @@ exports = module.exports = ( req, res ) => {
 			}
 
 			// set the layout to render with the right sidebar
-			locals[ 'render-with-sidebar' ] = true;
+			locals[ 'render-with-sidebar' ] = false;
 			// render the view using the register.hbs template
 			view.render( 'register' );
 		})

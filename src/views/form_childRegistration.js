@@ -51,7 +51,7 @@ exports = module.exports = ( req, res ) => {
 			locals.hasRegisteredChildren					= locals.recruitmentWorkersChildren.saveDetails && locals.recruitmentWorkersChildren.saveDetails.length > 0;
 			
 			// set the layout to render with the right sidebar
-			locals[ 'render-with-sidebar' ] = true;
+			locals[ 'render-with-sidebar' ] = false;
 			// render the view using the social-worker-child-registration.hbs template
 			view.render( 'social-worker-child-registration' );
 		})

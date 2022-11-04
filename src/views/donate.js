@@ -43,7 +43,7 @@ exports = module.exports = ( req, res ) => {
 		// render the page with the sidebar
 		.then( () => {	
 			// set the layout to render with the right sidebar
-			locals[ 'render-with-sidebar' ] = true;
+			locals[ 'render-with-sidebar' ] = false;
 			// render the view using the donate.hbs template
 			view.render( 'donate' );
 		})

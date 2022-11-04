@@ -90,7 +90,7 @@ exports = module.exports = function( req, res ) {
 			locals.pageActions          = pageActions;
 
 			// set the layout to render with the right sidebar
-			locals[ 'render-with-sidebar' ] = true;
+			locals[ 'render-with-sidebar' ] = false;
 			// set the layout to add classes designating this a WYSIWYG page
 			locals[ 'wysiwyg-page' ] = true;
 			// render the view using the page.hbs template

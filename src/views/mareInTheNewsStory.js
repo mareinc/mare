@@ -39,7 +39,7 @@ exports = module.exports = ( req, res ) => {
 			locals.randomEvent			= randomEvent;
 
 			// set the layout to render with the right sidebar
-			locals[ 'render-with-sidebar' ] = true;
+			locals[ 'render-with-sidebar' ] = false;
 			// render the view using the mare-in-the-news-story.hbs template
 			view.render( 'mare-in-the-news-story' );
 		})

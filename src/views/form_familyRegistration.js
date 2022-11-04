@@ -69,7 +69,7 @@ exports = module.exports = ( req, res ) => {
 		// render the page with the sidebar
 		.then( () => {
 			// set the layout to render with the right sidebar
-			locals[ 'render-with-sidebar' ] = true;
+			locals[ 'render-with-sidebar' ] = false;
 			// render the view using the form_social-worker-family-registration.hbs template
 			view.render( 'form_social-worker-family-registration' );
 		})

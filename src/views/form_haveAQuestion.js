@@ -20,7 +20,7 @@ exports = module.exports = ( req, res ) => {
 			locals.randomEvent			= randomEvent;	  
 
 			// set the layout to render with the right sidebar
-			locals[ 'render-with-sidebar' ] = true;
+			locals[ 'render-with-sidebar' ] = false;
 			// render the view using the form_have-a-question.hbs template
 			view.render( 'form_have-a-question' );
 		})

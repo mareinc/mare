@@ -242,7 +242,7 @@ exports = module.exports = async ( req, res ) => {
 			locals.redirectPath						= req.url;
 
 			// set the layout to render with the right sidebar
-			locals[ 'render-with-sidebar' ] = true;
+			locals[ 'render-with-sidebar' ] = false;
 			// render the view using the events.hbs template
 			view.render( 'events' );
 		})

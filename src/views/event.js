@@ -136,7 +136,7 @@ exports = module.exports = ( req, res ) => {
 			locals.unregisteredAdultsUserIsBringing		= unregisteredAdultsUserIsBringing.map( adult => `{ "name": { "first": "${ adult.name.first }", "last": "${ adult.name.last }" }, "id": "${ adult._id }" }` );
 
 			// set the layout to render with the right sidebar
-			locals[ 'render-with-sidebar' ] = true;
+			locals[ 'render-with-sidebar' ] = false;
 			// render the view using the event.hbs template
 			view.render( 'event' );
 		})
