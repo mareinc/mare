@@ -71,7 +71,7 @@
             this.$el.find( '.source-select' ).select2({
 				placeholder: 'All Sources',
 				ajax: {
-					url: '/tools/services/get-sources-data',
+					url: '/tools/services/get-sources-data?sourceType=media',
 					dataType: 'json'
 				}
 			});

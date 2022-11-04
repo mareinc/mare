@@ -481,9 +481,12 @@ exports.getChildrenData = ( req, res, next ) => {
 exports.getSourcesData = ( req, res, next ) => {
 
 	const MAX_RESULTS = 10;
+	
+	// get the source type to filter by (optional)
+	const sourceType = req.query.sourceType;
 
 	utilsService.fetchModelsMapAndSendResults(
-		listsService.getSourcesByNameFragment( req.query.q, MAX_RESULTS, 'media' ),
+		listsService.getSourcesByNameFragment( req.query.q, MAX_RESULTS, sourceType ),
 		source => ( { id: source._id.toString(), text: source.source } ),
 		res
 	);
@@ -2844,7 +2847,7 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 
 				// ensure active families that were captured from non-family-model sources match all family search criteria
 
-				if ( doesActiveFamilyMatchFamilySearchCriteria && regionCriteria && !regionCriteria.$in.includes( activityData.familyDoc.address.region && activityData.familyDoc.address.region.toString() ) ) {
+				if ( doesActiveFamilyMatchFamilySearchCriteria && regionCriteria && !regionCriteria.$in.includes( activityData.familyDoc.address.region && activityData.familyDoc.address.region._id.toString() ) ) {
 					doesActiveFamilyMatchFamilySearchCriteria = false;
 				}
 
