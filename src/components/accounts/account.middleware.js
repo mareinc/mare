@@ -21,7 +21,7 @@ exports.requireUser = function( userType ) {
 
 			// if there is no specific user type required, maintain redirect path so the user is returned to the
 			// page they were trying to access on successful login
-			return !userType ? res.redirect( 303, `/?showLogin=true&redirectPath=${req.path}` ) : res.redirect( 303, '/' );
+			return !userType ? res.redirect( 303, `/waiting-child-profiles?showLogin=true&redirectPath=${req.path}#gallery` ) : res.redirect( 303, '/waiting-child-profiles#gallery' );
 		}
 		
 		next();

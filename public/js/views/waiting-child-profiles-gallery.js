@@ -80,8 +80,11 @@
 			// unbind any existing media box plugins
 			this.unbindMediaBoxes();
 			
+			// NOTE: The following logic conflicts with opening the login modal automatically.  Could not reproduce another scenario where a modal would already be open when rendering this page,
+			// so commenting it out for now. Leaving the code in place because it may cause unintended behavior down the road.
+
 			// close the modal if opened
-			mare.views.childDetails.closeModal();
+			//mare.views.childDetails.closeModal();
 			
 			// the gallery can't render until we have the user permissions and the child data is loaded
 			// use the promise bound to both data to delay rendering until we have them
