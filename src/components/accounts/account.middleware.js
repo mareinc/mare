@@ -12,12 +12,12 @@ exports.requireUser = function( userType ) {
 
 		if( !req.user || ( userType && req.user.userType !== userType ) ) {
 
-			req.flash( 'error', {
-				title: `You don't have access to that page`,
-				detail: req.user && req.user.userType === 'admin'
-					? 'Please log in as the correct user type to continue'
-					: 'Please log in to continue'
-			});
+			// req.flash( 'error', {
+			// 	title: `You don't have access to that page`,
+			// 	detail: req.user && req.user.userType === 'admin'
+			// 		? 'Please log in as the correct user type to continue'
+			// 		: 'Please log in to continue'
+			// });
 
 			// if there is no specific user type required, maintain redirect path so the user is returned to the
 			// page they were trying to access on successful login
