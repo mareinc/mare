@@ -32,10 +32,8 @@
         {{/if}}
 
         {{#ifeq user.userType 'social worker'}}
-         <li class="button button--teal account-nav-link \{{#ifeq selectedRoute 'registration-links' }}account-nav-link--active\{{/ifeq}}" data-section="registration-links">
-            <i class="fa fa-inbox"></i>
-            <span class="account-nav-link__title">Registration</span>
-        </li>
+        <a href="/page/register-update-a-child"><li class="button button--green account-nav-link account-nav-link--admin">Register/Update a Child</li></a>
+        <a href="/page/register-a-familys-homestudy"><li class="button button--green account-nav-link account-nav-link--admin">Register a Homestudy</li></a>
         {{/ifeq}}
 
         {{#ifeq user.userType 'admin'}}

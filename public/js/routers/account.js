@@ -10,7 +10,6 @@
 			'events'				: 'loadEvents',
 			'children'				: 'loadChildren',
             'inquiries'     		: 'loadInquiries',
-			'registration-links'	: 'loadRegistrationLinks',
 			'*other'				: 'loadDefault'
 		},
 
