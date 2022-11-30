@@ -42,10 +42,27 @@ exports = module.exports = ( req, res ) => {
 				// convert dates to proper format, then add a time zone offset
 				// this is necessary because the excel plugin uses the browser offset when converting an HTML table to a spreadhseet, which was 
 				// converting dates to the previous day
-				family.contact1.birthDate = moment.utc(family.contact1.birthDate).format('YYYY-MM-DD');
-				family.contact1.birthDate = family.contact1.birthDate + 'T06:00:00.000Z';
-				family.contact2.birthDate = moment.utc(family.contact2.birthDate).format('YYYY-MM-DD');
-				family.contact2.birthDate = family.contact2.birthDate + 'T06:00:00.000Z';
+
+				// filter out missing/invalid dates
+				if ( !family.contact1.birthDate || !moment.utc( family.contact1.birthDate ).isValid() ) {
+					console.log(`invalid birth date for Contact 1 of family: ${family.displayNameAndRegistration}`);
+					console.log(family.contact1.birthDate);
+					family.contact1.birthDate = undefined;
+				} else {
+					family.contact1.birthDate = moment.utc( family.contact1.birthDate ).format( 'YYYY-MM-DD' );
+					family.contact1.birthDate = family.contact1.birthDate + 'T06:00:00.000Z';
+				}
+
+				// filter out missing/invalid dates
+				if ( !family.contact2.birthDate || !moment.utc( family.contact2.birthDate ).isValid() ) {
+					console.log(`invalid birth date for Contact 2 of family: ${family.displayNameAndRegistration}`);
+					console.log(family.contact2.birthDate);
+					family.contact2.birthDate = undefined;
+				} else {
+					family.contact2.birthDate = moment.utc( family.contact2.birthDate ).format( 'YYYY-MM-DD' );
+					family.contact2.birthDate = family.contact2.birthDate + 'T06:00:00.000Z';
+				}
+
 				// create record URL string
 				family.recordURL = `https://mareinc.org/keystone/families/${family._id.toString()}`;
 
