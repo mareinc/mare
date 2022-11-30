@@ -21,10 +21,36 @@ exports = module.exports = ( req, res ) => {
 		fetchStates					= listService.getAllStates(),
 		fetchMatchingExclusions		= listService.getAllMatchingExclusions();
 
-	Promise.all( [ fetchChildStatuses, fetchFamilyStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations, fetchInquiryMethods, fetchRegions, fetchResidences, fetchStates, fetchMatchingExclusions ] )
+	const fetchFamilies = keystone.list( 'Family' ).model
+		.find()
+		.populate([
+			'address.city',
+			'address.region',
+			'address.state'
+		].join( ' ' ))
+		.lean()
+		.exec();
+
+	Promise.all( [ fetchChildStatuses, fetchFamilyStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations, fetchInquiryMethods, fetchRegions, fetchResidences, fetchStates, fetchMatchingExclusions, fetchFamilies ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ childStatuses, familyStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods, regions, residences, states, matchingExclusions ] = values;
+			const [ childStatuses, familyStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods, regions, residences, states, matchingExclusions, families ] = values;
+
+			// create a list of families for excel export
+			locals.families = families.map( family => {
+
+				// convert dates to proper format, then add a time zone offset
+				// this is necessary because the excel plugin uses the browser offset when converting an HTML table to a spreadhseet, which was 
+				// converting dates to the previous day
+				family.contact1.birthDate = moment.utc(family.contact1.birthDate).format('YYYY-MM-DD');
+				family.contact1.birthDate = family.contact1.birthDate + 'T06:00:00.000Z';
+				family.contact2.birthDate = moment.utc(family.contact2.birthDate).format('YYYY-MM-DD');
+				family.contact2.birthDate = family.contact2.birthDate + 'T06:00:00.000Z';
+				// create record URL string
+				family.recordURL = `https://mareinc.org/keystone/families/${family._id.toString()}`;
+
+				return family;
+			});
 			
 			// assign properties to locals for access during templating
 			locals.childStatuses = childStatuses;

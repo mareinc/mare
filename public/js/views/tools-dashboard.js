@@ -7,7 +7,8 @@
 
 		// bind standard events to functions within the view
 		events: {
-			'click .btn-dashboard': 'handleSearchClick'
+			'click .btn-dashboard': 'handleSearchClick',
+			'click .family-export-xlsx-button': 'handleXlsxExportClick'
 		},
 
 		/* initialize the view */
@@ -88,6 +89,14 @@
 					defer.reject();
 				});
 			}).promise();
+		},
+
+		handleXlsxExportClick: function() {
+			var table = this.$el.find( '.results-table' ),
+				wb = XLSX.utils.table_to_book( table[ 0 ] );
+				
+			// convert HTML table to XLSX file
+			XLSX.writeFile( wb, table.data( 'filename' ) );
 		}
 		
 	});
