@@ -93,17 +93,11 @@
 		<table width="100%" class="results-table" data-filename="FamilyExport.xlsx">
 			<tr>
 				<th>email</th>
-				<th>contact 1 - first name</th>
-				<th>contact 1 - last name</th>
-				<th>contact 1 - phone</th>
-				<th>contact 1 - date of birth</th>
-				<th>contact 2 - email</th>
-				<th>contact 2 - first name</th>
-				<th>contact 2 - last name</th>
-				<th>contact 2 - phone</th>
-				<th>contact 2 - date of birth</th>
-				<th>street 1</th>
-				<th>street 2</th>
+				<th>first name</th>
+				<th>last name</th>
+				<th>phone</th>
+				<th>date of birth</th>
+				<th>street</th>
 				<th>city</th>
 				<th>state</th>
 				<th>zip code</th>
@@ -112,22 +106,16 @@
 			</tr>
 			{{#each families as |result|}}
 				<tr>
-					<td>{{ result.email }}</td>
-					<td>{{ result.contact1.name.first }}</td>
-					<td>{{ result.contact1.name.last }}</td>
-					<td>{{ result.homePhone }}</td>
-					<td>{{ result.contact1.birthDate }}</td>
-					<td>{{ result.contact2.email }}</td>
-					<td>{{ result.contact2.name.first }}</td>
-					<td>{{ result.contact2.name.last }}</td>
-					<td>{{ result.contact2.phone.mobile }}</td>
-					<td>{{ result.contact2.birthDate }}</td>
-					<td>{{ result.address.street1 }}</td>
-					<td>{{ result.address.street2 }}</td>
-					<td>{{ result.address.city.cityOrTown }}</td>
-					<td>{{ result.address.state.state }}</td>
-					<td>{{ result.address.zipCode }}</td>
-					<td>{{ result.address.region.region }}</td>
+					<td>{{ result.contact.email }}</td>
+					<td>{{ result.contact.firstName }}</td>
+					<td>{{ result.contact.lastName }}</td>
+					<td>{{ result.contact.phone }}</td>
+					<td>{{ result.contact.birthDate }}</td>
+					<td>{{ result.address.street }}</td>
+					<td>{{ result.address.city }}</td>
+					<td>{{ result.address.state }}</td>
+					<td>{{ result.address.zip }}</td>
+					<td>{{ result.address.region }}</td>
 					<td>{{ result.recordURL }}</td>
 				</tr>
 			{{/each}}

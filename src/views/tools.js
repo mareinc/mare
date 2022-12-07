@@ -37,37 +37,90 @@ exports = module.exports = ( req, res ) => {
 			const [ childStatuses, familyStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods, regions, residences, states, matchingExclusions, families ] = values;
 
 			// create a list of families for excel export
-			locals.families = families.map( family => {
+			locals.families = families.reduce( ( _families, family ) => {
 
-				// convert dates to proper format, then add a time zone offset
-				// this is necessary because the excel plugin uses the browser offset when converting an HTML table to a spreadhseet, which was 
-				// converting dates to the previous day
+				// extract family address data
+				const address = {
+					street: family.address.street1 + family.address.street2,
+					city: family.address.displayCity,
+					state: family.address.state && family.address.state.state,
+					zip: family.address.zipCode,
+					region: family.address.region && family.address.region.region
+				};
+
+				// create record URL string
+				const recordURL = `https://mareinc.org/keystone/families/${family._id.toString()}`;
+
+				// extract contact 1 data
+				const contact1 = {
+					firstName: family.contact1.name.first,
+					lastName: family.contact1.name.last,
+					phone: family.homePhone,
+					email: family.email
+				};
 
 				// filter out missing/invalid dates
 				if ( !family.contact1.birthDate || !moment.utc( family.contact1.birthDate ).isValid() ) {
-					console.log(`invalid birth date for Contact 1 of family: ${family.displayNameAndRegistration}`);
-					console.log(family.contact1.birthDate);
-					family.contact1.birthDate = undefined;
+
+					// console.log(`invalid birth date for Contact 1 of family: ${family.displayNameAndRegistration}`);
+					// console.log(family.contact1.birthDate);
+					contact1.birthDate = undefined;
+
 				} else {
-					family.contact1.birthDate = moment.utc( family.contact1.birthDate ).format( 'YYYY-MM-DD' );
-					family.contact1.birthDate = family.contact1.birthDate + 'T06:00:00.000Z';
+
+					// convert dates to proper format, then add a time zone offset
+					// this is necessary because the excel plugin uses the browser offset when converting an HTML table to a spreadhseet, which was 
+					// converting dates to the previous day
+					contact1.birthDate = moment.utc( family.contact1.birthDate ).format( 'YYYY-MM-DD' );
+					contact1.birthDate = contact1.birthDate + 'T06:00:00.000Z';
 				}
 
-				// filter out missing/invalid dates
-				if ( !family.contact2.birthDate || !moment.utc( family.contact2.birthDate ).isValid() ) {
-					console.log(`invalid birth date for Contact 2 of family: ${family.displayNameAndRegistration}`);
-					console.log(family.contact2.birthDate);
-					family.contact2.birthDate = undefined;
-				} else {
-					family.contact2.birthDate = moment.utc( family.contact2.birthDate ).format( 'YYYY-MM-DD' );
-					family.contact2.birthDate = family.contact2.birthDate + 'T06:00:00.000Z';
+				// compose family member 1 data
+				const familyMember1 = {
+					address,
+					contact: contact1,
+					recordURL
+				};
+				// add family member 1 data to families collection
+				_families.push( familyMember1 );
+
+				// extract contact 2 data (if it exists)
+				const contact2 = {};
+				if ( family.contact2.email ) {
+					
+					contact2.firstName = family.contact2.name.first;
+					contact2.lastName = family.contact2.name.last;
+					contact2.phone = family.contact2.phone && family.contact2.phone.mobile;
+					contact2.email = family.contact2.email;
+
+					// filter out missing/invalid dates
+					if ( !family.contact2.birthDate || !moment.utc( family.contact2.birthDate ).isValid() ) {
+						
+						// console.log(`invalid birth date for Contact 2 of family: ${family.displayNameAndRegistration}`);
+						// console.log(family.contact2.birthDate);
+						contact2.birthDate = undefined;
+
+					} else {
+
+						// convert dates to proper format, then add a time zone offset
+						// this is necessary because the excel plugin uses the browser offset when converting an HTML table to a spreadhseet, which was 
+						// converting dates to the previous day
+						contact2.birthDate = moment.utc( family.contact2.birthDate ).format( 'YYYY-MM-DD' );
+						contact2.birthDate = contact2.birthDate + 'T06:00:00.000Z';
+					}
+
+					// compose family member 2 data
+					const familyMember2 = {
+						address,
+						contact: contact2,
+						recordURL
+					};
+					// add family member 2 data to families collection
+					_families.push( familyMember2 );
 				}
 
-				// create record URL string
-				family.recordURL = `https://mareinc.org/keystone/families/${family._id.toString()}`;
-
-				return family;
-			});
+				return _families;
+			}, []);
 			
 			// assign properties to locals for access during templating
 			locals.childStatuses = childStatuses;
