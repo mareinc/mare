@@ -51,6 +51,9 @@ exports = module.exports = ( req, res ) => {
 				// create record URL string
 				const recordURL = `https://mareinc.org/keystone/families/${family._id.toString()}`;
 
+				// extract registration number
+				const registrationNumber = family.registrationNumber;
+
 				// extract contact 1 data
 				const contact1 = {
 					firstName: family.contact1.name.first,
@@ -79,7 +82,8 @@ exports = module.exports = ( req, res ) => {
 				const familyMember1 = {
 					address,
 					contact: contact1,
-					recordURL
+					recordURL,
+					registrationNumber
 				};
 				// add family member 1 data to families collection
 				_families.push( familyMember1 );
@@ -113,7 +117,8 @@ exports = module.exports = ( req, res ) => {
 					const familyMember2 = {
 						address,
 						contact: contact2,
-						recordURL
+						recordURL,
+						registrationNumber
 					};
 					// add family member 2 data to families collection
 					_families.push( familyMember2 );

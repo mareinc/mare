@@ -92,12 +92,13 @@
 		{{!-- Results table for Excel export (hidden) --}}
 		<table width="100%" class="results-table" data-filename="FamilyExport.xlsx">
 			<tr>
+				<th>reg. number</th>
 				<th>email</th>
 				<th>first name</th>
 				<th>last name</th>
 				<th>phone</th>
 				<th>date of birth</th>
-				<th>street</th>
+				<th>street address</th>
 				<th>city</th>
 				<th>state</th>
 				<th>zip code</th>
@@ -106,6 +107,7 @@
 			</tr>
 			{{#each families as |result|}}
 				<tr>
+					<td>{{ result.registrationNumber }}</td>
 					<td>{{ result.contact.email }}</td>
 					<td>{{ result.contact.firstName }}</td>
 					<td>{{ result.contact.lastName }}</td>
