@@ -22,7 +22,7 @@ exports = module.exports = ( req, res ) => {
 		fetchMatchingExclusions		= listService.getAllMatchingExclusions();
 
 	const fetchFamilies = keystone.list( 'Family' ).model
-		.find()
+		.find({ isActive: true })
 		.populate([
 			'address.city',
 			'address.region',
