@@ -12,7 +12,8 @@ const keystone					= require( 'keystone' ),
 	  FamilyService				= require( './family.controllers' ),
 	  ListService				= require( '../../components/lists/list.controllers' ),
 	  MailchimpService			= require( '../../components/mailchimp lists/mailchimp-list.controllers' ),
-	  Validators  				= require( '../../utils/field-validator.controllers' );
+	  Validators  				= require( '../../utils/field-validator.controllers' ),
+	  HubspotService 			= require( '../hubspot services/hubspot.controllers' );
 
 const FAMILY_TAG_CONFIG = [{
 	propPath: 'stages.gatheringInformation.started',
@@ -539,6 +540,9 @@ Family.schema.post( 'save', function() {
 
 	// update the family's stage tags in mailchimp
 	this.updateMailchimpTags();
+
+	// update the family's contact properties in HubSpot
+	HubspotService.updateOrCreateFamilyContacts( this );
 });
 
 /* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
