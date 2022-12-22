@@ -1,3 +1,4 @@
+const moment = require( 'moment' );
 const hubspot = require( '@hubspot/api-client' );
 const hubspotClient = new hubspot.Client({ accessToken: process.env.HUBSPOT_API_KEY });
 const ALLOW_UPDATES = process.env.ALLOW_HUBSPOT_API_UPDATES === 'true';
@@ -189,6 +190,14 @@ exports.updateOrCreateFamilyContacts = async function updateOrCreateFamilyContac
         region
     };
 
+    // filter out missing/invalid birth date
+    if ( familyDoc.contact1.birthDate && moment.utc( familyDoc.contact1.birthDate ).isValid() ) {
+
+        // convert birth date to proper format
+        contact1Properties.date_of_birth = moment.utc( familyDoc.contact1.birthDate ).format( 'YYYY-MM-DD' );
+       
+    } else { contact1Properties.date_of_birth = undefined; }
+
     // update or create contact 1 HubSpot contact
     updateOrCreateContact( contact1Properties );
 
@@ -200,6 +209,14 @@ exports.updateOrCreateFamilyContacts = async function updateOrCreateFamilyContac
         keystone_record,
         region
     };
+
+    // filter out missing/invalid birth date
+    if ( familyDoc.contact2.birthDate && moment.utc( familyDoc.contact2.birthDate ).isValid() ) {
+
+        // convert birth date to proper format
+        contact2Properties.date_of_birth = moment.utc( familyDoc.contact2.birthDate ).format( 'YYYY-MM-DD' );
+       
+    } else { contact2Properties.date_of_birth = undefined; }
 
     // determine if contact 2 exists and HubSpot contact needs to be created/updated
     const shouldCreateOrUpdateContact2 = !!contact2Properties.email;
