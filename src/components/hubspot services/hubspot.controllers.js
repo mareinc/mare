@@ -193,6 +193,7 @@ exports.updateOrCreateFamilyContacts = async function updateOrCreateFamilyContac
         email: familyDoc.get( 'email' ),
         firstname: familyDoc.get( 'contact1.name.first' ),
         lastname: familyDoc.get( 'contact1.name.last' ),
+        phone: familyDoc.get( 'contact1.phone.mobile' ) || familyDoc.get( 'contact1.phone.work' ) || familyDoc.get( 'homePhone' ),
         ...sharedProperties
     };
 
@@ -212,6 +213,7 @@ exports.updateOrCreateFamilyContacts = async function updateOrCreateFamilyContac
         email: familyDoc.get( 'contact2.email' ),
         firstname: familyDoc.get( 'contact2.name.first' ),
         lastname: familyDoc.get( 'contact2.name.last' ),
+        phone: familyDoc.get( 'contact2.phone.mobile' ) || familyDoc.get( 'contact2.phone.work' ) || familyDoc.get( 'homePhone' ),
         ...sharedProperties
     };
 
