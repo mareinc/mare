@@ -178,16 +178,22 @@ exports.updateOrCreateSiteVisitorContact = async function updateOrCreateSiteVisi
 exports.updateOrCreateFamilyContacts = async function updateOrCreateFamilyContacts( familyDoc ) {
 
     // destructure shared contact data from family doc
-    const keystone_record = generateKeystoneRecordUrl( familyDoc._id, familyDoc.get( 'userType' ) );
-    const region = await normalizeRegionData( familyDoc.address.region );
+    const sharedProperties = {
+        keystone_record: generateKeystoneRecordUrl( familyDoc._id, familyDoc.get( 'userType' ) ),
+        registration_number: familyDoc.get( 'registrationNumber' ),
+        address: familyDoc.get( 'address.street1' ) + familyDoc.get( 'address.street2' ),
+        city: familyDoc.get( 'address.displayCity' ),
+        zip: familyDoc.get( 'address.zipCode' )
+    };
+    // populate and normalize region data
+    sharedProperties.region = await normalizeRegionData( familyDoc.address.region );
 
     // destructure contact 1 data from family doc
     const contact1Properties = {
         email: familyDoc.get( 'email' ),
         firstname: familyDoc.get( 'contact1.name.first' ),
         lastname: familyDoc.get( 'contact1.name.last' ),
-        keystone_record,
-        region
+        ...sharedProperties
     };
 
     // filter out missing/invalid birth date
@@ -206,8 +212,7 @@ exports.updateOrCreateFamilyContacts = async function updateOrCreateFamilyContac
         email: familyDoc.get( 'contact2.email' ),
         firstname: familyDoc.get( 'contact2.name.first' ),
         lastname: familyDoc.get( 'contact2.name.last' ),
-        keystone_record,
-        region
+        ...sharedProperties
     };
 
     // filter out missing/invalid birth date
