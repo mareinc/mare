@@ -1,6 +1,7 @@
 const hubspot = require( '@hubspot/api-client' );
 const hubspotClient = new hubspot.Client({ accessToken: process.env.HUBSPOT_API_KEY });
 const ALLOW_UPDATES = process.env.ALLOW_HUBSPOT_API_UPDATES === 'true';
+const listServices = require( '../lists/list.controllers' );
 
 // helper to generate a keystone record URL from the record id and type
 function generateKeystoneRecordUrl( recordId, userType ) {
@@ -175,12 +176,17 @@ exports.updateOrCreateSiteVisitorContact = async function updateOrCreateSiteVisi
 
 exports.updateOrCreateFamilyContacts = async function updateOrCreateFamilyContacts( familyDoc ) {
 
+    // destructure shared contact data from family doc
+    const keystone_record = generateKeystoneRecordUrl( familyDoc._id, familyDoc.get( 'userType' ) );
+    const region = await normalizeRegionData( familyDoc.address.region );
+
     // destructure contact 1 data from family doc
     const contact1Properties = {
-        'email': familyDoc.get( 'email' ),
-        'firstname': familyDoc.get( 'contact1.name.first' ),
-        'lastname': familyDoc.get( 'contact1.name.last' ),
-        'keystone_record': generateKeystoneRecordUrl( familyDoc._id, familyDoc.get( 'userType' ) )
+        email: familyDoc.get( 'email' ),
+        firstname: familyDoc.get( 'contact1.name.first' ),
+        lastname: familyDoc.get( 'contact1.name.last' ),
+        keystone_record,
+        region
     };
 
     // update or create contact 1 HubSpot contact
@@ -188,10 +194,11 @@ exports.updateOrCreateFamilyContacts = async function updateOrCreateFamilyContac
 
     // destructure contact 2 data from family doc
     const contact2Properties = {
-        'email': familyDoc.get( 'contact2.email' ),
-        'firstname': familyDoc.get( 'contact2.name.first' ),
-        'lastname': familyDoc.get( 'contact2.name.last' ),
-        'keystone_record': generateKeystoneRecordUrl( familyDoc._id, familyDoc.get( 'userType' ) )
+        email: familyDoc.get( 'contact2.email' ),
+        firstname: familyDoc.get( 'contact2.name.first' ),
+        lastname: familyDoc.get( 'contact2.name.last' ),
+        keystone_record,
+        region
     };
 
     // determine if contact 2 exists and HubSpot contact needs to be created/updated
@@ -199,4 +206,33 @@ exports.updateOrCreateFamilyContacts = async function updateOrCreateFamilyContac
     if ( shouldCreateOrUpdateContact2 ) {
         updateOrCreateContact( contact2Properties );
     }
+}
+
+async function normalizeRegionData( regionId ) {
+
+    // get the region document using the region ID
+    let region = undefined;
+
+    try {
+
+        const _region = await listServices.getRegionById( regionId );
+        region = _region.region;
+
+    } catch ( error ) { console.error( error ); }
+
+    // ensure a region has been specified
+    if ( !!region ) {
+
+        // handle special case(s)
+        if ( region === 'Specialized Recruitment Coordination' ) {
+            
+            return 'src';
+
+        // apply standard formatting
+        } else {
+            return region.replace( /\s+/g, '-' ).toLowerCase();
+        }
+
+    // if no region has been specified, return undefined
+    } else { return undefined; }
 }
