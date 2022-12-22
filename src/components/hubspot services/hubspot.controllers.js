@@ -187,6 +187,8 @@ exports.updateOrCreateFamilyContacts = async function updateOrCreateFamilyContac
     };
     // populate and normalize region data
     sharedProperties.region = await normalizeRegionData( familyDoc.address.region );
+    // populate state data
+    sharedProperties.state = await populateStateData( familyDoc.address.state );
 
     // destructure contact 1 data from family doc
     const contact1Properties = {
@@ -259,4 +261,19 @@ async function normalizeRegionData( regionId ) {
 
     // if no region has been specified, return undefined
     } else { return undefined; }
+}
+
+async function populateStateData( stateId ) {
+
+    // get the state document using the state ID
+    let state = undefined;
+
+    try {
+
+        const _state = await listServices.getStateById( stateId );
+        state = _state.state;
+
+    } catch ( error ) { console.error( error ); }
+
+    return state;
 }
