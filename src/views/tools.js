@@ -21,21 +21,27 @@ exports = module.exports = ( req, res ) => {
 		fetchStates					= listService.getAllStates(),
 		fetchMatchingExclusions		= listService.getAllMatchingExclusions();
 
-	const fetchFamilies = keystone.list( 'Family' ).model
-		.find({ isActive: true })
-		.populate([
-			'address.city',
-			'address.region',
-			'address.state'
-		].join( ' ' ))
+	// const fetchFamilies = keystone.list( 'Family' ).model
+	// 	.find({ isActive: true })
+	// 	.populate([
+	// 		'address.city',
+	// 		'address.region',
+	// 		'address.state'
+	// 	].join( ' ' ))
+	// 	.lean()
+	// 	.exec();
+
+	const fetchSocialWorkers = keystone.list( 'Social Worker' ).model
+		.find()
 		.lean()
 		.exec();
 
-	Promise.all( [ fetchChildStatuses, fetchFamilyStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations, fetchInquiryMethods, fetchRegions, fetchResidences, fetchStates, fetchMatchingExclusions, fetchFamilies ] )
+	Promise.all( [ fetchChildStatuses, fetchFamilyStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations, fetchInquiryMethods, fetchRegions, fetchResidences, fetchStates, fetchMatchingExclusions, fetchSocialWorkers ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ childStatuses, familyStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods, regions, residences, states, matchingExclusions, families ] = values;
+			const [ childStatuses, familyStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods, regions, residences, states, matchingExclusions, socialWorkers ] = values;
 
+			/*
 			// create a list of families for excel export
 			locals.families = families.reduce( ( _families, family ) => {
 
@@ -125,6 +131,21 @@ exports = module.exports = ( req, res ) => {
 				}
 
 				return _families;
+			}, []);
+			*/
+
+			locals.socialWorkers = socialWorkers.reduce( ( _socialWorkers, socialWorker ) => {
+
+				const _socialWorker = {
+					email: socialWorker.email,
+					firstName: socialWorker.name.first,
+					lastName: socialWorker.name.last,
+					phone: socialWorker.phone && socialWorker.phone.work,
+					recordURL: `https://mareinc.org/keystone/social-workers/${socialWorker._id.toString()}`
+				};
+
+				_socialWorkers.push( _socialWorker );
+				return _socialWorkers;
 			}, []);
 			
 			// assign properties to locals for access during templating

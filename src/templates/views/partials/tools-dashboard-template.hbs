@@ -84,12 +84,11 @@
 		</div>
 	</div>
 
-	<div class="panel" style="max-height: 500px; overflow: scroll;">
+	{{!-- <div class="panel" style="max-height: 500px; overflow: scroll;">
 		<div>
 			<h2 class="panel__h2">Family Data</h2>
 			<button class="button button--teal family-export-xlsx-button">XLSX Export</button>
 		</div>
-		{{!-- Results table for Excel export (hidden) --}}
 		<table width="100%" class="results-table" data-filename="FamilyExport.xlsx">
 			<tr>
 				<th>reg. number</th>
@@ -118,6 +117,32 @@
 					<td>{{ result.address.state }}</td>
 					<td>{{ result.address.zip }}</td>
 					<td>{{ result.address.region }}</td>
+					<td>{{ result.recordURL }}</td>
+				</tr>
+			{{/each}}
+		</table>
+	</div> --}}
+
+	<div class="panel" style="max-height: 500px; overflow: scroll;">
+		<div>
+			<h2 class="panel__h2">Social Worker Data</h2>
+			<button class="button button--teal family-export-xlsx-button">XLSX Export</button>
+		</div>
+		{{!-- Results table for Excel export (hidden) --}}
+		<table width="100%" class="results-table" data-filename="SocialWorkerExport.xlsx">
+			<tr>
+				<th>email</th>
+				<th>first name</th>
+				<th>last name</th>
+				<th>phone</th>
+				<th>keystone record URL</th>
+			</tr>
+			{{#each socialWorkers as |result|}}
+				<tr>
+					<td>{{ result.email }}</td>
+					<td>{{ result.firstName }}</td>
+					<td>{{ result.lastName }}</td>
+					<td>{{ result.phone }}</td>
 					<td>{{ result.recordURL }}</td>
 				</tr>
 			{{/each}}
