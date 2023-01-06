@@ -32,7 +32,7 @@ exports = module.exports = ( req, res ) => {
 	// 	.exec();
 
 	const fetchSocialWorkers = keystone.list( 'Social Worker' ).model
-		.find()
+		.find({ isActive: true })
 		.lean()
 		.exec();
 
