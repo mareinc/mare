@@ -7,7 +7,8 @@ const keystone					= require( 'keystone' ),
 	  MailchimpService			= require( '../../components/mailchimp lists/mailchimp-list.controllers' ),
 	  ChangeHistoryMiddleware	= require( '../change histories/change-history.controllers' ),
 	  UserServiceMiddleware		= require( '../../components/users/user.controllers' ),
-	  Validators  				= require( '../../utils/field-validator.controllers' );
+	  Validators  				= require( '../../utils/field-validator.controllers' ),
+	  HubspotService 			= require( '../hubspot services/hubspot.controllers' );
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
 const ContactGroup = require( '../contact groups/contact-group.model' );
@@ -246,6 +247,9 @@ SocialWorker.schema.post( 'save', function() {
 				}
 			});
 	}
+
+	// update the social worker's contact properties in HubSpot
+	HubspotService.updateOrCreateSocialWorkerContact( this );
 });
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */

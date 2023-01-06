@@ -13,6 +13,10 @@ function generateKeystoneRecordUrl( recordId, userType ) {
 
         return `${recordUrlBase}site-visitors/${recordId}`;
 
+    } else if ( userType === 'social worker' ) {
+
+        return `${recordUrlBase}social-workers/${recordId}`;
+
     } else {
 
         return `${recordUrlBase}families/${recordId}`; 
@@ -232,6 +236,20 @@ exports.updateOrCreateFamilyContacts = async function updateOrCreateFamilyContac
     if ( shouldCreateOrUpdateContact2 ) {
         updateOrCreateContact( contact2Properties );
     }
+}
+
+exports.updateOrCreateSocialWorkerContact = async function updateOrCreateSocialWorkerContact( socialWorkerDoc ) {
+
+    // destructure data from social worker doc
+    const contactProperties = {
+        email: socialWorkerDoc.get( 'email' ),
+        firstname: socialWorkerDoc.get( 'name.first' ),
+        lastname: socialWorkerDoc.get( 'name.last' ),
+        phone: socialWorkerDoc.get( 'phone.work' ),
+        keystone_record: generateKeystoneRecordUrl( socialWorkerDoc._id, socialWorkerDoc.get( 'userType' ) )
+    };
+
+    updateOrCreateContact( contactProperties );
 }
 
 async function normalizeRegionData( regionId ) {

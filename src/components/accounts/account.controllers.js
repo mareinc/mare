@@ -143,6 +143,9 @@ exports.registerUser = ( req, res, next ) => {
 											console.error( `error adding new social worker ${ newSocialWorkerDoc.get( 'name.full' ) } (${ newSocialWorkerDoc.get( 'email' ) }) to mailing lists` );
 											console.error( err );
 										});
+
+									// update or create the contact(s) in HubSpot
+									hubspotService.updateOrCreateSocialWorkerContact( newSocialWorkerDoc );
 								})
 								// log any unhandled errors
 								.catch( error => console.error( error ) );
