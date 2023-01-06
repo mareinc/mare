@@ -1,6 +1,8 @@
+const moment = require( 'moment' );
 const hubspot = require( '@hubspot/api-client' );
 const hubspotClient = new hubspot.Client({ accessToken: process.env.HUBSPOT_API_KEY });
 const ALLOW_UPDATES = process.env.ALLOW_HUBSPOT_API_UPDATES === 'true';
+const listServices = require( '../lists/list.controllers' );
 
 // helper to generate a keystone record URL from the record id and type
 function generateKeystoneRecordUrl( recordId, userType ) {
@@ -10,6 +12,10 @@ function generateKeystoneRecordUrl( recordId, userType ) {
     if ( userType === 'site visitor' ) {
 
         return `${recordUrlBase}site-visitors/${recordId}`;
+
+    } else if ( userType === 'social worker' ) {
+
+        return `${recordUrlBase}social-workers/${recordId}`;
 
     } else {
 
@@ -175,28 +181,117 @@ exports.updateOrCreateSiteVisitorContact = async function updateOrCreateSiteVisi
 
 exports.updateOrCreateFamilyContacts = async function updateOrCreateFamilyContacts( familyDoc ) {
 
+    // destructure shared contact data from family doc
+    const sharedProperties = {
+        keystone_record: generateKeystoneRecordUrl( familyDoc._id, familyDoc.get( 'userType' ) ),
+        registration_number: familyDoc.get( 'registrationNumber' ),
+        address: familyDoc.get( 'address.street1' ) + familyDoc.get( 'address.street2' ),
+        city: familyDoc.get( 'address.displayCity' ),
+        zip: familyDoc.get( 'address.zipCode' )
+    };
+    // populate and normalize region data
+    sharedProperties.region = await normalizeRegionData( familyDoc.address.region );
+    // populate state data
+    sharedProperties.state = await populateStateData( familyDoc.address.state );
+
     // destructure contact 1 data from family doc
     const contact1Properties = {
-        'email': familyDoc.get( 'email' ),
-        'firstname': familyDoc.get( 'contact1.name.first' ),
-        'lastname': familyDoc.get( 'contact1.name.last' ),
-        'keystone_record': generateKeystoneRecordUrl( familyDoc._id, familyDoc.get( 'userType' ) )
+        email: familyDoc.get( 'email' ),
+        firstname: familyDoc.get( 'contact1.name.first' ),
+        lastname: familyDoc.get( 'contact1.name.last' ),
+        phone: familyDoc.get( 'contact1.phone.mobile' ) || familyDoc.get( 'contact1.phone.work' ) || familyDoc.get( 'homePhone' ),
+        ...sharedProperties
     };
+
+    // filter out missing/invalid birth date
+    if ( familyDoc.contact1.birthDate && moment.utc( familyDoc.contact1.birthDate ).isValid() ) {
+
+        // convert birth date to proper format
+        contact1Properties.date_of_birth = moment.utc( familyDoc.contact1.birthDate ).format( 'YYYY-MM-DD' );
+       
+    } else { contact1Properties.date_of_birth = undefined; }
 
     // update or create contact 1 HubSpot contact
     updateOrCreateContact( contact1Properties );
 
     // destructure contact 2 data from family doc
     const contact2Properties = {
-        'email': familyDoc.get( 'contact2.email' ),
-        'firstname': familyDoc.get( 'contact2.name.first' ),
-        'lastname': familyDoc.get( 'contact2.name.last' ),
-        'keystone_record': generateKeystoneRecordUrl( familyDoc._id, familyDoc.get( 'userType' ) )
+        email: familyDoc.get( 'contact2.email' ),
+        firstname: familyDoc.get( 'contact2.name.first' ),
+        lastname: familyDoc.get( 'contact2.name.last' ),
+        phone: familyDoc.get( 'contact2.phone.mobile' ) || familyDoc.get( 'contact2.phone.work' ) || familyDoc.get( 'homePhone' ),
+        ...sharedProperties
     };
+
+    // filter out missing/invalid birth date
+    if ( familyDoc.contact2.birthDate && moment.utc( familyDoc.contact2.birthDate ).isValid() ) {
+
+        // convert birth date to proper format
+        contact2Properties.date_of_birth = moment.utc( familyDoc.contact2.birthDate ).format( 'YYYY-MM-DD' );
+       
+    } else { contact2Properties.date_of_birth = undefined; }
 
     // determine if contact 2 exists and HubSpot contact needs to be created/updated
     const shouldCreateOrUpdateContact2 = !!contact2Properties.email;
     if ( shouldCreateOrUpdateContact2 ) {
         updateOrCreateContact( contact2Properties );
     }
+}
+
+exports.updateOrCreateSocialWorkerContact = async function updateOrCreateSocialWorkerContact( socialWorkerDoc ) {
+
+    // destructure data from social worker doc
+    const contactProperties = {
+        email: socialWorkerDoc.get( 'email' ),
+        firstname: socialWorkerDoc.get( 'name.first' ),
+        lastname: socialWorkerDoc.get( 'name.last' ),
+        phone: socialWorkerDoc.get( 'phone.work' ),
+        keystone_record: generateKeystoneRecordUrl( socialWorkerDoc._id, socialWorkerDoc.get( 'userType' ) )
+    };
+
+    updateOrCreateContact( contactProperties );
+}
+
+async function normalizeRegionData( regionId ) {
+
+    // get the region document using the region ID
+    let region = undefined;
+
+    try {
+
+        const _region = await listServices.getRegionById( regionId );
+        region = _region.region;
+
+    } catch ( error ) { console.error( error ); }
+
+    // ensure a region has been specified
+    if ( !!region ) {
+
+        // handle special case(s)
+        if ( region === 'Specialized Recruitment Coordination' ) {
+            
+            return 'src';
+
+        // apply standard formatting
+        } else {
+            return region.replace( /\s+/g, '-' ).toLowerCase();
+        }
+
+    // if no region has been specified, return undefined
+    } else { return undefined; }
+}
+
+async function populateStateData( stateId ) {
+
+    // get the state document using the state ID
+    let state = undefined;
+
+    try {
+
+        const _state = await listServices.getStateById( stateId );
+        state = _state.state;
+
+    } catch ( error ) { console.error( error ); }
+
+    return state;
 }
