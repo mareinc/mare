@@ -75,6 +75,13 @@ exports.initLocals = function( req, res, next ) {
 		locals.isProduction = true;
 	}
 
+	locals.footerLinks = {
+		contactUs: `${HUBSPOT_SITE_BASE_URL}/contact-us`,
+		privacyPolicy: `${HUBSPOT_SITE_BASE_URL}/privacy-policy`,
+		nonDiscrimination: `${HUBSPOT_SITE_BASE_URL}/nondiscrimination-policy`,
+		ourPartners: `${HUBSPOT_SITE_BASE_URL}/our-partners`,
+	};
+
 	next();
 };
 
