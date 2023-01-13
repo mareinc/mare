@@ -40,23 +40,23 @@ exports.initLocals = function( req, res, next ) {
 			{ title: 'Learning Center', href: `${HUBSPOT_SITE_BASE_URL}/articles` }
 		]},
 		{ title: 'Events', subMenu: [
-			{ title: 'MARE Family Events', href: '/events/mare-hosted-events/'},
-			{ title: 'Partner Hosted Events', href: HUBSPOT_SITE_BASE_URL },
-			{ title: 'MAPP Training', href: HUBSPOT_SITE_BASE_URL },
-			{ title: 'Community Events', href: HUBSPOT_SITE_BASE_URL }
+			{ title: 'MARE Events', href: `${HUBSPOT_SITE_BASE_URL}/mare-events` },
+			{ title: 'Partner Hosted Events', href: `${HUBSPOT_SITE_BASE_URL}/partner-hosted-events` },
+			{ title: 'MAPP Training', href: `${HUBSPOT_SITE_BASE_URL}/mapp-training` }
 		]},
 		{ title: 'About Us', lastMenu: true, subMenu: [
 			{ title: 'Why We Exist', href: `${HUBSPOT_SITE_BASE_URL}/who-we-are` },
-			{ title: 'Our Values and Commitments', href: `${HUBSPOT_SITE_BASE_URL}what-we-do` },
+			{ title: 'Our Values and Commitments', href: `${HUBSPOT_SITE_BASE_URL}/values` },
 			{ title: 'Our Organization', href: `${HUBSPOT_SITE_BASE_URL}/meet-the-staff` },
 			{ title: 'News and Updates', href: `${HUBSPOT_SITE_BASE_URL}/news-and-updates` },
 		]},
 		{ title: 'Get Involved', subMenu: [
-			{ title: 'Donate', href: 'https://secure.givelively.org/donate/massachusetts-adoption-resource-exchange-inc' },
+			{ title: 'Ways to Help', href: `${HUBSPOT_SITE_BASE_URL}/ways-to-help` },
 			{ title: 'Weekend Family Connections', href: `${HUBSPOT_SITE_BASE_URL}/weekend-family-connections` },
 			{ title: 'Join the Neighborhood', href: `${HUBSPOT_SITE_BASE_URL}/join-the-neighborhood` },
-			{ title: 'Raise Support', href: `${HUBSPOT_SITE_BASE_URL}/raise-support` },
-			{ title: 'Shop', href: 'https://store.mareinc.org/' }
+			{ title: 'Raise Support', href: 'https://give.mareinc.org/campaign/support-adoption-from-foster-care/c459351' },
+			{ title: 'Shop', href: 'https://store.mareinc.org/' },
+			{ title: 'Donate', href: 'https://secure.givelively.org/donate/massachusetts-adoption-resource-exchange-inc' }
 		]}];
 
 	// based on the url from the requested page, fetch the navigation object for the site section
