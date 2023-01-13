@@ -19,7 +19,7 @@ exports.initLocals = function( req, res, next ) {
 	// store the CloudFront url for image urls
 	locals.cloudfrontUrl = process.env.CLOUDFRONT_URL;
 
-	const HUBSPOT_SITE_BASE_URL = 'https://21835120.hs-sites.com';
+	const HUBSPOT_SITE_BASE_URL = process.env.HUBSPOT_SITE_BASE_URL || 'https://21835120.hs-sites.com';
 
 	// create the main menu navigation.
 	locals.mainNav = [
