@@ -56,7 +56,7 @@ exports.initLocals = function( req, res, next ) {
 			{ title: 'Join the Neighborhood', href: `${HUBSPOT_SITE_BASE_URL}/join-the-neighborhood` },
 			{ title: 'Raise Support', href: 'https://give.mareinc.org/campaign/support-adoption-from-foster-care/c459351' },
 			{ title: 'Shop', href: 'https://store.mareinc.org/' },
-			{ title: 'Donate', href: 'https://secure.givelively.org/donate/massachusetts-adoption-resource-exchange-inc' }
+			{ title: 'Donate', href: 'https://give.mareinc.org/give/437626/#!/donation/checkout' }
 		]}];
 
 	// based on the url from the requested page, fetch the navigation object for the site section
