@@ -48,7 +48,7 @@ exports.initLocals = function( req, res, next ) {
 		{ title: 'About Us', lastMenu: true, subMenu: [
 			{ title: 'Why We Exist', href: `${HUBSPOT_SITE_BASE_URL}/who-we-are` },
 			{ title: 'Our Values and Commitments', href: `${HUBSPOT_SITE_BASE_URL}what-we-do` },
-			{ title: 'Our Organization', href: `${HUBSPOT_SITE_BASE_URL}/our-organization` },
+			{ title: 'Our Organization', href: `${HUBSPOT_SITE_BASE_URL}/meet-the-staff` },
 			{ title: 'News and Updates', href: `${HUBSPOT_SITE_BASE_URL}/news-and-updates` },
 		]},
 		{ title: 'Get Involved', subMenu: [
