@@ -45,7 +45,7 @@ exports.initLocals = function( req, res, next ) {
 			{ title: 'MAPP Training', href: `${HUBSPOT_SITE_BASE_URL}/mapp-training` }
 		]},
 		{ title: 'About Us', lastMenu: true, subMenu: [
-			{ title: 'Why We Exist', href: `${HUBSPOT_SITE_BASE_URL}/who-we-are` },
+			{ title: 'Why We Exist', href: `${HUBSPOT_SITE_BASE_URL}/why-we-exist` },
 			{ title: 'Our Values and Commitments', href: `${HUBSPOT_SITE_BASE_URL}/values` },
 			{ title: 'Our Organization', href: `${HUBSPOT_SITE_BASE_URL}/meet-the-staff` },
 			{ title: 'News and Updates', href: `${HUBSPOT_SITE_BASE_URL}/news-and-updates` },
