@@ -210,23 +210,27 @@ Child.add( 'Display Options', {
 }, 'Child Profile', {
 
 	image: { type: Types.File, storage: displayImageStorage, label: 'display image', dependsOn: { mustBePlacedWithSiblings: false }, collapse: true },
+	imageCapturedDate: { type: Types.Date, label: 'date child display image was captured', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, collapse: true, todayButton: true },
 	profile: {
 		quote: { type: Types.Textarea, label: 'personal quote', initial: true, collapse: true },
 		part1: { type: Types.Textarea, label: '1st paragraph', note: 'Age, Race, Interests, Hobbies, Strengths', initial: true, collapse: true },
 		part2: { type: Types.Textarea, label: '2nd paragraph', note: 'Physical, Social, Emotional and Academic Functioning', initial: true, collapse: true },
 		part3: { type: Types.Textarea, label: '3rd paragraph', note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true, collapse: true }
 	},
+	profileUpdatedDate: { type: Types.Date, label: 'date of full child profile update/verification', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, collapse: true, todayButton: true },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true, collapse: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, 'Sibling Group Profile', {
 
 	siblingGroupImage: { type: Types.File, storage: displaySiblingGroupImageStorage, label: 'sibling group image', dependsOn: { mustBePlacedWithSiblings: true }, collapse: true },
+	siblingGroupImageCapturedDate: { type: Types.Date, label: 'date sibling group display image was captured', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, collapse: true, todayButton: true },
 	groupProfile: {
 		quote: { type: Types.Textarea, label: 'group quote', initial: true, collapse: true },
 		part1: { type: Types.Textarea, label: '1st paragraph', note: 'Age, Race, Interests, Hobbies, Strengths', initial: true, collapse: true },
 		part2: { type: Types.Textarea, label: '2nd paragraph', note: 'Physical, Social, Emotional and Academic Functioning', initial: true, collapse: true },
 		part3: { type: Types.Textarea, label: '3rd paragraph', note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true, collapse: true }
 	},
+	groupProfileUpdatedDate: { type: Types.Date, label: 'date of full sibling group profile update/verification', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, collapse: true, todayButton: true },
 
 	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', default: false, initial: true, hidden: true },
 	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingWriteup: true }, initial: true, hidden: true },
