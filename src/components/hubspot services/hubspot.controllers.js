@@ -7,7 +7,7 @@ const listServices = require( '../lists/list.controllers' );
 // helper to generate a keystone record URL from the record id and type
 function generateKeystoneRecordUrl( recordId, userType ) {
 
-    const recordUrlBase = 'https://mareinc.org/keystone/';
+    const recordUrlBase = 'https://adopt.mareinc.org/keystone/';
 
     if ( userType === 'site visitor' ) {
 
