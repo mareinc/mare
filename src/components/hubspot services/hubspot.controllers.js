@@ -109,6 +109,12 @@ async function updateOrCreateContact( contactProperties ) {
         console.log( 'HubSpot updates are disabled by envrironment variables.  To enable, set ALLOW_HUBSPOT_API_UPDATES variable to true' );
         return;
     }
+
+    if ( !contactProperties.email ) {
+        
+        console.log( `Cannot create or update HubSpot contact - Keystone record does not have an email address.  Record URL: ${contactProperties.keystone_record}` );
+        return;
+    }
     
     try {
 
