@@ -2,7 +2,8 @@ const keystone				= require( 'keystone' ),
 	  userService			= require( '../components/users/user.controllers' ),
 	  listService			= require( '../components/lists/list.controllers' ),
 	  pageService			= require( '../components/pages/page.controllers' ),
-	  profileSearchService	= require( '../components/profile searches/profile.search.controllers' );
+	  profileSearchService	= require( '../components/profile searches/profile.search.controllers' ),
+	  hubspotService		= require( '../components/hubspot services/hubspot.controllers' );
 
 exports = module.exports = ( req, res ) => {
 	'use strict';
@@ -18,6 +19,9 @@ exports = module.exports = ( req, res ) => {
 	locals.canBookmarkChildren			= canBookmarkChildren;
 	locals.canSearchForChildren			= canSearchForChildren;
 	locals.canSeeAdvancedSearchOptions	= canSeeAdvancedSearchOptions;
+	locals.isUser = userType !== 'anonymous';
+	// compose and store the base HubSpot inquiry form URL and query params
+	locals.hubspotInquiryFormUrl = locals.isUser && `https://share.hsforms.com/1qP46keHWSzWFsLYzLXFAFwd0034?keystone_record_url=${hubspotService.generateKeystoneRecordUrl( req.user._id.toString(), userType )}`;
 	
 	// fetch all data needed to render this page
 	let fetchDisabilities			= listService.getAllDisabilities(),

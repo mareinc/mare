@@ -22,6 +22,8 @@ function generateKeystoneRecordUrl( recordId, userType ) {
         return `${recordUrlBase}families/${recordId}`; 
     }
 }
+// export helper function for use in external views
+exports.generateKeystoneRecordUrl = generateKeystoneRecordUrl;
 
 // find HubSpot cms contact by email address
 exports.findContactByEmail = async function findContactByEmail( email ) {
