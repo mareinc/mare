@@ -19,9 +19,9 @@ exports = module.exports = ( req, res ) => {
 	locals.canBookmarkChildren			= canBookmarkChildren;
 	locals.canSearchForChildren			= canSearchForChildren;
 	locals.canSeeAdvancedSearchOptions	= canSeeAdvancedSearchOptions;
-	locals.isUser = userType !== 'anonymous';
+	locals.isUserAuthed = userType !== 'anonymous';
 	// compose and store the base HubSpot inquiry form URL and query params
-	locals.hubspotInquiryFormUrl = locals.isUser && `https://share.hsforms.com/1qP46keHWSzWFsLYzLXFAFwd0034` +
+	locals.hubspotInquiryFormUrl = locals.isUserAuthed && `https://share.hsforms.com/1qP46keHWSzWFsLYzLXFAFwd0034` +
 		`?email=${req.user.get( 'email' )}` +
 		`&keystone_record_url=${hubspotService.generateKeystoneRecordUrl( req.user._id.toString(), userType )}`;
 	

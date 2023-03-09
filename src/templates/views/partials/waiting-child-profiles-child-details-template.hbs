@@ -59,9 +59,9 @@
 			<button class="button button--teal button--large child-bookmark-button" data-registration-number="\{{ registrationNumber }}">Bookmark</button>
 			\{{/if}}
 			{{/if}}
-			{{#if isUser}}
+			{{#if isUserAuthed}}
 				<a href="{{ hubspotInquiryFormUrl }}&child_registration_number=\{{ registrationNumber }}" target="_blank">
-					<button class="button button--teal button--large child-inquiry-button hbButton">Inquire</button>
+					<button class="button button--teal button--large child-inquiry-button">Inquire</button>
 				</a>
 			{{else}}
 				<a href="/forms/information-request?registrationNumber=\{{ registrationNumber }}">
@@ -95,9 +95,15 @@
 			\{{else}}
 			<button class="button button--teal button--large child-bookmark-button" data-registration-number="\{{ registrationNumber }}">Bookmark</button>
 			\{{/if}}
-			<a href="/forms/information-request?registrationNumber=\{{ registrationNumber }}">
-				<button class="button button--teal button--large child-inquiry-button">Inquire</button>
-			</a>
+			{{#if isUserAuthed}}
+				<a href="{{ hubspotInquiryFormUrl }}&child_registration_number=\{{ registrationNumber }}" target="_blank">
+					<button class="button button--teal button--large child-inquiry-button">Inquire</button>
+				</a>
+			{{else}}
+				<a href="/forms/information-request?registrationNumber=\{{ registrationNumber }}">
+					<button class="button button--teal button--large child-inquiry-button">Inquire</button>
+				</a>
+			{{/if}}
 		</div>
 		{{/if}}
 
@@ -127,9 +133,15 @@
 			\{{else}}
 			<button class="button button--teal button--large child-bookmark-button" data-registration-number="\{{ registrationNumber }}">Bookmark</button>
 			\{{/if}}
-			<a href="/forms/information-request?registrationNumber=\{{ registrationNumber }}">
-				<button class="button button--teal button--large child-inquiry-button">Inquire</button>
-			</a>
+			{{#if isUserAuthed}}
+				<a href="{{ hubspotInquiryFormUrl }}&child_registration_number=\{{ registrationNumber }}" target="_blank">
+					<button class="button button--teal button--large child-inquiry-button">Inquire</button>
+				</a>
+			{{else}}
+				<a href="/forms/information-request?registrationNumber=\{{ registrationNumber }}">
+					<button class="button button--teal button--large child-inquiry-button">Inquire</button>
+				</a>
+			{{/if}}
 		</div>
 		{{/if}}
 
