@@ -60,7 +60,7 @@
 			\{{/if}}
 			{{/if}}
 			{{#if isUser}}
-				<a href="{{ hubspotInquiryFormUrl }}" target="_blank">
+				<a href="{{ hubspotInquiryFormUrl }}&child_registration_number=\{{ registrationNumber }}" target="_blank">
 					<button class="button button--teal button--large child-inquiry-button hbButton">Inquire</button>
 				</a>
 			{{else}}

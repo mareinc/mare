@@ -21,7 +21,9 @@ exports = module.exports = ( req, res ) => {
 	locals.canSeeAdvancedSearchOptions	= canSeeAdvancedSearchOptions;
 	locals.isUser = userType !== 'anonymous';
 	// compose and store the base HubSpot inquiry form URL and query params
-	locals.hubspotInquiryFormUrl = locals.isUser && `https://share.hsforms.com/1qP46keHWSzWFsLYzLXFAFwd0034?keystone_record_url=${hubspotService.generateKeystoneRecordUrl( req.user._id.toString(), userType )}`;
+	locals.hubspotInquiryFormUrl = locals.isUser && `https://share.hsforms.com/1qP46keHWSzWFsLYzLXFAFwd0034` +
+		`?email=${req.user.get( 'email' )}` +
+		`&keystone_record_url=${hubspotService.generateKeystoneRecordUrl( req.user._id.toString(), userType )}`;
 	
 	// fetch all data needed to render this page
 	let fetchDisabilities			= listService.getAllDisabilities(),
