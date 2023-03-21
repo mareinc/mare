@@ -59,7 +59,7 @@
 			<button class="button button--teal button--large child-bookmark-button" data-registration-number="\{{ registrationNumber }}">Bookmark</button>
 			\{{/if}}
 			{{/if}}
-			{{#if isUserAuthed}}
+			{{#if shouldDisplayHubSpotInquiryForm}}
 				<a href="{{ hubspotInquiryFormUrl }}&child_registration_number=\{{ registrationNumber }}" target="_blank">
 					<button class="button button--teal button--large child-inquiry-button">Inquire</button>
 				</a>
@@ -95,7 +95,7 @@
 			\{{else}}
 			<button class="button button--teal button--large child-bookmark-button" data-registration-number="\{{ registrationNumber }}">Bookmark</button>
 			\{{/if}}
-			{{#if isUserAuthed}}
+			{{#if shouldDisplayHubSpotInquiryForm}}
 				<a href="{{ hubspotInquiryFormUrl }}&child_registration_number=\{{ registrationNumber }}" target="_blank">
 					<button class="button button--teal button--large child-inquiry-button">Inquire</button>
 				</a>
@@ -133,7 +133,7 @@
 			\{{else}}
 			<button class="button button--teal button--large child-bookmark-button" data-registration-number="\{{ registrationNumber }}">Bookmark</button>
 			\{{/if}}
-			{{#if isUserAuthed}}
+			{{#if shouldDisplayHubSpotInquiryForm}}
 				<a href="{{ hubspotInquiryFormUrl }}&child_registration_number=\{{ registrationNumber }}" target="_blank">
 					<button class="button button--teal button--large child-inquiry-button">Inquire</button>
 				</a>

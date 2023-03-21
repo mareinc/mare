@@ -19,11 +19,6 @@ exports = module.exports = ( req, res ) => {
 	locals.canBookmarkChildren			= canBookmarkChildren;
 	locals.canSearchForChildren			= canSearchForChildren;
 	locals.canSeeAdvancedSearchOptions	= canSeeAdvancedSearchOptions;
-	locals.isUserAuthed = userType !== 'anonymous';
-	// compose and store the base HubSpot inquiry form URL and query params
-	locals.hubspotInquiryFormUrl = locals.isUserAuthed && `https://share.hsforms.com/1qP46keHWSzWFsLYzLXFAFwd0034` +
-		`?email=${req.user.get( 'email' )}` +
-		`&keystone_record_url=${hubspotService.generateKeystoneRecordUrl( req.user._id.toString(), userType )}`;
 	
 	// fetch all data needed to render this page
 	let fetchDisabilities			= listService.getAllDisabilities(),
@@ -33,13 +28,14 @@ exports = module.exports = ( req, res ) => {
 		fetchRaces					= listService.getAllRaces(),
 		fetchRegions				= listService.getAllRegions(),
 		fetchSidebarItems			= pageService.getSidebarItems(),
-		fetchSavedSearch			= profileSearchService.getProfileSearch( req.user && req.user._id.toString() );
+		fetchSavedSearch			= profileSearchService.getProfileSearch( req.user && req.user._id.toString() ),
+		fetchUserState				= listService.getStateById( req.user.address.state );
 
 	Promise.all( [ fetchDisabilities, fetchFamilyConstellations, fetchGenders, fetchLanguages,
-				   fetchRaces, fetchRegions, fetchSidebarItems, fetchSavedSearch ] )
+				   fetchRaces, fetchRegions, fetchSidebarItems, fetchSavedSearch, fetchUserState ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ disabilities, familyConstellations, genders, languages, races, regions, sidebarItems, savedSearch ] = values;
+			const [ disabilities, familyConstellations, genders, languages, races, regions, sidebarItems, savedSearch, userState ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
 			// assign properties to locals for access during templating
@@ -56,6 +52,16 @@ exports = module.exports = ( req, res ) => {
 			locals.randomEvent			= randomEvent;
 			locals.savedSearch			= JSON.stringify( savedSearch );
 			locals.relationshipStatuses	= [ 'Single', 'Partnered', 'Unknown/Prefers Not To Answer' ];
+
+			// determine if the user should be presented with the new HubSpot inquiry form, or if they should be routed to the legacy inquiry flow
+			// user must be both logged in AND in-state to get the HubSpot form
+			const isUserAuthed = userType !== 'anonymous';
+			const userStateAbbr = userState.abbreviation;
+			locals.shouldDisplayHubSpotInquiryForm = isUserAuthed && userStateAbbr === 'MA';
+			// compose and store the base HubSpot inquiry form URL and query params
+			locals.hubspotInquiryFormUrl = locals.shouldDisplayHubSpotInquiryForm && `https://share.hsforms.com/1qP46keHWSzWFsLYzLXFAFwd0034` +
+				`?email=${req.user.get( 'email' )}` +
+				`&keystone_record_url=${hubspotService.generateKeystoneRecordUrl( req.user._id.toString(), userType )}`;
 
 			// render the view using the waiting-child-profiles.hbs template
 			view.render( 'waiting-child-profiles' );
