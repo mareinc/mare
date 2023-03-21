@@ -59,7 +59,7 @@ exports = module.exports = ( req, res ) => {
 			const userStateAbbr = userState.abbreviation;
 			locals.shouldDisplayHubSpotInquiryForm = isUserAuthed && userStateAbbr === 'MA';
 			// compose and store the base HubSpot inquiry form URL and query params
-			locals.hubspotInquiryFormUrl = locals.shouldDisplayHubSpotInquiryForm && `https://share.hsforms.com/1qP46keHWSzWFsLYzLXFAFwd0034` +
+			locals.hubspotInquiryFormUrl = locals.shouldDisplayHubSpotInquiryForm && `https://www.mareinc.org/child-inquiry` +
 				`?email=${req.user.get( 'email' )}` +
 				`&keystone_record_url=${hubspotService.generateKeystoneRecordUrl( req.user._id.toString(), userType )}`;
 
