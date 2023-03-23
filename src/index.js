@@ -176,4 +176,11 @@ exports = module.exports = app => {
 	app.get( '/tools/services/get-family-stages-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getFamilyStagesData );
     app.get( '/tools/services/get-caseload-data'			    , accountMiddleware.requireUser( 'admin' ), toolsService.getChildCaseloadData );
 	app.get( '/tools/services/get-family-activity-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getFamilyActivityData );
+
+	// webhooks
+	app.post( '/webhooks/process-child-inquiry', function( req, res, next ) {
+		console.log( 'Processing child inquiry webhook...' );
+		console.log( req.body );
+		res.send( 200 );
+	});
 };
