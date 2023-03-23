@@ -28,12 +28,11 @@ exports = module.exports = ( req, res ) => {
 		fetchRaces					= listService.getAllRaces(),
 		fetchRegions				= listService.getAllRegions(),
 		fetchSidebarItems			= pageService.getSidebarItems(),
-		fetchSavedSearch			= profileSearchService.getProfileSearch( req.user && req.user._id.toString() ),
-		fetchUserState				= listService.getStateById( req.user.address.state );
+		fetchSavedSearch			= profileSearchService.getProfileSearch( req.user && req.user._id.toString() );
 
 	Promise.all( [ fetchDisabilities, fetchFamilyConstellations, fetchGenders, fetchLanguages,
-				   fetchRaces, fetchRegions, fetchSidebarItems, fetchSavedSearch, fetchUserState ] )
-		.then( values => {
+				   fetchRaces, fetchRegions, fetchSidebarItems, fetchSavedSearch ] )
+		.then( async values => {
 			// assign local variables to the values returned by the promises
 			const [ disabilities, familyConstellations, genders, languages, races, regions, sidebarItems, savedSearch, userState ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
@@ -55,14 +54,21 @@ exports = module.exports = ( req, res ) => {
 
 			// determine if the user should be presented with the new HubSpot inquiry form, or if they should be routed to the legacy inquiry flow
 			// user must be both logged in AND in-state to get the HubSpot form
-			const isUserAuthed = userType !== 'anonymous';
-			const userStateAbbr = userState.abbreviation;
-			locals.shouldDisplayHubSpotInquiryForm = isUserAuthed && userStateAbbr === 'MA';
-			// compose and store the base HubSpot inquiry form URL and query params
-			locals.hubspotInquiryFormUrl = locals.shouldDisplayHubSpotInquiryForm && `https://www.mareinc.org/child-inquiry` +
-				`?email=${req.user.get( 'email' )}` +
-				`&keystone_record_url=${hubspotService.generateKeystoneRecordUrl( req.user._id.toString(), userType )}`;
+			if ( userType !== 'anonymous' ) {
 
+				// populate user's state data
+				const userState = await listService.getStateById( req.user.get( 'address.state' ) );
+				// determine if user should get the HubSpot inquiry form
+				locals.shouldDisplayHubSpotInquiryForm = userState && userState.abbreviation === 'MA';
+				// compose and store the base HubSpot inquiry form URL and query params
+				locals.hubspotInquiryFormUrl = locals.shouldDisplayHubSpotInquiryForm && `https://www.mareinc.org/child-inquiry` +
+					`?email=${req.user.get( 'email' )}` +
+					`&keystone_record_url=${hubspotService.generateKeystoneRecordUrl( req.user._id.toString(), userType )}`;
+
+			} else {
+				locals.shouldDisplayHubSpotInquiryForm = false;
+			}
+			
 			// render the view using the waiting-child-profiles.hbs template
 			view.render( 'waiting-child-profiles' );
 		})
