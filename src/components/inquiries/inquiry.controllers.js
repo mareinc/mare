@@ -103,7 +103,11 @@ exports.createInquiry = ( { inquiry, user } ) => {
 			.catch( err => console.error( `error fetching region contact for region with id ${ targetRegion }, default or staff email contact info will be used instead`, err ) )			
 			// send a notification email to MARE staff
 			.then( () => inquiryEmailService.sendNewInquiryEmailToMARE( { inquiryData, inquirerData, staffEmail } ) )
-			.catch( err => console.error( `error sending new inquiry email to MARE contact about inquiry with id ${ newInquiry.get( '_id' ) }`, err ) );
+			.catch( err => console.error( `error sending new inquiry email to MARE contact about inquiry with id ${ newInquiry.get( '_id' ) }`, err ) )
+			// resolve the promise with the created inquiry. supports HubSpot inquiry flow without changing current flow
+			.finally( () => {
+				resolve( newInquiry );
+			});
 	});
 };
 

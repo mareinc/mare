@@ -49,32 +49,47 @@ exports.submitHubSpotInquiry = async function submitHubSpotInquiry( req, res, ne
 	console.log( 'Processing child inquiry webhook...' );
 	console.log( req.body );
 
-	// destructure inquiry data
-	const {
-		email,
-		inquiry,
-		recordURL,
-		registrationNumbers
-	} = req.body;
+	try {
+		
+		// destructure inquiry data
+		const {
+			email,
+			inquiry,
+			recordURL,
+			registrationNumbers
+		} = req.body;
 
-	// determine inquirer type
-	const inquirerModelType = recordURL.includes( 'families' ) ? 'Family' : 'Social Worker';
-	// get inquirer's record ID
-	// recordURL structure: ...domain/keystone/type/id
-	const inquirerId = recordURL.split( '/' ).pop();
+		// determine inquirer type
+		const inquirerModelType = recordURL.includes( 'families' ) ? 'Family' : 'Social Worker';
+		// get inquirer's record ID
+		// recordURL structure: ...domain/keystone/type/id
+		const inquirerId = recordURL.split( '/' ).pop();
 
-	const inquirerRecord = await keystone.list( inquirerModelType ).model.findById( inquirerId ).exec();
-	const inquiryBody = {
-		childRegistrationNumbers: registrationNumbers,
-		inquiry,
-		interest: 'child info',
-		source: ''
-	};
-	
-	await inquiryService.createInquiry( { inquiry: inquiryBody, user: inquirerRecord } );
+		// compose arguments for inquiry creation
+		const inquirerRecord = await keystone.list( inquirerModelType ).model.findById( inquirerId ).exec();
+		const inquiryBody = {
+			childRegistrationNumbers: registrationNumbers,
+			inquiry,
+			interest: 'child info',
+			source: ''
+		};
+		
+		// create the inquiry
+		const inquiryRecord = await inquiryService.createInquiry( { inquiry: inquiryBody, user: inquirerRecord } );
+		
+		// set HubSpot metadata
+		inquiryRecord.isHubSpotInquiry = true;
+		await inquiryRecord.save();
 
-	// send a response to the webhook
-	res.sendStatus(200);
+		// send a success response to the webhook
+		res.sendStatus( 200 );
+
+	} catch ( error ) {
+
+		// log the error and send an error response to the webhook
+		console.error( 'submitHubSpotInquiry failed', error );
+		res.sendStatus( 500 );
+	}
 };
 
 exports.saveInquiryNote = function saveInquiryNote( req, res, next ) {
