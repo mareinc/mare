@@ -1,3 +1,4 @@
+const keystone = require( 'keystone' );
 const inquiryService = require( '../../components/inquiries/inquiry.controllers' );
 const listService = require( '../lists/list.controllers' );
 
@@ -40,6 +41,40 @@ exports.submitInquiry = function submitInquiry( req, res, next ) {
 			// redirect to the appropriate page 
 			res.redirect( 303, redirectPath );
 		});
+};
+
+// save an inquiry that was submitted on HubSpot.  this will be called via webhook after the submission has been captured in HubSpot
+exports.submitHubSpotInquiry = async function submitHubSpotInquiry( req, res, next ) {
+
+	console.log( 'Processing child inquiry webhook...' );
+	console.log( req.body );
+
+	// destructure inquiry data
+	const {
+		email,
+		inquiry,
+		recordURL,
+		registrationNumbers
+	} = req.body;
+
+	// determine inquirer type
+	const inquirerModelType = recordURL.includes( 'families' ) ? 'Family' : 'Social Worker';
+	// get inquirer's record ID
+	// recordURL structure: ...domain/keystone/type/id
+	const inquirerId = recordURL.split( '/' ).pop();
+
+	const inquirerRecord = await keystone.list( inquirerModelType ).model.findById( inquirerId ).exec();
+	const inquiryBody = {
+		childRegistrationNumbers: registrationNumbers,
+		inquiry,
+		interest: 'child info',
+		source: ''
+	};
+	
+	await inquiryService.createInquiry( { inquiry: inquiryBody, user: inquirerRecord } );
+
+	// send a response to the webhook
+	res.sendStatus(200);
 };
 
 exports.saveInquiryNote = function saveInquiryNote( req, res, next ) {
