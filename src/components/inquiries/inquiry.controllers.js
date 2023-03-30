@@ -52,7 +52,7 @@ exports.createInquiry = ( { inquiry, user } ) => {
 		// otherwise, it's an unrecognized inquiry type and
 		} else {
 			// reject the promise with details of the error
-			return reject( new Error( `invalid interest value ${ interest }` ) );
+			return reject( new Error( `invalid interest value ${ inquiry.interest }` ) );
 		}
 
 		createInquiry
