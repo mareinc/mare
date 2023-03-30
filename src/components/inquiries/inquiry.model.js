@@ -57,6 +57,11 @@ Inquiry.add( 'General Information', {
 	emailSentToChildsSocialWorker: { type: Types.Boolean, label: `inquiry accepted email sent to child's social worker`, dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: false },
 	emailSentToAgencies: { type: Types.Boolean, label: 'inquiry accepted email sent to agency contacts', dependsOn: { inquirer: 'family' }, noedit: false }
 
+}, 'HubSpot Details', {
+
+	isHubSpotInquiry: { type: Types.Boolean, label: 'inquiry submitted on HubSpot?' },
+	hubSpotInquiryURL: { type: Types.Url, label: 'HubSpot inquiry URL', dependsOn: { isHubSpotInquiry: true } }
+
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
 	// system field to store a map to the id in the old MARE system
