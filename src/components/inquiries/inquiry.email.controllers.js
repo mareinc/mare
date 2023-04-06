@@ -301,3 +301,49 @@ exports.sendInquiryAcceptedEmailToAgencyContacts = ( inquiry, inquiryData, done 
 			done();
 		});
 };
+
+exports.sendHubSpotInquiryProcessingFailedToMARE = ( recipient, inquiryData, done ) => {
+	// do nothing if sending of the email is not currently allowed
+	if( process.env.SEND_GENERAL_INQUIRY_ACCEPTED_EMAILS_TO_AGENCY_CONTACTS == 'true' ) {
+		return done();
+	}
+	// find the email template in templates/emails/
+	Email.send(
+		// template path
+		'inquiry_hubspot-inquiry-processing-failed',
+		// email options
+		{
+			engine: 'hbs',
+			transport: 'mandrill',
+			root: 'src/templates/emails/'
+		// render options
+		}, {
+			inquiryData,
+			layout: false
+		// send options
+		}, {
+			apiKey: process.env.MANDRILL_APIKEY,
+			to: recipient,
+			from: {
+				name: 'MARE',
+				email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
+			},
+			subject: 'HubSpot inquiry processing failed'
+		// callback
+		}, ( err, message ) => {
+			// log any errors
+			if( err ) {
+				console.log( `error sending HubSpot inquiry processing failure notification email`, err );
+				return done();
+			}
+			// the response object is stored as the 0th element of the returned message
+			const response = message ? message[ 0 ] : undefined;
+			// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
+			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+				console.log( `HubSpot inquiry processing failure notification failed to send`, message, err );
+				return done();
+			}
+			console.log( `HubSpot inquiry processing failure notification sent to MARE contact` );
+			done();
+		});
+};
