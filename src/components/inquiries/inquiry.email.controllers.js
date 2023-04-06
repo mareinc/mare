@@ -304,7 +304,7 @@ exports.sendInquiryAcceptedEmailToAgencyContacts = ( inquiry, inquiryData, done 
 
 exports.sendHubSpotInquiryProcessingFailedToMARE = ( recipient, inquiryData, done ) => {
 	// do nothing if sending of the email is not currently allowed
-	if( process.env.SEND_GENERAL_INQUIRY_ACCEPTED_EMAILS_TO_AGENCY_CONTACTS == 'true' ) {
+	if( process.env.SEND_HUBSPOT_INQUIRY_PROCESSING_FAILED_EMAILS_TO_MARE !== 'true' ) {
 		return done();
 	}
 	// find the email template in templates/emails/
