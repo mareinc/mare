@@ -1,6 +1,8 @@
 const keystone = require( 'keystone' );
 const inquiryService = require( '../../components/inquiries/inquiry.controllers' );
+const inquiryEmailService = require( './inquiry.email.controllers' );
 const listService = require( '../lists/list.controllers' );
+const staffEmailService = require( '../staff email contacts/staff-email-contact.controllers' );
 
 exports.submitInquiry = function submitInquiry( req, res, next ) {
 	// reload the form to display the flash message
@@ -46,9 +48,6 @@ exports.submitInquiry = function submitInquiry( req, res, next ) {
 // save an inquiry that was submitted on HubSpot.  this will be called via webhook after the submission has been captured in HubSpot
 exports.submitHubSpotInquiry = async function submitHubSpotInquiry( req, res, next ) {
 
-	console.log( 'Processing child inquiry webhook...' );
-	console.log( req.body );
-
 	try {
 		
 		// destructure inquiry data
@@ -89,6 +88,11 @@ exports.submitHubSpotInquiry = async function submitHubSpotInquiry( req, res, ne
 		// log the error and send an error response to the webhook
 		console.error( 'submitHubSpotInquiry failed', error );
 		res.sendStatus( 500 );
+
+		// get the staff email contact for HubSpot inquiry processing failures
+		const staffEmailContact = await staffEmailService.getStaffEmailContactByEmailTargetName( 'HubSpot inquiry processing failure', [ 'staffEmailContact' ], 'jeremys@mareinc.org' );
+		// send notification email to MARE contact
+		inquiryEmailService.sendHubSpotInquiryProcessingFailedToMARE( staffEmailContact, req.body, function() {});
 	}
 };
 
