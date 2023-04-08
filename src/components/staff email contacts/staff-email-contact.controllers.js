@@ -1,4 +1,5 @@
 const keystone = require( 'keystone' );
+const listService = require( '../lists/list.controllers' );
 // TODO: clean this up to just return the contact whole, the calling function should take what it needs from it.
 //       References to it should be replaced by the function getStaffEmailContactById() below
 exports.getContactById = targetId => {
@@ -78,4 +79,27 @@ exports.getStaffEmailContactsByEmailTarget = ({ emailTargetId, fieldsToPopulate 
                 reject( new Error( `error fetching staff email contacts matching ids ${ emailTargetIds }` ) );
             });
     });
+};
+
+exports.getStaffEmailContactByEmailTargetName = async( emailTargetName, fieldsToPopulate = [ 'staffEmailContact' ], fallbackStaffContact ) => {
+
+    try {
+        // get the email target
+        const emailTargetDoc = await listService.getEmailTargetByName( emailTargetName );
+        // get the staff contact from assigned to that email target
+        const staffEmailContactDoc = await exports.getStaffEmailContactByEmailTarget( emailTargetDoc._id, fieldsToPopulate );
+        // get the email from the staff contact doc
+        const staffEmailContact = staffEmailContactDoc.staffEmailContact.email;
+        // ensure an email address was retrieved
+        if ( staffEmailContact ) {
+            return staffEmailContact;
+        } else {
+            throw new Error( `no staff email contact was found, fallback value of ${fallbackStaffContact} will be used instead` );
+        }
+    } catch( error ) {
+        // log the error
+        console.error( 'getStaffEmailContactByEmailTargetName failed', error );
+        // return the fallback staff contact
+        return fallbackStaffContact;
+    }
 };
