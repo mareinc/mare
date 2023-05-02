@@ -353,20 +353,6 @@
                     <label for="child-invalid-family-constellation-reason" class="label">If same-sex couples or single parents will not be considered, please give clinically appropriate reason</label>
                 </div>
             </div>
-            <div class="row form-group">
-                <div class="col-sm-24">
-                    <label class="label marg-bottom-xs">Medical or Developmental Needs</label>
-                </div>
-            </div>
-            <div class="row form-group">
-                <div class="col-sm-16">
-                {{#each disabilities}}
-                    <div class="col-sm-12 form-group">
-                        <label class="checkbox-inline"><input type="checkbox" name="disabilities[]" value="{{_id}}">{{disability}}</label>
-                    </div>
-                {{/each}}
-                </div>
-            </div>
         </section>
         
         <section class="child-profile-information-section">
@@ -465,6 +451,20 @@
                             <li>Does the child or teen have any specific hopes about their future family? For instance, racial/cultural background, interests, pets, etc. </li>
                         </ul>
                     </label>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-24">
+                    <label class="label marg-bottom-xs">Medical or Developmental Needs</label>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-16">
+                {{#each disabilities}}
+                    <div class="col-sm-12 form-group">
+                        <label class="checkbox-inline"><input type="checkbox" name="disabilities[]" value="{{_id}}">{{disability}}</label>
+                    </div>
+                {{/each}}
                 </div>
             </div>
         </section>
