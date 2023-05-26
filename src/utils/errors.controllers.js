@@ -259,6 +259,36 @@ exports.ERRORS = {
                 detail: 'Please try to verify your account again by clicking on the link in the verification email.  Even if you are unable to verify your account, you are still be able to log in an use the site.  If you continue to experience issues, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
             }
         }
+    },
+    INQUIRY: {
+        MISSING_RECORD_URL: {
+            code: 'INQUIRY_01',
+            message: 'Inquiry Creation Failure: Inquirer is missing Keystone Record URL.'
+        },
+        BAD_RECORD_TYPE: {
+            code: 'INQUIRY_02',
+            message: 'Inquiry Creation Failure: Inquirer has incorrect or malformed Keystone Record Type.'
+        },
+        BAD_RECORD_ID: {
+            code: 'INQUIRY_03',
+            message: 'Inquiry Creation Failure: Inquirer has malformed Keystone Record ID.'
+        },
+        MISSING_RECORD: {
+            code: 'INQUIRY_04',
+            message: `Inquiry Creation Failure: could not find Inquirer's Keystone Record.`
+        },
+        INQUIRY_CREATION_FAILED: {
+            code: 'INQUIRY_05',
+            message: `Inquiry Creation Failure: there was an error during the creation of the Inquiry Record.`
+        },
+        INQUIRY_DATA_AGGREGATION_FAILED: {
+            code: 'INQUIRY_06',
+            message: `Inquiry Notification Failure: there was an error trying to aggregate Inquiry data for the notification email.`
+        },
+        INQUIRER_DATA_AGGREGATION_FAILED: {
+            code: 'INQUIRY_07',
+            message: `Inquiry Notification Failure: there was an error trying to aggregate Inquirer data for the notification email.`
+        }
     }
 };
 
@@ -266,7 +296,7 @@ exports.ERRORS = {
 exports.logCodedError = function logCodedError( code, message, detail, isSuccess ) {
 
 	if ( code && message ) {
-		
+
 		console.error( `${isSuccess ? 'SUCCESS' : 'ERROR'} (CODE:${code}) - ${message}` );
 
 		if (detail) {
