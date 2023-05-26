@@ -27,7 +27,7 @@ exports.sendNewInquiryEmailToMARE = ( { inquiryData, inquirerData, staffEmail } 
             // send options
             }, {
                 apiKey: process.env.MANDRILL_APIKEY,
-                to: staffEmail,
+                to: [ staffEmail, 'jeremys@mareinc.org' ],
                 from: {
                     name: 'MARE',
                     email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
