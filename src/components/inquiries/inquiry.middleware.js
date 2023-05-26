@@ -313,6 +313,26 @@ exports.submitHubSpotInquiryNew = async function submitHubSpotInquiryNew( req, r
 		);
 		console.error( error );
 		res.sendStatus( 500 );
+
+		// send an email for any inquiry processing failures
+		try {
+			
+			// get the staff email contact for HubSpot inquiry processing failures
+			const staffEmailContact = await staffEmailService.getStaffEmailContactByEmailTargetName( 'HubSpot inquiry processing failure', [ 'staffEmailContact' ], 'jeremys@mareinc.org' );
+			// send notification email to MARE contact
+			inquiryEmailService.sendHubSpotInquiryProcessingFailedToMARE( staffEmailContact, req.body, function() {});
+
+		} catch ( error ) {
+
+			// set error data
+			errorData = errorUtils.ERRORS.INQUIRY.ERROR_NOTIFICATION_EMAIL_SEND_FAILED;
+			// log the error and send an error response to the webhook
+			errorUtils.logCodedError(
+				errorData.code,
+				errorData.message
+			);
+			console.error( error );
+		}
 	}
 };
 

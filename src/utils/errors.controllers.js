@@ -296,6 +296,10 @@ exports.ERRORS = {
         NOTIFICATION_EMAIL_SEND_FAILED: {
             code: 'INQUIRY_09',
             message: `Inquiry Notification Failure: there was an error sending the notification email.`
+        },
+        ERROR_NOTIFICATION_EMAIL_SEND_FAILED: {
+            code: 'INQUIRY_10',
+            message: `Inquiry Error Notification Failure: there was an error sending the error notification email.`
         }
     }
 };
