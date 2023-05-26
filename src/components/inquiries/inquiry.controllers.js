@@ -33,14 +33,14 @@ exports.createInquiry = ( { inquiry, user } ) => {
 		// create a variable to hold the promise for fetching the email target
 		let fetchEmailTarget;
 		// fetch the relevant inquirer data to populate the email
-		const fetchInquirerData = extractInquirerData( user );
+		const fetchInquirerData = exports.extractInquirerData( user );
 		// create a variable to hold the promise for creating the inquiry
 		let createInquiry;
 
 		// if we've received a child inquiry
 		if( inquiry.interest === 'child info' ) {
 			// attempt to create a new child inquiry
-			createInquiry = saveChildInquiry( { inquiry, user } );
+			createInquiry = exports.saveChildInquiry( { inquiry, user } );
 			// fetch the email target for child inquiries
 			fetchEmailTarget = listService.getEmailTargetByName( 'child inquiry' );
 		// if we've received a general inquiry
@@ -85,7 +85,7 @@ exports.createInquiry = ( { inquiry, user } ) => {
 			})
 			.catch( err => reject( new Error( `error saving inquiry` ) ) )
 			// extract only the relevant fields from the inquiry, storing the results in a variable for future processing
-			.then( () => extractInquiryData( newInquiry ) )
+			.then( () => exports.extractInquiryData( newInquiry ) )
 			.then( data => inquiryData = data )
 			.catch( err => console.error( `error populating inquiry data for new inquiry staff email - inquiry id ${ newInquiry.get( '_id' ) }`, err ) )
 			// extract only the relevant fields from the inquirer, storing the results in a variable for future processing
@@ -196,7 +196,7 @@ exports.saveInquiryNote = ( inquiryId, notes ) => {
 };
 
 /* private - creates a child inquiry and saves it to the database */
-function saveChildInquiry( { inquiry, user } ) {
+exports.saveChildInquiry = function saveChildInquiry( { inquiry, user } ) {
 	// return a promise around the creation of the new child inquiry
 	return new Promise( ( resolve, reject ) => {
 		// extract the child registration numbers into an array
@@ -316,7 +316,7 @@ function saveGeneralInquiry( { inquiry, user } ) {
 }
 
 /* private - extracts inquiry data needed to populate the notification email to the MARE staff email contact */
-function extractInquiryData( inquiry ) {
+exports.extractInquiryData = function extractInquiryData( inquiry ) {
 
 	return new Promise( ( resolve, reject ) => {
 		// if no inquiry was passed in
@@ -367,7 +367,7 @@ function extractInquiryData( inquiry ) {
 }
 
 /* private - extracts user data needed to populate the notification email to the MARE staff email contact */
-function extractInquirerData( inquirer ) {
+exports.extractInquirerData = function extractInquirerData( inquirer ) {
 
 	return new Promise( ( resolve, reject ) => {
 		// if no inquirer was passed in
