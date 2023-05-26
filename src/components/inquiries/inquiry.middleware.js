@@ -259,7 +259,9 @@ exports.submitHubSpotInquiry = async function submitHubSpotInquiry( req, res, ne
 		// log the success
 		errorUtils.logCodedError(
 			successData.code,
-			successData.message
+			successData.message,
+			undefined,
+			true
 		);
 	} catch ( error ) {
 
