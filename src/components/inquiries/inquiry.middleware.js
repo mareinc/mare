@@ -254,24 +254,30 @@ exports.submitHubSpotInquiryNew = async function submitHubSpotInquiryNew( req, r
 
 				const regionContactRecord = await cscRegionContactService.getCSCRegionContactByRegion( { region: targetRegion, fieldsToPopulate: [ 'cscRegionContact' ] } );
 				notificationEmailTarget = regionContactRecord.cscRegionContact.email;
-				// if no contact returned, throw an error and attempt to get fallback
-				if ( !notificationEmailTarget ) {
-					throw new Error( 'No cscRegionContact found.' );
-				}
-			} catch ( error ) {
 
-				// get the staff email contact (secondary target recipient)
+			} catch ( error ) {
+				console.error( error );
+			}
+
+			// if no CSC Regional Contact found, attempt to get fallback
+			if ( !notificationEmailTarget ) {
+
 				console.log( 'Could not find a CSC Regional Contact, falling back to internal MARE contact...' );
-				const staffTarget = await listService.getEmailTargetByName( 'child inquiry' );
-				const staffContactRecord = await staffEmailService.getStaffEmailContactByEmailTarget( staffTarget.get( '_id' ), [ 'staffEmailContact' ] );
-				notificationEmailTarget = staffContactRecord.staffEmailContact.email;
-				// if no contact returned, log the error and use hard-coded fallback
-				if ( !notificationEmailTarget ) {
-					throw new Error( 'No staffContact found.' );
+				
+				// get the Staff Email Contact (secondary target recipient)
+				try {
+
+					const staffTarget = await listService.getEmailTargetByName( 'child inquiry' );
+					const staffContactRecord = await staffEmailService.getStaffEmailContactByEmailTarget( staffTarget.get( '_id' ), [ 'staffEmailContact' ] );
+					notificationEmailTarget = staffContactRecord.staffEmailContact.email;
+
+				} catch ( error ) {
+					console.error( error );
+					// throw this error to enter outer catch block and fall back to hard-coded contact
+					throw error;
 				}
 			}
 		} catch( error ) {
-			
 			// set error data
 			errorData = errorUtils.ERRORS.INQUIRY.NOTIFICATION_EMAIL_TARGET_NOT_FOUND;
 			// log the error and send an error response to the webhook
@@ -283,6 +289,16 @@ exports.submitHubSpotInquiryNew = async function submitHubSpotInquiryNew( req, r
 			// we do not need to throw here, as we can recover from any errors in this block by using the hard-coded fallback
 			console.log( 'Could not find a CSC Regional Contact or Staff Email Contact, falling back to hard-coded contact...' );
 			notificationEmailTarget = fallbackEmailTarget;
+		}
+
+		// send the notification email to the target recipient
+		try {
+			await inquiryEmailService.sendNewInquiryEmailToMARE( { inquiryData: relevantInquiryData, inquirerData: relevantInquirerData, staffEmail: notificationEmailTarget } );
+		} catch( error ) {
+			// set error data
+			errorData = errorUtils.ERRORS.INQUIRY.NOTIFICATION_EMAIL_SEND_FAILED;
+			// throw error again to skip further execution and jump to outer catch block
+			throw error;
 		}
 		
 		// send a success response to the webhook
@@ -296,9 +312,6 @@ exports.submitHubSpotInquiryNew = async function submitHubSpotInquiryNew( req, r
 			errorData.message
 		);
 		console.error( error );
-
-		// TODO: send error notification email(s)
-
 		res.sendStatus( 500 );
 	}
 };
