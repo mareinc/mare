@@ -52,56 +52,6 @@ exports.submitInquiry = function submitInquiry( req, res, next ) {
 // save an inquiry that was submitted on HubSpot.  this will be called via webhook after the submission has been captured in HubSpot
 exports.submitHubSpotInquiry = async function submitHubSpotInquiry( req, res, next ) {
 
-	try {
-		
-		// destructure inquiry data
-		const {
-			email,
-			inquiry,
-			recordURL,
-			registrationNumbers
-		} = req.body;
-
-		// determine inquirer type
-		const inquirerModelType = recordURL.includes( 'families' ) ? 'Family' : 'Social Worker';
-		// get inquirer's record ID
-		// recordURL structure: ...domain/keystone/type/id
-		const inquirerId = recordURL.split( '/' ).pop();
-
-		// compose arguments for inquiry creation
-		const inquirerRecord = await keystone.list( inquirerModelType ).model.findById( inquirerId ).exec();
-		const inquiryBody = {
-			childRegistrationNumbers: registrationNumbers,
-			inquiry,
-			interest: 'child info',
-			source: ''
-		};
-		
-		// create the inquiry
-		const inquiryRecord = await inquiryService.createInquiry( { inquiry: inquiryBody, user: inquirerRecord } );
-		
-		// set HubSpot metadata
-		inquiryRecord.isHubSpotInquiry = true;
-		await inquiryRecord.save();
-
-		// send a success response to the webhook
-		res.sendStatus( 200 );
-
-	} catch ( error ) {
-
-		// log the error and send an error response to the webhook
-		console.error( 'submitHubSpotInquiry failed', error );
-		res.sendStatus( 500 );
-
-		// get the staff email contact for HubSpot inquiry processing failures
-		const staffEmailContact = await staffEmailService.getStaffEmailContactByEmailTargetName( 'HubSpot inquiry processing failure', [ 'staffEmailContact' ], 'jeremys@mareinc.org' );
-		// send notification email to MARE contact
-		inquiryEmailService.sendHubSpotInquiryProcessingFailedToMARE( staffEmailContact, req.body, function() {});
-	}
-};
-
-exports.submitHubSpotInquiryNew = async function submitHubSpotInquiryNew( req, res, next ) {
-
 	// placeholder for error data
 	let errorData;
 
