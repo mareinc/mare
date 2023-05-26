@@ -300,6 +300,10 @@ exports.ERRORS = {
         ERROR_NOTIFICATION_EMAIL_SEND_FAILED: {
             code: 'INQUIRY_10',
             message: `Inquiry Error Notification Failure: there was an error sending the error notification email.`
+        },
+        SUCCESS: {
+            code: 'INQUIRY_SUCCESS',
+            message: `Inquiry Creation and Notification processed successfully.`
         }
     }
 };

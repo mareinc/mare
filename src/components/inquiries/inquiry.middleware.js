@@ -300,10 +300,17 @@ exports.submitHubSpotInquiryNew = async function submitHubSpotInquiryNew( req, r
 			// throw error again to skip further execution and jump to outer catch block
 			throw error;
 		}
-		
+
 		// send a success response to the webhook
 		res.sendStatus( 200 );
-
+		
+		// set success data
+		successData = errorUtils.ERRORS.INQUIRY.SUCCESS;
+		// log the success
+		errorUtils.logCodedError(
+			successData.code,
+			successData.message
+		);
 	} catch ( error ) {
 
 		// log the error and send an error response to the webhook
