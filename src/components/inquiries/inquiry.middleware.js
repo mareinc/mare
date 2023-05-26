@@ -3,6 +3,7 @@ const ObjectId = require( 'mongodb' ).ObjectId;
 const errorUtils = require( '../../utils/errors.controllers' );
 const childService = require( '../children/child.controllers' );
 const inquiryService = require( '../../components/inquiries/inquiry.controllers' );
+const cscRegionContactService = require( '../csc region contacts/csc-region-contact.controllers' );
 const inquiryEmailService = require( './inquiry.email.controllers' );
 const listService = require( '../lists/list.controllers' );
 const staffEmailService = require( '../staff email contacts/staff-email-contact.controllers' );
@@ -238,8 +239,52 @@ exports.submitHubSpotInquiryNew = async function submitHubSpotInquiryNew( req, r
 			throw error;
 		}
 
-		// TODO: send success notification email(s)
+		// get the target recipient for the notification email
+		const fallbackEmailTarget = 'noahweinert+fallback@gmail.com';
+		let notificationEmailTarget, targetRegion;
+		try {
 
+			// use the first child on the inquiry to find the target region (all children should be sibs and from the same region)
+			const child = inquiryRecord.children[ 0 ];
+			// if we have the recruitment worker region, we'll use it to find the staff region contact, otherwise, fall back to the adoption worker region
+			targetRegion = child.adoptionWorkerAgencyRegion || child.recruitmentWorkerAgencyRegion;
+
+			// get the CSC Regional Contact (primary target recipient)
+			try {
+
+				const regionContactRecord = await cscRegionContactService.getCSCRegionContactByRegion( { region: targetRegion, fieldsToPopulate: [ 'cscRegionContact' ] } );
+				notificationEmailTarget = regionContactRecord.cscRegionContact.email;
+				// if no contact returned, throw an error and attempt to get fallback
+				if ( !notificationEmailTarget ) {
+					throw new Error( 'No cscRegionContact found.' );
+				}
+			} catch ( error ) {
+
+				// get the staff email contact (secondary target recipient)
+				console.log( 'Could not find a CSC Regional Contact, falling back to internal MARE contact...' );
+				const staffTarget = await listService.getEmailTargetByName( 'child inquiry' );
+				const staffContactRecord = await staffEmailService.getStaffEmailContactByEmailTarget( staffTarget.get( '_id' ), [ 'staffEmailContact' ] );
+				notificationEmailTarget = staffContactRecord.staffEmailContact.email;
+				// if no contact returned, log the error and use hard-coded fallback
+				if ( !notificationEmailTarget ) {
+					throw new Error( 'No staffContact found.' );
+				}
+			}
+		} catch( error ) {
+			
+			// set error data
+			errorData = errorUtils.ERRORS.INQUIRY.NOTIFICATION_EMAIL_TARGET_NOT_FOUND;
+			// log the error and send an error response to the webhook
+			errorUtils.logCodedError(
+				errorData.code,
+				errorData.message
+			);
+
+			// we do not need to throw here, as we can recover from any errors in this block by using the hard-coded fallback
+			console.log( 'Could not find a CSC Regional Contact or Staff Email Contact, falling back to hard-coded contact...' );
+			notificationEmailTarget = fallbackEmailTarget;
+		}
+		
 		// send a success response to the webhook
 		res.sendStatus( 200 );
 

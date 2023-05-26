@@ -288,6 +288,10 @@ exports.ERRORS = {
         INQUIRER_DATA_AGGREGATION_FAILED: {
             code: 'INQUIRY_07',
             message: `Inquiry Notification Failure: there was an error trying to aggregate Inquirer data for the notification email.`
+        },
+        NOTIFICATION_EMAIL_TARGET_NOT_FOUND: {
+            code: 'INQUIRY_08',
+            message: `Inquiry Notification Failure: there was an error trying to get the targets for the notification email. Sending notification to hard-coded fallback target.`
         }
     }
 };
