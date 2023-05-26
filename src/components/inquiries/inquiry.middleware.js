@@ -1,4 +1,7 @@
 const keystone = require( 'keystone' );
+const ObjectId = require( 'mongodb' ).ObjectId;
+const errorUtils = require( '../../utils/errors.controllers' );
+const childService = require( '../children/child.controllers' );
 const inquiryService = require( '../../components/inquiries/inquiry.controllers' );
 const inquiryEmailService = require( './inquiry.email.controllers' );
 const listService = require( '../lists/list.controllers' );
@@ -93,6 +96,165 @@ exports.submitHubSpotInquiry = async function submitHubSpotInquiry( req, res, ne
 		const staffEmailContact = await staffEmailService.getStaffEmailContactByEmailTargetName( 'HubSpot inquiry processing failure', [ 'staffEmailContact' ], 'jeremys@mareinc.org' );
 		// send notification email to MARE contact
 		inquiryEmailService.sendHubSpotInquiryProcessingFailedToMARE( staffEmailContact, req.body, function() {});
+	}
+};
+
+exports.submitHubSpotInquiryNew = async function submitHubSpotInquiryNew( req, res, next ) {
+
+	// placeholder for error data
+	let errorData;
+
+	try {
+
+		// log inquiry request data (to help with debugging, we should eventually be able to remove this log statement)
+		console.log( 'Processing HubSpot Inquiry:', req.body );
+
+		// destructure inquiry data
+		const {
+			email,
+			inquiry,
+			recordURL,
+			registrationNumbers
+		} = req.body;
+
+		// ensure the inquirer has a Keystone account
+		if ( !recordURL ) {
+			errorData = errorUtils.ERRORS.INQUIRY.MISSING_RECORD_URL;
+			throw new Error( 'Cannot save Inquiry, Inquirer does not have a Keystone record.' );
+		}
+
+		// determine inquirer type
+		let inquirerModelType;
+		try {
+
+			// get the model slug from the Keystone record URL
+			const inquirerModelSlug = recordURL.split( '/keystone/' )[ 1 ].split( '/' )[ 0 ];
+			switch( inquirerModelSlug ) {
+				case 'families':
+					inquirerModelType = 'Family';
+					break;
+				case 'social-workers':
+					inquirerModelType = 'Social Worker';
+					break;
+				default:
+					// if user is neither a family nor social worker, throw an error for invalid user type
+					throw new Error( `Invalid inquirer model slug: ${inquirerModelSlug}` );
+			}
+		} catch( error ) {
+			// set error data
+			errorData = errorUtils.ERRORS.INQUIRY.BAD_RECORD_TYPE;
+			// throw error again to skip further execution and jump to outer catch block
+			throw error;
+		}
+
+		// determine inquirer id
+		let inquirerId;
+		try {
+
+			// get inquirer's record ID
+			// recordURL structure: ...domain/keystone/type/id
+			inquirerId = recordURL.split( '/' ).pop();
+
+			// ensure inquirer ID is a valid ObjectId
+			if ( !ObjectId.isValid( inquirerId ) ) {
+				throw new Error( `Cannot save Inquiry, Inquirer does not have a valid Keystone Record ID.` );
+			}
+		} catch( error ) {
+
+			// set error data
+			errorData = errorUtils.ERRORS.INQUIRY.BAD_RECORD_ID;
+			// throw error again to skip further execution and jump to outer catch block
+			throw error;
+		}
+
+		// get the inquirer's Keystone record
+		let inquirerRecord;
+		try {
+
+			// request the inquirer's record
+			inquirerRecord = await keystone.list( inquirerModelType ).model.findById( inquirerId ).exec();
+
+			// check to ensure a record was retrieved and is a valid
+			if ( !inquirerRecord || !inquirerRecord._id ) {
+				throw new Error( `Cannot save Inquiry, no Keystone Record exists with ID: ${inquirerId}.` );
+			}
+
+		} catch( error ) {
+			// set error data
+			errorData = errorUtils.ERRORS.INQUIRY.MISSING_RECORD;
+			// throw error again to skip further execution and jump to outer catch block
+			throw error;
+		}
+
+		// save the inquiry
+		let inquiryRecord;
+		try {
+
+			// compose arguments for inquiry creation
+			const inquiryBody = {
+				childRegistrationNumbers: registrationNumbers,
+				inquiry,
+				interest: 'child info',
+				source: ''
+			};
+
+			// save the inquiry
+			inquiryRecord = await inquiryService.saveChildInquiry({ inquiry: inquiryBody, user: inquirerRecord });
+
+			if ( !inquiryRecord ) {
+				throw new Error( 'Failed to save new Inquiry.' );
+			}
+
+			// set HubSpot metadata
+			inquiryRecord.isHubSpotInquiry = true;
+			await inquiryRecord.save();
+
+		} catch( error ) {
+			// set error data
+			errorData = errorUtils.ERRORS.INQUIRY.INQUIRY_CREATION_FAILED;
+			// throw error again to skip further execution and jump to outer catch block
+			throw error;
+		}
+		
+		// populate relevant fields on the inquiry model and extract relevant data for email notification
+		let relevantInquiryData;
+		try {
+			relevantInquiryData = await inquiryService.extractInquiryData( inquiryRecord );
+		} catch( error ) {
+			// set error data
+			errorData = errorUtils.ERRORS.INQUIRY.INQUIRY_DATA_AGGREGATION_FAILED;
+			// throw error again to skip further execution and jump to outer catch block
+			throw error;
+		}
+
+		// populate relevant fields on the inquirer model and extract relevant data for email notification
+		let relevantInquirerData;
+		try {
+			relevantInquirerData = await inquiryService.extractInquirerData( inquirerRecord );
+		} catch( error ) {
+			// set error data
+			errorData = errorUtils.ERRORS.INQUIRY.INQUIRER_DATA_AGGREGATION_FAILED;
+			// throw error again to skip further execution and jump to outer catch block
+			throw error;
+		}
+
+		// TODO: send success notification email(s)
+
+		// send a success response to the webhook
+		res.sendStatus( 200 );
+
+	} catch ( error ) {
+
+		// log the error and send an error response to the webhook
+		errorUtils.logCodedError(
+			errorData.code,
+			errorData.message
+		);
+		console.error( error );
+
+		// TODO: send error notification email(s)
+
+		res.sendStatus( 500 );
 	}
 };
 
