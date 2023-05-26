@@ -44,7 +44,7 @@ exports.getStaffEmailContactByEmailTarget = ( emailTargetId, fieldsToPopulate = 
                 // if no matching staff email contact
                 if( !staffEmailContact ) {
                     // reject the promise with the reason for the rejection
-                    return reject( new Error( `no staff email target matching id '${ id } could be found` ) );
+                    return reject( new Error( `no staff email target matching id ${ emailTargetId } could be found` ) );
                 }
                 // if the staff email contact was found, resolve the promise with the model
 				resolve( staffEmailContact );
