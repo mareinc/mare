@@ -56,14 +56,31 @@ exports = module.exports = ( req, res ) => {
 			// user must be both logged in AND in-state to get the HubSpot form
 			if ( userType !== 'anonymous' ) {
 
-				// populate user's state data
-				const userState = await listService.getStateById( req.user.get( 'address.state' ) );
-				// determine if user should get the HubSpot inquiry form
-				locals.shouldDisplayHubSpotInquiryForm = userState && userState.abbreviation === 'MA';
 				// compose and store the base HubSpot inquiry form URL and query params
-				locals.hubspotInquiryFormUrl = locals.shouldDisplayHubSpotInquiryForm && `https://www.mareinc.org/child-inquiry` +
+				locals.hubspotInquiryFormUrl = `https://www.mareinc.org/child-inquiry` +
 					`?email=${req.user.get( 'email' )}` +
 					`&keystone_record_url=${hubspotService.generateKeystoneRecordUrl( req.user._id.toString(), userType )}`;
+
+				// if user is a family
+				if ( userType === 'family' ) {
+					
+					// populate user's state data
+					const userState = await listService.getStateById( req.user.get( 'address.state' ) );
+					// determine if user should get the HubSpot inquiry form
+					locals.shouldDisplayHubSpotInquiryForm = userState && userState.abbreviation === 'MA';
+				
+				// if user is a social worker or admin
+				} else if ( userType === 'social worker' || userType === 'admin' ) {
+
+					// always present HubSpot inquiry form
+					locals.shouldDisplayHubSpotInquiryForm = true;
+
+				// if user a site visitor
+				} else {
+
+					// always present the old flow
+					locals.shouldDisplayHubSpotInquiryForm = false;
+				}
 
 			} else {
 				locals.shouldDisplayHubSpotInquiryForm = false;
