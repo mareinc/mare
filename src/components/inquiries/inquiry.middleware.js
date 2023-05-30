@@ -283,7 +283,7 @@ exports.submitHubSpotInquiry = async function submitHubSpotInquiry( req, res, ne
 
 		} catch ( error ) {
 
-			// set error data
+			// set error dataß
 			errorData = errorUtils.ERRORS.INQUIRY.ERROR_NOTIFICATION_EMAIL_SEND_FAILED;
 			// log the error and send an error response to the webhook
 			errorUtils.logCodedError(

@@ -337,31 +337,34 @@ exports.extractInquiryData = function extractInquiryData( inquiry ) {
 				// reject the promise with details about the error
 				return reject( new Error( `error populating fields for inquiry with id ${ inquiry.get( '_id' ) }` ) );
 			}
-
-			// fill in all immediately available information
-			const relevantData = {
-				agency: inquiry.agency ? inquiry.agency.code : undefined,
-				children: inquiry.children ?
-						  inquiry.children.map( child => {
-							  return {
-								  firstName: child.name ? child.name.first : undefined,
-								  registrationNumber: child.registrationNumber
-							  } } ) :
-						  undefined,
-				childsSocialWorker: inquiry.childsSocialWorker ? inquiry.childsSocialWorker.name.full : undefined,
-				comments: inquiry.comments.trim(),
-				family: inquiry.family ? inquiry.family.displayNameAndRegistration : undefined,
-				inquirer: inquiry.inquirer,
-				inquiryMethod: inquiry.inquiryMethod ? inquiry.inquiryMethod.inquiryMethod : undfined,
-				inquiryType: inquiry.inquiryType,
-				isOnBehalfOfMAREFamily: inquiry.onBehalfOfMAREFamily,
-				onBehalfOfMAREFamily: inquiry.onBehalfOfFamilyText,
-				source: inquiry.sourceDescription.trim(),
-				takenBy: 'Website Bot',
-				takenOn: inquiry.takenOn ? moment( inquiry.takenOn ).utc().format( 'MM/DD/YYYY' ) : undefined
-			};
-			// resolve the promise with the relevant inquiry data
-			resolve( relevantData );
+			try {
+				// fill in all immediately available information
+				const relevantData = {
+					agency: inquiry.agency ? inquiry.agency.code : undefined,
+					children: inquiry.children ?
+							inquiry.children.map( child => {
+								return {
+									firstName: child.name ? child.name.first : undefined,
+									registrationNumber: child.registrationNumber
+								} } ) :
+							undefined,
+					childsSocialWorker: inquiry.childsSocialWorker ? inquiry.childsSocialWorker.name.full : undefined,
+					comments: inquiry.comments.trim(),
+					family: inquiry.family ? inquiry.family.displayNameAndRegistration : undefined,
+					inquirer: inquiry.inquirer,
+					inquiryMethod: inquiry.inquiryMethod ? inquiry.inquiryMethod.inquiryMethod : undfined,
+					inquiryType: inquiry.inquiryType,
+					isOnBehalfOfMAREFamily: inquiry.onBehalfOfMAREFamily,
+					onBehalfOfMAREFamily: inquiry.onBehalfOfFamilyText,
+					source: inquiry.sourceDescription.trim(),
+					takenBy: 'Website Bot',
+					takenOn: inquiry.takenOn ? moment( inquiry.takenOn ).utc().format( 'MM/DD/YYYY' ) : undefined
+				};
+				// resolve the promise with the relevant inquiry data
+				resolve( relevantData );
+			} catch( error ) {
+				reject( error );
+			}
 		});
 	});
 }
@@ -386,155 +389,159 @@ exports.extractInquirerData = function extractInquirerData( inquirer ) {
 				return resolve( `error populating fields for inquirer with id ${ inquirer.get( '_id' ) }` );
 			}
 
-			let relevantData = {
-				name: inquirer.userType === 'family' ? inquirer.displayName : inquirer.name.full,
-				email: inquirer.email,
-				userType: inquirer.userType,
-				dateOfBirth: inquirer.userType === 'family' && inquirer.contact1.birthDate ?
-							 moment( inquirer.contact1.birthDate ).utc().format( 'MM/DD/YYYY' ) :
-							 undefined,
-				gender: inquirer.userType === 'family' && inquirer.contact1.gender ?
-						inquirer.contact1.gender.gender :
-						undefined,
-				registrationNumber: inquirer.userType === 'family' && inquirer.registrationNumber ?
-						inquirer.registrationNumber :
-						undefined,
-				ethnicity: inquirer.userType === 'family' && inquirer.contact1.race ?
-						   utilities.getReadableStringFromArray( {
-							   array: inquirer.contact1.race.map( race => race.race ),
-							   delimiter: 'and'
-						   } ) :
-						   undefined,
-				street1: inquirer.address ? inquirer.address.street1 : undefined,
-				street2: inquirer.address ? inquirer.address.street2 : undefined,
-				city: inquirer.address ? inquirer.address.displayCity : undefined,
-				state: inquirer.address && inquirer.address.state ? inquirer.address.state.state : undefined,
-				zipCode: inquirer.address ? inquirer.address.zipCode : undefined,
-				mobilePhone: inquirer.userType === 'family' && inquirer.contact1.phone ?
-							 inquirer.contact1.phone.mobile :
-							 inquirer.phone.mobile,
-				workPhone: inquirer.userType === 'family' && inquirer.contact1.phone ?
-						   inquirer.contact1.phone.work :
-						   inquirer.phone.work,
-				stages: inquirer.get( 'stages' ),
-				socialWorker: inquirer.userType === 'family' && inquirer.socialWorker && inquirer.socialWorker.name ?
-							  inquirer.socialWorker.name.full :
-							  inquirer.userType === 'family' && inquirer.socialWorkerNotListed ?
-							  inquirer.socialWorkerText :
-							  undefined,
-				socialWorkerAgency: inquirer.userType === 'family' && inquirer.socialWorkerAgency ?
-									`${ inquirer.socialWorkerAgency.name } (${ inquirer.socialWorkerAgency.code })` :
-									undefined
-			};
-			
-			// add social worker details:
-			if ( inquirer.socialWorker ) {
-				if ( inquirer.socialWorker.phone ) {
-					relevantData[ 'socialWorkerPhoneWork' ] = inquirer.socialWorker.phone.work;
-					relevantData[ 'socialWorkerPhoneMobile' ] = inquirer.socialWorker.phone.mobile;
-					relevantData[ 'socialWorkerPhonePreferred' ] = inquirer.socialWorker.phone.preferred;
-				}
+			try {
+				let relevantData = {
+					name: inquirer.userType === 'family' ? inquirer.displayName : inquirer.name.full,
+					email: inquirer.email,
+					userType: inquirer.userType,
+					dateOfBirth: inquirer.userType === 'family' && inquirer.contact1.birthDate ?
+								moment( inquirer.contact1.birthDate ).utc().format( 'MM/DD/YYYY' ) :
+								undefined,
+					gender: inquirer.userType === 'family' && inquirer.contact1.gender ?
+							inquirer.contact1.gender.gender :
+							undefined,
+					registrationNumber: inquirer.userType === 'family' && inquirer.registrationNumber ?
+							inquirer.registrationNumber :
+							undefined,
+					ethnicity: inquirer.userType === 'family' && inquirer.contact1.race ?
+							utilities.getReadableStringFromArray( {
+								array: inquirer.contact1.race.map( race => race.race ),
+								delimiter: 'and'
+							} ) :
+							undefined,
+					street1: inquirer.address ? inquirer.address.street1 : undefined,
+					street2: inquirer.address ? inquirer.address.street2 : undefined,
+					city: inquirer.address ? inquirer.address.displayCity : undefined,
+					state: inquirer.address && inquirer.address.state ? inquirer.address.state.state : undefined,
+					zipCode: inquirer.address ? inquirer.address.zipCode : undefined,
+					mobilePhone: inquirer.userType === 'family' && inquirer.contact1.phone ?
+								inquirer.contact1.phone.mobile :
+								inquirer.phone.mobile,
+					workPhone: inquirer.userType === 'family' && inquirer.contact1.phone ?
+							inquirer.contact1.phone.work :
+							inquirer.phone.work,
+					stages: inquirer.get( 'stages' ),
+					socialWorker: inquirer.userType === 'family' && inquirer.socialWorker && inquirer.socialWorker.name ?
+								inquirer.socialWorker.name.full :
+								inquirer.userType === 'family' && inquirer.socialWorkerNotListed ?
+								inquirer.socialWorkerText :
+								undefined,
+					socialWorkerAgency: inquirer.userType === 'family' && inquirer.socialWorkerAgency ?
+										`${ inquirer.socialWorkerAgency.name } (${ inquirer.socialWorkerAgency.code })` :
+										undefined
+				};
 				
-				if ( inquirer.socialWorker.email ) {
-					relevantData[ 'socialWorkerEmail' ] = inquirer.socialWorker.email;
-				}
-			}
-			
-			// add contact 1 and contact 2 fields:
-			let isContact2Available = false;
-			if ( inquirer.userType === 'family' && inquirer.contact2 ) {
-				// first, check if contact 2 is not empty:
-				isContact2Available = inquirer.contact2.name && inquirer.contact2.name.first && inquirer.contact2.name.first.length > 0;
-				
-				// add contact 1 and contact 2 fields only if contact 2 is not empty:
-				if ( isContact2Available ) {
-					let contacts = [ inquirer.contact1, inquirer.contact2 ];
-					let index = 1;
+				// add social worker details:
+				if ( inquirer.socialWorker ) {
+					if ( inquirer.socialWorker.phone ) {
+						relevantData[ 'socialWorkerPhoneWork' ] = inquirer.socialWorker.phone.work;
+						relevantData[ 'socialWorkerPhoneMobile' ] = inquirer.socialWorker.phone.mobile;
+						relevantData[ 'socialWorkerPhonePreferred' ] = inquirer.socialWorker.phone.preferred;
+					}
 					
-					for ( let contact of contacts ) {
-						if ( contact.name ) {
-							relevantData[ 'contact' + index + 'FullName' ] = contact.name.full;
-						}
-						if ( contact.phone ) {
-							relevantData[ 'contact' + index + 'PhoneMobile' ] = contact.phone.mobile;
-							relevantData[ 'contact' + index + 'PhoneWork' ] = contact.phone.work;
-						}
-						relevantData[ 'contact' + index + 'Email' ] = contact.email;
-						
-						relevantData[ 'contact' + index + 'PreferredCommunicationMethod' ] = contact.preferredCommunicationMethod;
-						relevantData[ 'contact' + index + 'Gender' ] = contact.gender ? contact.gender.gender : undefined;
-						relevantData[ 'contact' + index + 'Race' ] = contact.race ?
-							   utilities.getReadableStringFromArray( {
-								   array: contact.race.map( race => race.race ),
-								   delimiter: 'and'
-							   } ) :
-							   undefined;
-						relevantData[ 'contact' + index + 'Occupation' ] = contact.occupation;
-						relevantData[ 'contact' + index + 'BirthDate' ] = contact.birthDate ? moment( contact.birthDate ).utc().format( 'MM/DD/YYYY' ) : undefined;
-						
-						index++;
+					if ( inquirer.socialWorker.email ) {
+						relevantData[ 'socialWorkerEmail' ] = inquirer.socialWorker.email;
 					}
 				}
-			}
-			relevantData[ 'contact2Available' ] = isContact2Available;
+				
+				// add contact 1 and contact 2 fields:
+				let isContact2Available = false;
+				if ( inquirer.userType === 'family' && inquirer.contact2 ) {
+					// first, check if contact 2 is not empty:
+					isContact2Available = inquirer.contact2.name && inquirer.contact2.name.first && inquirer.contact2.name.first.length > 0;
+					
+					// add contact 1 and contact 2 fields only if contact 2 is not empty:
+					if ( isContact2Available ) {
+						let contacts = [ inquirer.contact1, inquirer.contact2 ];
+						let index = 1;
+						
+						for ( let contact of contacts ) {
+							if ( contact.name ) {
+								relevantData[ 'contact' + index + 'FullName' ] = contact.name.full;
+							}
+							if ( contact.phone ) {
+								relevantData[ 'contact' + index + 'PhoneMobile' ] = contact.phone.mobile;
+								relevantData[ 'contact' + index + 'PhoneWork' ] = contact.phone.work;
+							}
+							relevantData[ 'contact' + index + 'Email' ] = contact.email;
+							
+							relevantData[ 'contact' + index + 'PreferredCommunicationMethod' ] = contact.preferredCommunicationMethod;
+							relevantData[ 'contact' + index + 'Gender' ] = contact.gender ? contact.gender.gender : undefined;
+							relevantData[ 'contact' + index + 'Race' ] = contact.race ?
+								utilities.getReadableStringFromArray( {
+									array: contact.race.map( race => race.race ),
+									delimiter: 'and'
+								} ) :
+								undefined;
+							relevantData[ 'contact' + index + 'Occupation' ] = contact.occupation;
+							relevantData[ 'contact' + index + 'BirthDate' ] = contact.birthDate ? moment( contact.birthDate ).utc().format( 'MM/DD/YYYY' ) : undefined;
+							
+							index++;
+						}
+					}
+				}
+				relevantData[ 'contact2Available' ] = isContact2Available;
 
-			if( relevantData.stages ) {
-				let stagesToSort = [];
+				if( relevantData.stages ) {
+					let stagesToSort = [];
 
-				// format the gathering information date if one exists
-				if( relevantData.stages.gatheringInformation && relevantData.stages.gatheringInformation.date instanceof Date ) {
-					relevantData.stages.gatheringInformation.date = moment( relevantData.stages.gatheringInformation.date ).utc().format( 'MM/DD/YYYY' );
+					// format the gathering information date if one exists
+					if( relevantData.stages.gatheringInformation && relevantData.stages.gatheringInformation.date instanceof Date ) {
+						relevantData.stages.gatheringInformation.date = moment( relevantData.stages.gatheringInformation.date ).utc().format( 'MM/DD/YYYY' );
+						
+						stagesToSort.push({
+							sortKey: parseInt( moment( relevantData.stages.gatheringInformation.date ).utc().format( 'YYYY-MM-DD' ).replace(/\-/g, '') + '1' ),
+							dataKey: 'gatheringInformation'
+						});
+					}
+					// format the looking for agency date if one exists
+					if( relevantData.stages.lookingForAgency && relevantData.stages.lookingForAgency.date instanceof Date ) {
+						relevantData.stages.lookingForAgency.date = moment( relevantData.stages.lookingForAgency.date ).utc().format( 'MM/DD/YYYY' );
+						
+						stagesToSort.push({
+							sortKey: parseInt( moment( relevantData.stages.lookingForAgency.date ).utc().format( 'YYYY-MM-DD' ).replace(/\-/g, '') + '2' ),
+							dataKey: 'lookingForAgency'
+						});
+					}
+					// format the working with agency date if one exists
+					if( relevantData.stages.workingWithAgency && relevantData.stages.workingWithAgency.date instanceof Date ) {
+						relevantData.stages.workingWithAgency.date = moment( relevantData.stages.workingWithAgency.date ).utc().format( 'MM/DD/YYYY' );
+						
+						stagesToSort.push({
+							sortKey: parseInt( moment( relevantData.stages.workingWithAgency.date ).utc().format( 'YYYY-MM-DD' ).replace(/\-/g, '') + '3' ),
+							dataKey: 'workingWithAgency'
+						});
+					}
+					// format the MAPP training completed date if one exists
+					if( relevantData.stages.MAPPTrainingCompleted && relevantData.stages.MAPPTrainingCompleted.date instanceof Date ) {
+						relevantData.stages.MAPPTrainingCompleted.date = moment( relevantData.stages.MAPPTrainingCompleted.date ).utc().format( 'MM/DD/YYYY' );
+						
+						stagesToSort.push({
+							sortKey: parseInt( moment( relevantData.stages.MAPPTrainingCompleted.date ).utc().format( 'YYYY-MM-DD' ).replace(/\-/g, '') + '4' ),
+							dataKey: 'MAPPTrainingCompleted'
+						});
+					}
 					
-					stagesToSort.push({
-						sortKey: parseInt( moment( relevantData.stages.gatheringInformation.date ).utc().format( 'YYYY-MM-DD' ).replace(/\-/g, '') + '1' ),
-						dataKey: 'gatheringInformation'
-					});
-				}
-				// format the looking for agency date if one exists
-				if( relevantData.stages.lookingForAgency && relevantData.stages.lookingForAgency.date instanceof Date ) {
-					relevantData.stages.lookingForAgency.date = moment( relevantData.stages.lookingForAgency.date ).utc().format( 'MM/DD/YYYY' );
-					
-					stagesToSort.push({
-						sortKey: parseInt( moment( relevantData.stages.lookingForAgency.date ).utc().format( 'YYYY-MM-DD' ).replace(/\-/g, '') + '2' ),
-						dataKey: 'lookingForAgency'
-					});
-				}
-				// format the working with agency date if one exists
-				if( relevantData.stages.workingWithAgency && relevantData.stages.workingWithAgency.date instanceof Date ) {
-					relevantData.stages.workingWithAgency.date = moment( relevantData.stages.workingWithAgency.date ).utc().format( 'MM/DD/YYYY' );
-					
-					stagesToSort.push({
-						sortKey: parseInt( moment( relevantData.stages.workingWithAgency.date ).utc().format( 'YYYY-MM-DD' ).replace(/\-/g, '') + '3' ),
-						dataKey: 'workingWithAgency'
-					});
-				}
-				// format the MAPP training completed date if one exists
-				if( relevantData.stages.MAPPTrainingCompleted && relevantData.stages.MAPPTrainingCompleted.date instanceof Date ) {
-					relevantData.stages.MAPPTrainingCompleted.date = moment( relevantData.stages.MAPPTrainingCompleted.date ).utc().format( 'MM/DD/YYYY' );
-					
-					stagesToSort.push({
-						sortKey: parseInt( moment( relevantData.stages.MAPPTrainingCompleted.date ).utc().format( 'YYYY-MM-DD' ).replace(/\-/g, '') + '4' ),
-						dataKey: 'MAPPTrainingCompleted'
-					});
+					// sort desc to get the most recent:
+					stagesToSort.sort( function( a, b ) { return ( a.sortKey > b.sortKey ) ? -1 : ( ( b.sortKey > a.sortKey ) ? 1 : 0 ); } );
+					if ( stagesToSort.length > 0 ) {
+						let onlyRecentStage = relevantData.stages[ stagesToSort[ 0 ].dataKey ];
+						relevantData.stages = {};
+						relevantData.stages[ stagesToSort[ 0 ].dataKey ] = onlyRecentStage;
+					}
 				}
 				
-				// sort desc to get the most recent:
-				stagesToSort.sort( function( a, b ) { return ( a.sortKey > b.sortKey ) ? -1 : ( ( b.sortKey > a.sortKey ) ? 1 : 0 ); } );
-				if ( stagesToSort.length > 0 ) {
-					let onlyRecentStage = relevantData.stages[ stagesToSort[ 0 ].dataKey ];
-					relevantData.stages = {};
-					relevantData.stages[ stagesToSort[ 0 ].dataKey ] = onlyRecentStage;
+				// add homestudy:
+				if ( inquirer.userType === 'family' && inquirer.homestudy && inquirer.homestudy.completed ) {
+					relevantData[ 'homestudy' ] = {
+						started: inquirer.homestudy.initialDate instanceof Date ? moment( inquirer.homestudy.initialDate ).utc().format( 'MM/DD/YYYY' ) : undefined
+					}
 				}
-			}
-			
-			// add homestudy:
-			if ( inquirer.userType === 'family' && inquirer.homestudy && inquirer.homestudy.completed ) {
-				relevantData[ 'homestudy' ] = {
-					started: inquirer.homestudy.initialDate instanceof Date ? moment( inquirer.homestudy.initialDate ).utc().format( 'MM/DD/YYYY' ) : undefined
-				}
-			}
 
-			resolve( relevantData );
+				resolve( relevantData );
+			} catch( error ) {
+				reject( error );
+			}
 		});
 	});
 }
