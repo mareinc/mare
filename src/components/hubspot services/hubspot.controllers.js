@@ -17,6 +17,10 @@ function generateKeystoneRecordUrl( recordId, userType ) {
 
         return `${recordUrlBase}social-workers/${recordId}`;
 
+    } else if ( userType === 'admin' ) {
+
+        return `${recordUrlBase}admins/${recordId}`;
+
     } else {
 
         return `${recordUrlBase}families/${recordId}`; 
