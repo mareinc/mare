@@ -1,5 +1,4 @@
 const keystone		= require( 'keystone' ),
-	  listService	= require( '../components/lists/list.controllers' ),
 	  pageService	= require( '../components/pages/page.controllers' );
 
 exports = module.exports = ( req, res ) => {
@@ -16,7 +15,18 @@ exports = module.exports = ( req, res ) => {
 	// if there are registration numbers in the query parameters, we know it's a child inquiry
 	locals.isChildInquiry = !!locals.registrationNumbers;
 	// some fields are only visible to social workers
-	locals.isSocialWorker = req.user ? req.user.userType === 'social worker' : false
+	locals.isSocialWorker = req.user ? req.user.userType === 'social worker' : false;
+	locals.isFamily = req.user ? req.user.userType === 'family' : false;
+	locals.isSiteVisitor = req.user ? req.user.userType === 'site visitor' : false;
+
+	// if a family or social worker accesses this page...
+	if ( locals.isFamily || locals.isSocialWorker ) {
+
+		// display a flash message pointing them to the new HubSpot inquiry flow
+		req.flash( 'info', { title: 'Thanks for your interest in making an inquiry!', detail: 'Please use the gallery below to begin the process by clicking Inquire on a profile.' } );
+		// redirect them to the child gallery
+		return res.redirect( 301, '/waiting-child-profiles' );
+	}
 
 	fetchSidebarItems
 		.then( sidebarItems => {
