@@ -15,6 +15,8 @@ exports = module.exports = ( req, res ) => {
 	const userType = req.user ? req.user.get( 'userType' ) : 'anonymous';
 	// store the gallery permissions in local variables
 	const { canBookmarkChildren, canSearchForChildren, canSeeAdvancedSearchOptions } = userService.getGalleryPermissions( req.user );
+	// set states from which families are allowed to submit inquiries
+	const ALLOWED_STATE_ABBREVIATIONS = [ 'NH', 'NY', 'ME', 'VT', 'MA', 'CT', 'RI' ];
 	// store the gallery permissions on locals for templating
 	locals.canBookmarkChildren			= canBookmarkChildren;
 	locals.canSearchForChildren			= canSearchForChildren;
@@ -67,7 +69,7 @@ exports = module.exports = ( req, res ) => {
 					// populate user's state data
 					const userState = await listService.getStateById( req.user.get( 'address.state' ) );
 					// determine if user should get the HubSpot inquiry form
-					locals.shouldDisplayHubSpotInquiryForm = userState && userState.abbreviation === 'MA';
+					locals.shouldDisplayHubSpotInquiryForm = userState && ALLOWED_STATE_ABBREVIATIONS.includes( userState.abbreviation );
 				
 				// if user is a social worker or admin
 				} else if ( userType === 'social worker' || userType === 'admin' ) {
