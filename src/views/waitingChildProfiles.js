@@ -66,11 +66,22 @@ exports = module.exports = ( req, res ) => {
 				// if user is a family
 				if ( userType === 'family' ) {
 					
-					// populate user's state data
-					const userState = await listService.getStateById( req.user.get( 'address.state' ) );
-					// determine if user should get the HubSpot inquiry form
-					locals.shouldDisplayHubSpotInquiryForm = userState && ALLOWED_STATE_ABBREVIATIONS.includes( userState.abbreviation );
-				
+					let userState;
+					try {
+
+						// populate user's state data
+						userState = await listService.getStateById( req.user.get( 'address.state' ) );
+						// determine if user should get the HubSpot inquiry form
+						locals.shouldDisplayHubSpotInquiryForm = userState && ALLOWED_STATE_ABBREVIATIONS.includes( userState.abbreviation );
+
+					} catch( error ) {
+
+						// log the error
+						console.log( 'there was an issue validating the state of residence for a family, inquiries are disabled.' );
+						console.log( `impacted family: ${req.user.get( 'displayNameAndRegistration' )}` );
+						console.error( error );
+					}
+					
 				// if user is a social worker or admin
 				} else if ( userType === 'social worker' || userType === 'admin' ) {
 
