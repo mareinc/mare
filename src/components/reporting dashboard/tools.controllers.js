@@ -2961,3 +2961,8 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading families served data' );
 		});
 };
+
+// redirect path to CSV download of agencies data
+exports.exportAgenciesCSV = ( req, res, next ) => {
+	res.redirect( '/keystone/api/agencies/export.csv?select=code,name&sort=code&expandRelationshipFields=true' );
+};

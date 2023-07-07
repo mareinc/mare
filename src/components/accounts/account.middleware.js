@@ -3,6 +3,7 @@ const async = require( 'async' );
 const userMiddleware = require( '../users/user.controllers' );
 const flashMessageMiddleware = require( '../../utils/notification.middleware' );
 const errorUtils = require('../../utils/errors.controllers');
+const EXPORT_TOKEN = process.env.EXPORT_TOKEN;
 
 /* prevents people from accessing protected pages when they're not signed in */
 exports.requireUser = function( userType ) {
@@ -26,6 +27,21 @@ exports.requireUser = function( userType ) {
 		
 		next();
 	}
+};
+
+// allow access to a path/resource using a token. used to access CSV exports from spreadsheets
+exports.requireToken = function( req, res, next ) {
+
+	// get the token from query params
+	const REQUEST_TOKEN = req.query.token;
+
+	// if the token matches, allow CSV export
+	if ( EXPORT_TOKEN === REQUEST_TOKEN ) {
+		next();
+	// otherwise, send an empty response
+	} else {
+		res.send( false )
+	}	
 };
 
 exports.login = function( req, res, next ) {
