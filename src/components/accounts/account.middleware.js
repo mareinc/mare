@@ -4,6 +4,8 @@ const userMiddleware = require( '../users/user.controllers' );
 const flashMessageMiddleware = require( '../../utils/notification.middleware' );
 const errorUtils = require('../../utils/errors.controllers');
 const EXPORT_TOKEN = process.env.EXPORT_TOKEN;
+const EXPORT_BOT_USERNAME = process.env.EXPORT_BOT_USERNAME;
+const EXPORT_BOT_PASSWORD = process.env.EXPORT_BOT_PASSWORD;
 
 /* prevents people from accessing protected pages when they're not signed in */
 exports.requireUser = function( userType ) {
@@ -37,10 +39,12 @@ exports.requireToken = function( req, res, next ) {
 
 	// if the token matches, allow CSV export
 	if ( EXPORT_TOKEN === REQUEST_TOKEN ) {
-		next();
+	
+		keystone.session.signin( { email: EXPORT_BOT_USERNAME, password: EXPORT_BOT_PASSWORD }, req, res, () => next(), () => res.send( false ) );
+		
 	// otherwise, send an empty response
 	} else {
-		res.send( false )
+		res.send( false );
 	}	
 };
 
