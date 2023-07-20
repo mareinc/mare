@@ -112,7 +112,7 @@ Child.add( 'Display Options', {
 
 	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, only registered social workers and families', required: true, initial: true, collapse: true },
 	isVisibleInGallery: { type: Types.Boolean, label: 'activate child profile on website to group selected', note: 'authorized staff only', default: false, initial: true },
-	visibleInGalleryDate: { type: Types.Date, label: 'date added/updated to MARE web', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { isVisibleInGallery: true }, initial: true, collapse: true }
+	visibleInGalleryDate: { type: Types.Date, label: 'date communications team published/re-published to Child Gallery', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { isVisibleInGallery: true }, initial: true, collapse: true }
 
 }, 'Child Information', {
 
