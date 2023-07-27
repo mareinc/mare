@@ -16,6 +16,10 @@ const keystone 				= require( 'keystone' ),
 	  utilsService			= require( './utils.controllers' ),
 	  listsService			= require( '../lists/list.controllers' );
 
+// export paths
+const EXPORT_AGENCIES_PATH = process.env.EXPORT_AGENCIES_PATH;
+const EXPORT_MEDIA_FEATURES_PATH = process.env.EXPORT_MEDIA_FEATURES_PATH;
+
 exports.getChildMatchingData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
 			childId = req.query.childId;
@@ -2964,10 +2968,10 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 
 // redirect path to CSV download of agencies data
 exports.exportAgenciesCSV = ( req, res, next ) => {
-	res.redirect( '/keystone/api/agencies/export.csv?select=code,name&sort=code&expandRelationshipFields=true' );
+	res.redirect( EXPORT_AGENCIES_PATH );
 };
 
 // redirect path to CSV download of media features data
 exports.exportMediaFeaturesCSV = ( req, res, next ) => {
-	res.redirect( '/keystone/api/media-features/export.csv?select=id,children,source,date,notes&sort=-date&expandRelationshipFields=true' );
+	res.redirect( EXPORT_MEDIA_FEATURES_PATH );
 };
