@@ -19,6 +19,7 @@ const keystone 				= require( 'keystone' ),
 // export paths
 const EXPORT_AGENCIES_PATH = process.env.EXPORT_AGENCIES_PATH;
 const EXPORT_MEDIA_FEATURES_PATH = process.env.EXPORT_MEDIA_FEATURES_PATH;
+const EXPORT_INQUIRIES_PATH = process.env.EXPORT_INQUIRIES_PATH;
 
 exports.getChildMatchingData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
@@ -2974,4 +2975,9 @@ exports.exportAgenciesCSV = ( req, res, next ) => {
 // redirect path to CSV download of media features data
 exports.exportMediaFeaturesCSV = ( req, res, next ) => {
 	res.redirect( EXPORT_MEDIA_FEATURES_PATH );
+};
+
+// redirect path to CSV download of inquiries data
+exports.exportInquiriesCSV = ( req, res, next ) => {
+	res.redirect( EXPORT_INQUIRIES_PATH );
 };
