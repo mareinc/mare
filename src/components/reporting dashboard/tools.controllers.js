@@ -21,6 +21,7 @@ const EXPORT_AGENCIES_PATH = process.env.EXPORT_AGENCIES_PATH;
 const EXPORT_MEDIA_FEATURES_PATH = process.env.EXPORT_MEDIA_FEATURES_PATH;
 const EXPORT_INQUIRIES_PATH = process.env.EXPORT_INQUIRIES_PATH;
 const EXPORT_SOCIAL_WORKERS_PATH = process.env.EXPORT_SOCIAL_WORKERS_PATH;
+const EXPORT_FAMILIES_PATH = process.env.EXPORT_FAMILIES_PATH;
 
 exports.getChildMatchingData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
@@ -2986,4 +2987,9 @@ exports.exportInquiriesCSV = ( req, res, next ) => {
 // redirect path to CSV download of social workers data
 exports.exportSocialWorkersCSV = ( req, res, next ) => {
 	res.redirect( EXPORT_SOCIAL_WORKERS_PATH );
+};
+
+// redirect path to CSV download of social workers data
+exports.exportFamiliesCSV = ( req, res, next ) => {
+	res.redirect( EXPORT_FAMILIES_PATH );
 };
