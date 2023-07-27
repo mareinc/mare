@@ -31,14 +31,17 @@ exports.requireUser = function( userType ) {
 	}
 };
 
-// allow access to a path/resource using a token. used to access CSV exports from spreadsheets
-exports.requireToken = function( req, res, next ) {
+// validate request for CSV exports for reporting
+exports.validateExportRequest = function( req, res, next ) {
+
+	// ensure request came from Zapier
+	const IsZapier = !!req.headers['user-agent'].match(/Zapier/);
 
 	// get the token from query params
 	const REQUEST_TOKEN = req.query.token;
 
 	// if the token matches, allow CSV export
-	if ( EXPORT_TOKEN === REQUEST_TOKEN ) {
+	if ( IsZapier && EXPORT_TOKEN === REQUEST_TOKEN ) {
 	
 		keystone.session.signin( { email: EXPORT_BOT_USERNAME, password: EXPORT_BOT_PASSWORD }, req, res, () => next(), () => res.send( false ) );
 		
