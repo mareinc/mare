@@ -179,6 +179,7 @@ exports = module.exports = app => {
 	app.get( '/tools/exports/agencies'							, accountMiddleware.validateExportRequest, toolsService.exportAgenciesCSV );
 	app.get( '/tools/exports/media-features'					, accountMiddleware.validateExportRequest, toolsService.exportMediaFeaturesCSV );
 	app.get( '/tools/exports/inquiries'							, accountMiddleware.validateExportRequest, toolsService.exportInquiriesCSV );
+	app.get( '/tools/exports/social-workers'					, accountMiddleware.validateExportRequest, toolsService.exportSocialWorkersCSV );
 
 	// webhooks
 	app.post( '/webhooks/process-child-inquiry', inquiryMiddleware.submitHubSpotInquiry );
