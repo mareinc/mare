@@ -2966,3 +2966,8 @@ exports.getFamilyActivityData = ( req, res, next ) => {
 exports.exportAgenciesCSV = ( req, res, next ) => {
 	res.redirect( '/keystone/api/agencies/export.csv?select=code,name&sort=code&expandRelationshipFields=true' );
 };
+
+// redirect path to CSV download of media features data
+exports.exportMediaFeaturesCSV = ( req, res, next ) => {
+	res.redirect( '/keystone/api/media-features/export.csv?select=id,children,source,date,notes&sort=-date&expandRelationshipFields=true' );
+};

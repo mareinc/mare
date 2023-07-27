@@ -177,6 +177,7 @@ exports = module.exports = app => {
     app.get( '/tools/services/get-caseload-data'			    , accountMiddleware.requireUser( 'admin' ), toolsService.getChildCaseloadData );
 	app.get( '/tools/services/get-family-activity-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getFamilyActivityData );
 	app.get( '/tools/exports/agencies'							, accountMiddleware.validateExportRequest, toolsService.exportAgenciesCSV );
+	app.get( '/tools/exports/media-features'					, accountMiddleware.validateExportRequest, toolsService.exportMediaFeaturesCSV );
 
 	// webhooks
 	app.post( '/webhooks/process-child-inquiry', inquiryMiddleware.submitHubSpotInquiry );
