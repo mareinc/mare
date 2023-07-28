@@ -184,6 +184,7 @@ exports = module.exports = app => {
 	app.get( '/tools/exports/placements'						, accountMiddleware.validateExportRequest, toolsService.exportPlacementsCSV );
 	app.get( '/tools/exports/matches'							, accountMiddleware.validateExportRequest, toolsService.exportMatchesCSV );
 	app.get( '/tools/exports/caseload'							, accountMiddleware.validateExportRequest, toolsService.exportCaseloadCSV );
+	app.get( '/tools/exports/placed-children'					, accountMiddleware.validateExportRequest, toolsService.exportPlacedChildrenCSV );
 
 	// webhooks
 	app.post( '/webhooks/process-child-inquiry', inquiryMiddleware.submitHubSpotInquiry );

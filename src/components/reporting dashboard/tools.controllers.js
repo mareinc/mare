@@ -25,6 +25,8 @@ const EXPORT_FAMILIES_PATH = process.env.EXPORT_FAMILIES_PATH;
 const EXPORT_PLACEMENTS_PATH = process.env.EXPORT_PLACEMENTS_PATH;
 const EXPORT_MATCHES_PATH = process.env.EXPORT_MATCHES_PATH;
 const EXPORT_CASELOAD_PATH = process.env.EXPORT_CASELOAD_PATH;
+const EXPORT_PLACED_CHILDREN_PATH = process.env.EXPORT_PLACED_CHILDREN_PATH;
+
 
 exports.getChildMatchingData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
@@ -3010,4 +3012,9 @@ exports.exportMatchesCSV = ( req, res, next ) => {
 // redirect path to CSV download of caseload data
 exports.exportCaseloadCSV = ( req, res, next ) => {
 	res.redirect( EXPORT_CASELOAD_PATH );
+};
+
+// redirect path to CSV download of placed children data
+exports.exportPlacedChildrenCSV = ( req, res, next ) => {
+	res.redirect( EXPORT_PLACED_CHILDREN_PATH );
 };
