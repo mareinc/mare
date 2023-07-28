@@ -183,6 +183,7 @@ exports = module.exports = app => {
 	app.get( '/tools/exports/families'							, accountMiddleware.validateExportRequest, toolsService.exportFamiliesCSV );
 	app.get( '/tools/exports/placements'						, accountMiddleware.validateExportRequest, toolsService.exportPlacementsCSV );
 	app.get( '/tools/exports/matches'							, accountMiddleware.validateExportRequest, toolsService.exportMatchesCSV );
+	app.get( '/tools/exports/caseload'							, accountMiddleware.validateExportRequest, toolsService.exportCaseloadCSV );
 
 	// webhooks
 	app.post( '/webhooks/process-child-inquiry', inquiryMiddleware.submitHubSpotInquiry );
