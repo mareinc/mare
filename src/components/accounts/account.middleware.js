@@ -32,6 +32,9 @@ exports.requireUser = function( userType ) {
 };
 
 // validate request for CSV exports for reporting
+// create a placeholder for the debounce timer.  debouncing is necessary because Zapier makes three requests simultaneously for every scheduled download,
+// which crashes the application (JS runs out of memory) for some exports
+let debounceTimer = undefined;
 exports.validateExportRequest = function( req, res, next ) {
 
 	// log activity
@@ -46,12 +49,28 @@ exports.validateExportRequest = function( req, res, next ) {
 	// if the token matches, allow CSV export
 	if ( IsZapier && EXPORT_TOKEN === REQUEST_TOKEN ) {
 	
-		keystone.session.signin( { email: EXPORT_BOT_USERNAME, password: EXPORT_BOT_PASSWORD }, req, res, () => next(), () => res.send( false ) );
-		
+		// if the debounce timer isn't currently running
+		if ( !debounceTimer ) {
+
+			// continue execution
+			keystone.session.signin( { email: EXPORT_BOT_USERNAME, password: EXPORT_BOT_PASSWORD }, req, res, () => next(), () => res.send( false ) );
+			
+			// set debounce timer
+			debounceTimer = setTimeout(() => {
+				debounceTimer = undefined;
+			}, 10000);
+
+		// if the debounce timer is currently running
+		} else {
+
+			// do not process export, just send an empty response
+			res.send();
+		}
+
 	// otherwise, send an empty response
 	} else {
 		res.send( false );
-	}	
+	}
 };
 
 exports.login = function( req, res, next ) {
