@@ -34,6 +34,9 @@ exports.requireUser = function( userType ) {
 // validate request for CSV exports for reporting
 exports.validateExportRequest = function( req, res, next ) {
 
+	// log activity
+	console.log( `Export Request Receieved for path: ${req.path}` );
+
 	// ensure request came from Zapier
 	const IsZapier = !!req.headers['user-agent'].match(/Zapier/);
 
