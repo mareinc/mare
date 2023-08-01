@@ -34,7 +34,7 @@ exports.requireUser = function( userType ) {
 // validate request for CSV exports for reporting
 // NOTE: Zapier makes multiple requests simultaneously for every scheduled task, which crashes the application (JS runs out of memory) for some exports.
 // To mitigate this we debounce incoming requests for the specified duration, and only respond to the most recent request made.
-const QUEUE_DRATION = 5000;
+const QUEUE_DRATION = process.env.EXPORT_DEBOUNCE_DURATION;
 const requestQueue = [];
 exports.validateExportRequest = function( req, res, next ) {
 
@@ -72,7 +72,7 @@ exports.validateExportRequest = function( req, res, next ) {
 				// send a success response, but do not process export
 				res.send( 'Request Debounced' );
 			}
-		}, QUEUE_DRATION);
+		}, QUEUE_DRATION || 1000);
 
 	// otherwise, send an empty response
 	} else {
