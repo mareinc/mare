@@ -32,44 +32,51 @@ exports.requireUser = function( userType ) {
 };
 
 // validate request for CSV exports for reporting
-// create a placeholder for the debounce timer.  debouncing is necessary because Zapier makes three requests simultaneously for every scheduled download,
-// which crashes the application (JS runs out of memory) for some exports
-let debounceTimer = undefined;
+// NOTE: Zapier makes multiple requests simultaneously for every scheduled task, which crashes the application (JS runs out of memory) for some exports.
+// To mitigate this we debounce incoming requests for the specified duration, and only respond to the most recent request made.
+const QUEUE_DRATION = 5000;
+const requestQueue = [];
 exports.validateExportRequest = function( req, res, next ) {
 
 	// log activity
-	console.log( `Export Request Receieved for path: ${req.path}` );
+	const requestPath = req.path;
+	console.log( `Export Request Receieved for path: ${requestPath}` );
 
 	// ensure request came from Zapier
-	const IsZapier = !!req.headers['user-agent'].match(/Zapier/);
+	const isZapier = !!req.headers['user-agent'].match(/Zapier/);
 
 	// get the token from query params
 	const REQUEST_TOKEN = req.query.token;
 
 	// if the token matches, allow CSV export
-	if ( IsZapier && EXPORT_TOKEN === REQUEST_TOKEN ) {
-	
-		// if the debounce timer isn't currently running
-		if ( !debounceTimer ) {
+	if ( isZapier && EXPORT_TOKEN === REQUEST_TOKEN ) {
 
-			// continue execution
-			keystone.session.signin( { email: EXPORT_BOT_USERNAME, password: EXPORT_BOT_PASSWORD }, req, res, () => next(), () => res.send( false ) );
-			
-			// set debounce timer
-			debounceTimer = setTimeout(() => {
-				debounceTimer = undefined;
-			}, 10000);
+		// add request to queue
+		requestQueue.push( requestPath );
 
-		// if the debounce timer is currently running
-		} else {
+		// debounce this export request while waiting for further requests
+		setTimeout(() => {
 
-			// do not process export, just send an empty response
-			res.send();
-		}
+			// remove request from queue
+			requestQueue.splice( requestQueue.indexOf( requestPath ), 1 );
+
+			// if this is the last request in the queue...
+			if ( !requestQueue.includes( requestPath ) ) {
+
+				// authenticate and pass to next
+				keystone.session.signin( { email: EXPORT_BOT_USERNAME, password: EXPORT_BOT_PASSWORD }, req, res, () => next(), () => res.send( 'Authentication Failed' ) );
+
+			// if this is not the last request in the queue...
+			} else {
+
+				// send a success response, but do not process export
+				res.send( 'Request Debounced' );
+			}
+		}, QUEUE_DRATION);
 
 	// otherwise, send an empty response
 	} else {
-		res.send( false );
+		res.send();
 	}
 };
 
