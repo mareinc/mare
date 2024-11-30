@@ -29,7 +29,7 @@
 		"gulp-filter": "^6.0.0",
 		"gulp-ignore": "^3.0.0",
 		"gulp-imagemin": "^7.1.0",
-		"gulp-mocha": "^7.0.2",
+		"gulp-mocha": "^8.0.0",
 		"gulp-rename": "^2.0.0",
 		"gulp-sass": "^4.1.0",
 		"gulp-sourcemaps": "^2.6.3",
@@ -64,7 +64,7 @@
 	"main": "keystone.js",
 	"devDependencies": {
 		"chai": "^4.1.2",
-		"mocha": "^6.2.2",
+		"mocha": "^10.2.0",
 		"sinon": "^7.5.0",
 		"sinon-chai": "^3.5.0"
 	}
