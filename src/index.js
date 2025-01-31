@@ -23,6 +23,11 @@ const keystone						= require( 'keystone' ),
 	  enforce						= require( 'express-sslify' ),
 	  importRoutes					= keystone.importer( __dirname );
 
+// HubSpot redirect URLs
+const HUBSPOT_CHILD_GALLERY_URL = "https://www.mareinc.org/child-gallery";
+const HUBSPOT_USER_REGISTRATION_URL = "https://www.mareinc.org/registration";
+const HUBSPOT_CHILD_REGISTRATION_URL = "https://www.mareinc.org/child-registration";
+
 // common middleware
 keystone.pre( 'routes', setupMiddleware.initLocals, setupMiddleware.initErrorHandlers );
 keystone.pre( 'render', notificationMiddleware.flashMessages, globalAlertMiddleware.globalAlert );
@@ -89,7 +94,8 @@ exports = module.exports = app => {
 	app.get( '/forms/agency-event-submission'			, routes.views.form_agencyEventSubmission );
 	app.post( '/forms/agency-event-submission'			, eventService.submitEvent );
 
-	app.get( '/forms/social-worker-child-registration'	, accountMiddleware.requireUser( 'social worker' ), childMiddleware.getChildrenByRecruitmentWorker, routes.views.form_childRegistration );
+	// Keystone site is being decommissioned, redirect traffic to new HubSpot portal
+	app.get( '/forms/social-worker-child-registration'	, (req, res) => { res.redirect( 301, HUBSPOT_CHILD_REGISTRATION_URL )});
 	app.post( '/forms/social-worker-child-registration'	, accountMiddleware.requireUser( 'social worker' ), childService.registerChild );
 	app.post( '/forms/social-worker-child-edit'			, accountMiddleware.requireUser( 'social worker'), childService.editChildRegistration );
 
@@ -116,9 +122,11 @@ exports = module.exports = app => {
 	app.get( '/adoption-stories'						, routes.views.successStories );
 	app.get( '/adoption-stories/:key'					, routes.views.successStory );
 	// gallery
-	app.get( '/waiting-child-profiles'					, routes.views.waitingChildProfiles );
+	// Keystone site is being decommissioned, redirect traffic to new HubSpot portal
+	app.get( '/waiting-child-profiles'					, (req, res) => { res.redirect( 301, HUBSPOT_CHILD_GALLERY_URL )});
 	// registration
-	app.get( '/register'								, routes.views.register );
+	// Keystone site is being decommissioned, redirect traffic to new HubSpot portal
+	app.get( '/register'								, (req, res) => { res.redirect( 301, HUBSPOT_USER_REGISTRATION_URL )});
 	app.post( '/register'								, registrationMiddleware.registerUser );
 	// login / logout
 	app.get( '/logout'									, accountMiddleware.logout );

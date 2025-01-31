@@ -28,6 +28,10 @@ exports = module.exports = function( req, res ) {
  
 			// if the user requested the 'Register/Update a child' page
 			if( page.key === 'register-update-a-child' ) {
+
+				// prevent further execution and redirect the user to the new HubSpot portal
+				const HUBSPOT_CHILD_REGISTRATION_URL = "https://www.mareinc.org/child-registration";
+				return res.redirect( 301, HUBSPOT_CHILD_REGISTRATION_URL );
 				// if the user is logged in as a social worker
 				if( locals.user && locals.user.userType === 'social worker' ) {
 					// specify that it should render a button after the content
